@@ -1,0 +1,123 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+data:
+  haproxy.cfg: |
+    global
+      quiet
+
+    defaults
+      mode http
+      maxconn 3000
+
+      stats enable
+      stats uri /stats
+      stats hide-version
+
+      timeout  http-request 10s
+      timeout  queue 2m
+      timeout  connect 10s
+      timeout  client 2m
+      timeout  server 2m
+      timeout  http-keep-alive 10s
+      timeout  check 10s
+
+    frontend public
+      bind *:8080
+      default_backend apps
+
+    backend apps
+      server nginx nginx:80 check maxconn {{ .Values.haproxy.maxconn }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  invenio.conf: |
+    upstream web {
+        server web:5000 max_conns={{ .Values.nginx.max_conns }};
+    }
+
+    server {
+
+        listen 8080;
+        server_name localhost;
+        charset utf-8;
+
+        location /ping {
+            access_log off;
+            return 200 "ok\n";
+        }
+
+        location / {
+            include uwsgi_params;
+            uwsgi_pass web;
+            uwsgi_param X-Real-IP $remote_addr;
+            # Sets buffering off since it creates download problems
+            # when clients are slow to consume the buffer which uwsgi
+            # creates by default (1GB). As a result uwsgi times out
+            # by the time the client consumed the buffer.
+            uwsgi_buffering off;
+            uwsgi_request_buffering off;
+            uwsgi_param Host $host;
+            uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+            uwsgi_param X-Forwarded-Proto $http_x_forwarded_proto;
+            uwsgi_ignore_headers Set-Cookie;
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uwsgi-config
+data:
+  uwsgi.ini: |
+    [uwsgi]
+    stats = 0.0.0.0:9000
+    socket = 0.0.0.0:5000
+    module = invenio_app.wsgi:application
+    master = true
+    processes = {{ .Values.web.uwsgi.processes }}
+    threads = {{ .Values.web.uwsgi.threads }}
+    single-interpreter = true
+    need-app = true
+    disable-logging = true
+    log-4xx = true
+    log-5xx = true
+    auto-procname = true
+    buffer-size =  10240
+    post-buffering = true
+    lazy-apps = true
+    # thunder-lock = true # https://marc.info/?l=uwsgi&m=140473636200986&w=2
+                          # https://uwsgi-docs.readthedocs.io/en/latest/articles/SerializingAccept.html
+
+    # Workers management
+    max-requests = 1999
+    max-requests-delta = 149
+    # max-worker-lifetime = 3600 # https://github.com/unbit/uwsgi/issues/1894
+    reload-on-rss = 250
+
+    # fix up signal handling
+    die-on-term: true
+    hook-master-start: unix_signal:2 gracefully_kill_them_all
+    hook-master-start: unix_signal:15 gracefully_kill_them_all
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invenio-config
+data:
+
+  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://cache:6379/1'
+  INVENIO_APP_ALLOWED_HOSTS: '[''{{ .Values.host }}'']'
+  INVENIO_CACHE_REDIS_HOST: 'cache'
+  INVENIO_CACHE_REDIS_URL: 'redis://cache:6379/0'
+  INVENIO_CELERY_RESULT_BACKEND: 'redis://cache:6379/2'
+  INVENIO_COLLECT_STORAGE: flask_collect.storage.file
+  INVENIO_RATELIMIT_STORAGE_URL: 'redis://cache:6379/3'
+  {{ if .Values.elasticsearch.inside_cluster }}
+  INVENIO_SEARCH_ELASTIC_HOSTS: "[{'host': 'es'}]"
+  {{ end }}

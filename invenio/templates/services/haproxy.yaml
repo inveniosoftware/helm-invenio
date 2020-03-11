@@ -1,0 +1,42 @@
+{{- if .Values.haproxy.inside_cluster -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+  labels:
+    app: haproxy
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: haproxy
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: haproxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+      - name: haproxy
+        image: haproxy:2.1.3
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: haproxy-config
+          mountPath: /usr/local/etc/haproxy
+      volumes:
+        - name: haproxy-config
+          configMap:
+            name: haproxy-config
+{{- end -}}

@@ -1,0 +1,15 @@
+apiVersion: v2
+name: invenio
+description: Open Source framework for large-scale digital repositories
+home: https://inveniosoftware.org/
+icon: https://inveniosoftware.org/static/img/logo-invenio-white.svg
+sources:
+  - https://github.com/inveniosoftware/invenio
+keywords:
+  - digital-repository
+  - institutional-repository
+  - multimedia-library
+  - multimedia-repository
+type: application
+# Chart version.
+version: 0.0.0

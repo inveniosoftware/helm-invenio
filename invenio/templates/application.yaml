@@ -1,0 +1,193 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: invenio
+spec:
+  host: {{ .Values.host }}
+  to:
+    kind: Service
+    name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}nginx{{ end }}
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  labels:
+    run: web
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+  selector:
+    app: web
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: web
+spec:
+  replicas: {{ .Values.web.replicas }}
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: {{ .Values.web.image }}
+        command: [
+          "/bin/bash",
+          "-c",
+          "uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
+        ]
+        ports:
+        - containerPort: 5000
+          name: http
+        envFrom:
+          - configMapRef:
+              name: invenio-config
+        env:
+          - name: TZ
+            value: "Europe/Zurich"
+          - name: INVENIO_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_SQLALCHEMY_DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: SQLALCHEMY_DB_URI
+          {{ if not .Values.elasticsearch.inside_cluster }}
+          - name: INVENIO_SEARCH_ELASTIC_HOSTS
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-secrets
+                key: INVENIO_SEARCH_ELASTIC_HOSTS
+          {{ end }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        volumeMounts:
+          - name: uwsgi-config
+            mountPath: '/opt/invenio/src/uwsgi'
+        resources:
+          requests:
+            memory: 200Mi
+          limits:
+            memory: 1Gi
+      volumes:
+        - name: uwsgi-config
+          configMap:
+            defaultMode: 420
+            name: uwsgi-config
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: worker
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: {{ .Values.worker.image }}
+        command: [
+          "/bin/bash",
+          "-c",
+          "celery worker -A {{ .Values.worker.app }} -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+        ]
+        envFrom:
+          - configMapRef:
+              name: invenio-config
+        env:
+          - name: TZ
+            value: "Europe/Zurich"
+          - name: INVENIO_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_SQLALCHEMY_DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: SQLALCHEMY_DB_URI
+          {{ if not .Values.elasticsearch.inside_cluster }}
+          - name: INVENIO_SEARCH_ELASTIC_HOSTS
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-secrets
+                key: INVENIO_SEARCH_ELASTIC_HOSTS
+          {{ end }}
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "celery inspect ping -d celery@$(hostname) -A {{ .Values.worker.app }}"
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 200Mi
+          limits:
+            memory: 1Gi
+{{- if .Values.web.horizontal_pod_autoscaler -}}
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: web
+    template: invenio-application
+  name: web
+spec:
+  maxReplicas: {{ .Values.web.horizontal_pod_autoscaler.max_web_replicas }}
+  minReplicas: {{ .Values.web.horizontal_pod_autoscaler.min_web_replicas }}
+  scaleTargetRef:
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    name: web
+  targetCPUUtilizationPercentage: {{ .Values.web.horizontal_pod_autoscaler.scaler_cpu_utilization }}
+{{- end }}

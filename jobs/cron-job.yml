@@ -1,0 +1,69 @@
+---
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "parametrized-cron-job"
+  creationTimestamp: null
+  annotations:
+    description: "Invenio job OpenShift template."
+    tags: "invenio-cron-job"
+labels:
+  template: "invenio-cron-job"
+objects:
+  -
+    apiVersion: batch/v1beta1
+    kind: CronJob
+    metadata:
+      name: "${JOB_NAME}"
+    spec:
+      schedule: "*/5 * * * *"
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              restartPolicy: Never
+              containers:
+              - name: invenio-job
+                image: your/invenio-image
+                command:
+                  - /bin/bash
+                  - -c
+                  - "${JOB_COMMAND}"
+                resources:
+                  requests:
+                    cpu: 200
+                    memory: 1Gi
+                  limits:
+                    cpu: 1
+                    memory: 2Gi
+                envFrom:
+                  - configMapRef:
+                      name: invenio-config
+                env:
+                  - name: TZ
+                    value: "Europe/Zurich"
+                  - name: INVENIO_BROKER_URL
+                    valueFrom:
+                      secretKeyRef:
+                        name: mq-password
+                        key: CELERY_BROKER_URL
+                  - name: INVENIO_CELERY_BROKER_URL
+                    valueFrom:
+                      secretKeyRef:
+                        name: mq-password
+                        key: CELERY_BROKER_URL
+                  - name: INVENIO_SQLALCHEMY_DATABASE_URI
+                    valueFrom:
+                      secretKeyRef:
+                        name: db-password
+                        key: SQLALCHEMY_DB_URI
+                  - name: ELASTICSEARCH_PASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: elasticsearch-password
+                        key: ELASTICSEARCH_PASSWORD
+parameters:
+  - name: JOB_NAME
+    required: true
+  - name: JOB_COMMAND
+    required: true
