@@ -40,18 +40,16 @@ data:
     upstream web {
         server web:5000 max_conns={{ .Values.nginx.max_conns }};
     }
+    log_format trace '$remote_addr - $time_iso8601 "$request" '
+        '$status  $body_bytes_sent $request_length "$http_referer"  '
+        '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
+        'rt=$request_time uct="$upstream_connect_time" '
+        'uht="$upstream_header_time" urt="$upstream_response_time" '
+        'sid=$upstream_http_x_session_id uid=$upstream_http_x_user_id';
+
+    access_log  /var/log/nginx/access.log  trace;
 
     server {
-
-        log_format trace '$remote_addr - $time_iso8601 "$request" '
-          '$status  $body_bytes_sent $request_length "$http_referer"  '
-          '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
-          'rt=$request_time uct="$upstream_connect_time" '
-          'uht="$upstream_header_time" urt="$upstream_response_time" '
-          'sid=$upstream_http_x_session_id uid=$upstream_http_x_user_id';
-
-        access_log  /var/log/nginx/access.log  trace;
-
         listen 8080;
         server_name localhost;
         charset utf-8;
@@ -130,7 +128,7 @@ data:
   {{ if .Values.elasticsearch.inside_cluster }}
   INVENIO_SEARCH_ELASTIC_HOSTS: "[{'host': 'es'}]"
   {{ end }}
-
+{{ if .Values.logstash.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -184,7 +182,7 @@ data:
 
         # If request is a ping, then ignore it.
         
-        if ![data][url] == "ping"{
+        if [data][url] != "ping" {
     
           if [data][upstream_header_time] == "-"{
             mutate { replace => { upstream_header_time => 0 }}
@@ -196,30 +194,6 @@ data:
 
           if [data][upstream_response_time] == "-"{
             mutate { replace => { upstream_response_time => 0 }}
-          }
-
-          # Find the request category depending on the prefix of the url.
-
-          grok {
-            match => {
-              "url" => "/%{WORD:request_category}%{GREEDYDATA}"
-            }
-          }
-
-          if [data][url] =~ "*/record/*/files/*" {
-            mutate { replace => { request_category => "files"}}
-          }
-          else if [data][url] =~ "/api/files/*" {
-            mutate { replace => { request_category => "files"}}
-          }
-          else if [data][url] =~ "/api/deposit/depositions/*/files*" {
-            mutate { replace => { request_category => "files"}}
-          }
-
-          # Overwrite the previous category if the following rules match the url.
-          # If the url doesn't comply to any of the previous rules then it's a UI category.
-          if ![data][request_category] in ["api", "files", "oai2d", "static"] {
-              mutate { replace => { request_category => "ui"}}
           }
           # Enrich with geolocation data.
           geoip {
@@ -267,7 +241,8 @@ data:
       }
     }
     output {
-      if ![data][url] == "ping"{
+      if [data][url] != "ping"{
         stdout {}
         }
     } 
+{{ end }}

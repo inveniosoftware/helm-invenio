@@ -1,4 +1,4 @@
-
+{{- if .Values.logstash.enabled -}}
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -55,3 +55,4 @@ spec:
   - protocol: TCP
     port: 5044
     targetPort: 5044
+{{- end }}
