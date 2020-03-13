@@ -43,3 +43,6 @@ postgresql:
 
 elasticsearch:
   inside_cluster: false
+
+logstash:
+  environment: "qa"

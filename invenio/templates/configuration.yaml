@@ -43,6 +43,15 @@ data:
 
     server {
 
+        log_format trace '$remote_addr - $time_iso8601 "$request" '
+          '$status  $body_bytes_sent $request_length "$http_referer"  '
+          '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
+          'rt=$request_time uct="$upstream_connect_time" '
+          'uht="$upstream_header_time" urt="$upstream_response_time" '
+          'sid=$upstream_http_x_session_id uid=$upstream_http_x_user_id';
+
+        access_log  /var/log/nginx/access.log  trace;
+
         listen 8080;
         server_name localhost;
         charset utf-8;
@@ -121,3 +130,144 @@ data:
   {{ if .Values.elasticsearch.inside_cluster }}
   INVENIO_SEARCH_ELASTIC_HOSTS: "[{'host': 'es'}]"
   {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |-
+    filebeat.inputs:
+    - type: log
+      paths:
+        - /var/log/nginx/*access*.log
+      fields:
+        nginx: true
+    - type: log
+      paths:
+        - /var/log/uwsgi/*.log
+      fields:
+        uwsgi: true
+    output.logstash:
+      hosts: ["logstash:5044"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+  logstash.conf: |
+    # all input will come from filebeat, no local logs
+    input {
+      beats {
+        port => 5044
+      }
+    }
+    filter {
+      mutate {
+         add_field => { "_environment" => "${ENVIRONMENT}"}
+         }
+
+      # Use grok to parse the input string into an object.
+      grok {
+          match => {
+              "message" => "%{IP:client_ip} - %{TIMESTAMP_ISO8601:request_timestamp} \"%{WORD:http_method} %{PATH:url}(?:\?%{NOTSPACE:query_string}|) %{NOTSPACE:http_protocol}\" %{INT:http_code}  %{INT:bytes} %{INT:bytes_received} \"%{DATA:referer}\"  \"%{DATA:user_agent}\" \"%{DATA:http_x_forwarded_for}\" rid=%{WORD:request_id} rt=%{BASE16FLOAT:request_time} uct=\"%{DATA:connect_time}\" uht=\"%{DATA:upstream_header_time}\" urt=\"%{DATA:upstream_response_time}\" sid=%{NOTSPACE:session_id} uid=%{NOTSPACE:user_id}"
+          }
+        }
+        if ![data][query_string]{
+          mutate { replace => { query_string => "-" } }
+        }
+
+        # If request is a ping, then ignore it.
+        
+        if ![data][url] == "ping"{
+    
+          if [data][upstream_header_time] == "-"{
+            mutate { replace => { upstream_header_time => 0 }}
+          }
+
+          if [data][connect_time] == "-"{
+            mutate { replace => { connect_time => 0 }}
+          }
+
+          if [data][upstream_response_time] == "-"{
+            mutate { replace => { upstream_response_time => 0 }}
+          }
+
+          # Find the request category depending on the prefix of the url.
+
+          grok {
+            match => {
+              "url" => "/%{WORD:request_category}%{GREEDYDATA}"
+            }
+          }
+
+          if [data][url] =~ "*/record/*/files/*" {
+            mutate { replace => { request_category => "files"}}
+          }
+          else if [data][url] =~ "/api/files/*" {
+            mutate { replace => { request_category => "files"}}
+          }
+          else if [data][url] =~ "/api/deposit/depositions/*/files*" {
+            mutate { replace => { request_category => "files"}}
+          }
+
+          # Overwrite the previous category if the following rules match the url.
+          # If the url doesn't comply to any of the previous rules then it's a UI category.
+          if ![data][request_category] in ["api", "files", "oai2d", "static"] {
+              mutate { replace => { request_category => "ui"}}
+          }
+          # Enrich with geolocation data.
+          geoip {
+              source => "http_x_forwarded_for" #field name that contains the ip address
+              fields => [ "city_name", "country_name", "country_code2", "continent_code"]
+              target => "data"
+              # Download static database and point to it
+          }
+
+        useragent {
+            source => "[data][user_agent]"
+            target => "[@metadata]"
+        }
+        ##############################################################
+        # USER AGENT
+        ##############################################################
+        # add ua/device only if set
+        if [@metadata][ua_device] {
+              mutate {
+                  add_field => { "[data][ua/device]" => "%{[@metadata][ua_device]}" }
+              }
+          }
+        # add ua/family only if set
+        if [@metadata][ua_name] {
+            mutate {
+                add_field => { "[data][ua/family]" => "%{[@metadata][ua_name]}" }
+            }
+        }
+        # add ua/patch only if set
+        if [@metadata][ua_patch] {
+            mutate {
+                add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}.%{[@metadata][ua_patch]}" }
+            }
+        } else {
+            mutate {
+                add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}" }
+            }
+        }
+        # add ua/os only if set
+        if [@metadata][ua_os] {
+            mutate {
+                add_field => { "[data][ua/os]" => "%{[@metadata][ua_os]}" }
+            }
+        }
+      }
+    }
+    output {
+      if ![data][url] == "ping"{
+        stdout {}
+        }
+    } 

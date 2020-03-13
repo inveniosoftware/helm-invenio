@@ -191,3 +191,36 @@ spec:
     name: web
   targetCPUUtilizationPercentage: {{ .Values.web.horizontal_pod_autoscaler.scaler_cpu_utilization }}
 {{- end }}
+---
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: "filebeat" 
+spec:
+  runPolicy: "Serial" 
+  triggers: 
+    -
+      type: "ImageChange"
+  source: 
+    dockerfile: |
+      FROM docker.elastic.co/beats/filebeat-oss:7.6.1
+      USER root
+      RUN chgrp -R 0 /usr/share/filebeat && \             
+      chmod -R o=rx /usr/share/filebeat
+      RUN chown -R root:root /usr/share/filebeat
+                  
+  strategy: 
+    dockerStrategy:
+      type: Docker
+  output: 
+    to:
+      kind: "ImageStreamTag"
+      name: "filebeat:latest"
+---
+kind: "ImageStream"
+apiVersion: "image.openshift.io/v1"
+metadata:
+  name: "filebeat"
+spec:
+  tags:
+  - name: "latest"
