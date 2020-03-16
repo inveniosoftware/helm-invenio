@@ -34,6 +34,8 @@ $ docker run -v /absolute/path/to/helm-invenio:/tmp/invenio/ -it quay.io/helmpac
 
 Before proceeding we need to generate a new personal token with access to the repository (*repo* group). You can do so in [here](https://github.com/settings/tokens).
 
+In the following examples, `cr` is the alias name of the command line tool `chart-releaser`.
+
 ``` console
 $ cr upload -o inveniosoftware -r helm-invenio -p .deploy -t  <TOKEN>
 ```

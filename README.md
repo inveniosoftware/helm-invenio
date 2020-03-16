@@ -66,11 +66,14 @@ $ oc create secret generic \
 :warning: For now the previous Elasticsearch environment variables are not ported to `invenio-search`, therefore the way to create the secret is:
 
 ``` console
-$ export INVENIO_SEARCH_ELASTIC_HOSTS="[{'host': 'es-cdsbooks.cern.ch', 'url_prefix': '/es', 'timeout': 30, 'port': 443, 'use_ssl': True, 'verify_certs': False, 'http_auth':('USERNAME_CHANGEME', 'PASSWORD_CHANGEME')}]"
+$ export INVENIO_SEARCH_ELASTIC_HOSTS="[{'host': 'localhost', 'timeout': 30, 'port': 9200, 'use_ssl': True, 'http_auth':('USERNAME_CHANGEME', 'PASSWORD_CHANGEME')}]"
 $ oc create secret generic \
   --from-literal="INVENIO_SEARCH_ELASTIC_HOSTS=$INVENIO_SEARCH_ELASTIC_HOSTS" \
   elasticsearch-secrets
 ```
+
+:warning: Note that you might need to add extra configuration to the elasticsearch hosts, sucha as vertificate verification (`verify_certs`),
+prefixing (`url_prefix`) and more.
 
 #### 2. Install Invenio
 
