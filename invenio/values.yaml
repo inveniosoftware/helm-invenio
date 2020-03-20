@@ -7,6 +7,8 @@ haproxy:
 nginx:
   max_conns: 100
   replicas: 2
+  statics:
+    location: /opt/invenio/var/instance/static
 
 web:
   image: your/invenio-image
@@ -20,7 +22,8 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
-
+  statics:
+    location: /opt/invenio/var/instance/static
 
 worker:
   enabled: true
