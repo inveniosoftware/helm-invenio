@@ -38,6 +38,16 @@ spec:
       labels:
         app: web
     spec:
+      initContainers:
+      - name: web-init
+        image: {{ .Values.web.image }}
+        command: [
+          '/bin/bash',
+          '-c',
+          'cp -R {{ .Values.web.assets.location }}/. /tmp/invenio/assets/']
+        volumeMounts:
+            - name: "invenio-assets"
+              mountPath: "/tmp/invenio/assets/"
       containers:
       - name: web
         image: {{ .Values.web.image }}
@@ -84,7 +94,7 @@ spec:
               - -c
               - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
           failureThreshold: 3
-          initialDelaySeconds: 15
+          initialDelaySeconds: 60
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -102,6 +112,8 @@ spec:
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
+          - name: "invenio-assets"
+            mountPath: "{{ .Values.web.assets.location }}"
         resources:
           requests:
             memory: 200Mi
@@ -112,6 +124,10 @@ spec:
           configMap:
             defaultMode: 420
             name: uwsgi-config
+        - name: "invenio-assets"
+          persistentVolumeClaim:
+            claimName: "invenio-assets-claim"
+
 ---
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
