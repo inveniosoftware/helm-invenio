@@ -43,8 +43,8 @@ spec:
             mountPath: /var/cache/nginx
           - name: var-log-nginx
             mountPath: /var/log/nginx
-          - name: "invenio-statics"
-            mountPath: "{{ .Values.web.statics.location }}"
+          - name: "invenio-assets"
+            mountPath: "{{ .Values.web.assets.location }}"
         readinessProbe:
           httpGet:
             path: /ping
@@ -89,9 +89,9 @@ spec:
         emptyDir: {}
       - name: var-log-nginx
         emptyDir: {}
-      - name: "invenio-statics"
+      - name: "invenio-assets"
         persistentVolumeClaim:
-          claimName: "invenio-statics-claim"
+          claimName: "invenio-assets-claim"
 
 {{ if .Values.logstash.enabled }}
 ---

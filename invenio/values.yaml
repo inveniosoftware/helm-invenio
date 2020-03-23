@@ -4,10 +4,13 @@ haproxy:
   inside_cluster: true
   maxconn: 100
 
+volume:
+  assets:
+    size: 10Gi
 nginx:
   max_conns: 100
   replicas: 2
-  statics:
+  assets:
     location: /opt/invenio/var/instance/static
 
 web:
@@ -22,7 +25,7 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
-  statics:
+  assets:
     location: /opt/invenio/var/instance/static
 
 worker:

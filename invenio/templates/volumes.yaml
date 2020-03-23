@@ -2,10 +2,10 @@
 apiVersion: "v1"
 kind: "PersistentVolumeClaim"
 metadata:
-  name: "invenio-statics-claim"
+  name: "invenio-assets-claim"
 spec:
   accessModes:
     - "ReadWriteMany"
   resources:
     requests:
-      storage: "10Gi"
+      storage: "{{ .Values.volume.assets.size }}"

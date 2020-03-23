@@ -44,10 +44,10 @@ spec:
         command: [
           '/bin/bash',
           '-c',
-          'cp -R {{ .Values.web.statics.location }}/. /tmp/invenio/statics/']
+          'cp -R {{ .Values.web.assets.location }}/. /tmp/invenio/assets/']
         volumeMounts:
-            - name: "invenio-statics"
-              mountPath: "/tmp/invenio/statics/"
+            - name: "invenio-assets"
+              mountPath: "/tmp/invenio/assets/"
       containers:
       - name: web
         image: {{ .Values.web.image }}
@@ -112,8 +112,8 @@ spec:
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
-          - name: "invenio-statics"
-            mountPath: "{{ .Values.web.statics.location }}"
+          - name: "invenio-assets"
+            mountPath: "{{ .Values.web.assets.location }}"
         resources:
           requests:
             memory: 200Mi
@@ -124,9 +124,9 @@ spec:
           configMap:
             defaultMode: 420
             name: uwsgi-config
-        - name: "invenio-statics"
+        - name: "invenio-assets"
           persistentVolumeClaim:
-            claimName: "invenio-statics-claim"
+            claimName: "invenio-assets-claim"
 
 ---
 apiVersion: apps.openshift.io/v1
