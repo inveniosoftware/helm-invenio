@@ -1,0 +1,3 @@
+postgresql:
+  inside_cluster: true
+
