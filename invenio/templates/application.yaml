@@ -7,7 +7,7 @@ spec:
   host: {{ .Values.host }}
   to:
     kind: Service
-    name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}nginx{{ end }}
+    name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
   port:
     targetPort: http
   tls:
@@ -22,8 +22,9 @@ metadata:
     run: web
 spec:
   ports:
-  - port: 5000
-    protocol: TCP
+  - name: 'http'
+    port: 80
+    targetPort: 8080
   selector:
     app: web
 ---
@@ -38,27 +39,15 @@ spec:
       labels:
         app: web
     spec:
-      initContainers:
-      - name: web-init
-        image: {{ .Values.web.image }}
-        command: [
-          '/bin/bash',
-          '-c',
-          'cp -R {{ .Values.web.assets.location }}/. /tmp/invenio/assets/']
-        volumeMounts:
-            - name: "invenio-assets"
-              mountPath: "/tmp/invenio/assets/"
       containers:
       - name: web
         image: {{ .Values.web.image }}
         command: [
           "/bin/bash",
           "-c",
-          "uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
+          "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
+          uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
         ]
-        ports:
-        - containerPort: 5000
-          name: http
         envFrom:
           - configMapRef:
               name: invenio-config
@@ -94,7 +83,7 @@ spec:
               - -c
               - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
           failureThreshold: 3
-          initialDelaySeconds: 60
+          initialDelaySeconds: 15
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
@@ -105,29 +94,90 @@ spec:
               - -c
               - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
           failureThreshold: 1
-          initialDelaySeconds: 30
+          initialDelaySeconds: 15
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
-          - name: "invenio-assets"
-            mountPath: "{{ .Values.web.assets.location }}"
+          - name: nginx-invenio-assets
+            mountPath: /opt/nginx-invenio-assets
         resources:
           requests:
             memory: 200Mi
           limits:
             memory: 1Gi
+      - name: nginx
+        image: nginx
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/conf.d
+          - name: var-run
+            mountPath: /var/run
+          - name: var-cache-nginx
+            mountPath: /var/cache/nginx
+          - name: var-log-nginx
+            mountPath: /var/log/nginx
+          - name: nginx-invenio-assets
+            mountPath: "{{ .Values.nginx.assets.location }}"
+            readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+      {{ if .Values.logstash.enabled }}
+      - name: filebeat
+        image: {{ .Values.logstash.filebeat_image }}
+        args: [
+          "-c", "/etc/filebeat.yml",
+          "-e",
+        ]
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/filebeat.yml
+          readOnly: true
+          subPath: filebeat.yml
+        - name: var-log-nginx
+          mountPath: /var/log/nginx
+          readOnly: true
+      {{ end }}
       volumes:
+        {{ if .Values.logstash.enabled }}
+        - name: config
+          configMap:
+            defaultMode: 0600
+            name: filebeat-config
+        {{ end }}
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: var-run
+          emptyDir: {}
+        - name: var-cache-nginx
+          emptyDir: {}
+        - name: var-log-nginx
+          emptyDir: {}
         - name: uwsgi-config
           configMap:
             defaultMode: 420
             name: uwsgi-config
-        - name: "invenio-assets"
-          persistentVolumeClaim:
-            claimName: "invenio-assets-claim"
-
+        - name: nginx-invenio-assets
+          emptyDir: {}
 ---
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig

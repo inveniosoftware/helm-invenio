@@ -9,7 +9,6 @@ volume:
     size: 10Gi
 nginx:
   max_conns: 100
-  replicas: 2
   assets:
     location: /opt/invenio/var/instance/static
 
