@@ -1,3 +1,5 @@
+host: yourhost.localhost
+
 haproxy:
   inside_cluster: true
   maxconn: 100
@@ -11,6 +13,17 @@ nginx:
     location: /opt/invenio/var/instance/static
 
 web:
+  image: your/invenio-image
+  replicas: 6
+  uwsgi:
+    processes: 6
+    threads: 4
+  autoscaler:
+    enabled: false
+    # Scale when CPU usage gets to
+    scaler_cpu_utilization: 65
+    max_web_replicas: 10
+    min_web_replicas: 2
   assets:
     location: /opt/invenio/var/instance/static
 
