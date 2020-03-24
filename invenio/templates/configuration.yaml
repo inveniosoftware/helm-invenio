@@ -29,7 +29,7 @@ data:
       default_backend apps
 
     backend apps
-      server nginx nginx:80 check maxconn {{ .Values.haproxy.maxconn }}
+      server web web:80 check maxconn {{ .Values.haproxy.maxconn }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -38,7 +38,7 @@ metadata:
 data:
   invenio.conf: |
     upstream web {
-        server web:5000 max_conns={{ .Values.nginx.max_conns }};
+        server 127.0.0.1:5000 max_conns={{ .Values.nginx.max_conns }};
     }
     log_format trace '$remote_addr - $time_iso8601 "$request" '
         '$status  $body_bytes_sent $request_length "$http_referer"  '
@@ -75,7 +75,7 @@ data:
             uwsgi_ignore_headers Set-Cookie;
         }
         location /static {
-          alias /opt/invenio/var/instance/static/;
+          alias "{{ .Values.nginx.assets.location }}";
           autoindex off;
         }
     }
