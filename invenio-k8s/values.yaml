@@ -1,3 +1,9 @@
+redis:
+  inside_cluster: true
+
+rabbitmq:
+  inside_cluster: true
+
 postgresql:
   inside_cluster: true
 
