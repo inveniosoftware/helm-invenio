@@ -1,3 +1,20 @@
+haproxy:
+  inside_cluster: true
+  maxconn: 100
+
+volume:
+  assets:
+    size: 10Gi
+nginx:
+  max_conns: 100
+  replicas: 2
+  assets:
+    location: /opt/invenio/var/instance/static
+
+web:
+  assets:
+    location: /opt/invenio/var/instance/static
+
 redis:
   inside_cluster: true
 
@@ -10,3 +27,9 @@ postgresql:
 elasticsearch:
   inside_cluster: true
 
+logstash:
+  enabled: false
+  # Used for the generated local filebeat image.
+  # It is recommended to use the one generated via the ImageStream
+  filebeat_image: filebeat_image_to_be_used 
+  environment: "qa"
