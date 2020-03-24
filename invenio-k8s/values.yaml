@@ -43,5 +43,4 @@ logstash:
   enabled: false
   # Used for the generated local filebeat image.
   # It is recommended to use the one generated via the ImageStream
-  filebeat_image: filebeat_image_to_be_used 
   environment: "qa"
