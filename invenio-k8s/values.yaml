@@ -7,3 +7,6 @@ rabbitmq:
 postgresql:
   inside_cluster: true
 
+elasticsearch:
+  inside_cluster: true
+
