@@ -89,6 +89,11 @@ spec:
               secretKeyRef:
                 name: db-secrets
                 key: SQLALCHEMY_DB_URI
+          - name: INVENIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_SECRET_KEY
           {{ if not .Values.elasticsearch.inside_cluster }}
           - name: INVENIO_SEARCH_ELASTIC_HOSTS
             valueFrom:
@@ -242,6 +247,11 @@ spec:
               secretKeyRef:
                 name: db-secrets
                 key: SQLALCHEMY_DB_URI
+          - name: INVENIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_SECRET_KEY
           {{ if not .Values.elasticsearch.inside_cluster }}
           - name: INVENIO_SEARCH_ELASTIC_HOSTS
             valueFrom:
