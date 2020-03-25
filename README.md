@@ -26,6 +26,15 @@ Create all the needed secrets and install Invenio.
 
 #### 1. Secrets
 
+Invenio secret key:
+
+```console
+$ SECRET_KEY=$(openssl rand -hex 8)
+$ oc create secret generic \
+  --from-literal="INVENIO_SECRET_KEY=$SECRET_KEY" \
+  invenio-secrets
+```
+
 Database secrets:
 
 ```console
