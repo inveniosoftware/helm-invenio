@@ -1,5 +1,9 @@
 host: yourhost.localhost
 
+ingress:
+  enabled: false
+  class: kubernetes.ingress.name
+
 haproxy:
   inside_cluster: true
   maxconn: 100
