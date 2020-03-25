@@ -28,7 +28,7 @@ spec:
       - path: /
         backend:
           serviceName: web
-          servicePort: 5000
+          servicePort: 80
 ---
 {{ end }}
 apiVersion: v1
