@@ -1,8 +1,8 @@
 host: yourhost.localhost
 
 ingress:
-  enabled: false
-  class: kubernetes.ingress.name
+  enabled: true
+  class: nginx-internal
 
 haproxy:
   inside_cluster: true
@@ -17,6 +17,7 @@ nginx:
     location: /opt/invenio/var/instance/static
 
 web:
+  imagePullSecret: your/image-pull-secret
   image: your/invenio-image
   replicas: 6
   uwsgi:
@@ -30,6 +31,17 @@ web:
     min_web_replicas: 2
   assets:
     location: /opt/invenio/var/instance/static
+
+worker:
+  enabled: true
+  imagePullSecret: your/image-pull-secret
+  image: your/invenio-image
+  # Invenio Celery worker application
+  app: invenio_app.celery
+  # Number of concurrent Celery workers per pod
+  concurrency: 2
+  log_level: INFO
+  replicas: 2
 
 redis:
   inside_cluster: true

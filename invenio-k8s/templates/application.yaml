@@ -62,11 +62,12 @@ spec:
       containers:
       - name: web
         image: {{ .Values.web.image }}
+        imagePullPolicy: IfNotPresent
         command: [
           "/bin/bash",
           "-c",
           "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
-          uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
+          uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini --http 0.0.0.0:5050",
         ]
         envFrom:
           - configMapRef:
@@ -112,17 +113,6 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
-          failureThreshold: 1
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
@@ -151,7 +141,7 @@ spec:
           - name: var-log-nginx
             mountPath: /var/log/nginx
           - name: nginx-invenio-assets
-            mountPath: "{{ .Values.nginx.assets.location }}"
+            mountPath: {{ .Values.nginx.assets.location | quote }}
             readOnly: true
         readinessProbe:
           httpGet:
@@ -203,6 +193,8 @@ spec:
             name: uwsgi-config
         - name: nginx-invenio-assets
           emptyDir: {}
+      imagePullSecrets:
+        - name: {{ .Values.web.imagePullSecret }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -221,6 +213,7 @@ spec:
       containers:
       - name: worker
         image: {{ .Values.worker.image }}
+        imagePullPolicy: IfNotPresent
         command: [
           "/bin/bash",
           "-c",
@@ -272,6 +265,8 @@ spec:
             memory: 200Mi
           limits:
             memory: 1Gi
+      imagePullSecrets:
+        - name: ulbreg
 {{- if .Values.web.horizontal_pod_autoscaler -}}
 ---
 apiVersion: autoscaling/v1
