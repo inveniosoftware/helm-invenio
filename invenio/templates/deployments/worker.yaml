@@ -110,3 +110,120 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.worker.imagePullSecret }}
       {{- end }}
+
+---
+{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+{{- end }}
+metadata:
+  name: worker-beat
+spec:
+  replicas: 1
+  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
+  selector:
+    matchLabels:
+      app: worker-beat
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: worker-beat
+    spec:
+      containers:
+      - name: worker-beat
+        image: {{ .Values.worker.image }}
+        command: [
+          "/bin/bash",
+          "-c",
+          "celery -A {{ .Values.worker.app }} worker --beat -l {{ .Values.worker.log_level }}  -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
+        ]
+        volumeMounts:
+        - name: var-run-celery
+          mountPath: {{ .Values.worker.run_mount_path }}
+        {{- if .Values.persistence.enabled }}
+        - mountPath: /opt/invenio/var/instance/data
+          name: shared-volume
+        {{- end }}
+        envFrom:
+        - configMapRef:
+            name: invenio-config
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: INVENIO_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret_name }}
+              key: SQLALCHEMY_DB_URI
+        - name: INVENIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: invenio-secrets
+              key: INVENIO_SECRET_KEY
+        {{ if not .Values.elasticsearch.inside_cluster }}
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.elasticsearch.secret_name }}
+              key: INVENIO_SEARCH_ELASTIC_HOSTS
+        {{ end }}
+        {{- if .Values.invenio.logging.sentry.enabled }}
+        - name: INVENIO_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.logging.sentry.secret_name }}
+              key: SENTRY_DSN
+        {{- end }}
+        {{- if .Values.invenio.datacite.enabled }}
+        - name: DATACITE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_USERNAME
+        - name: DATACITE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_PASSWORD
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+          initialDelaySeconds: 20
+          timeoutSeconds: 30
+        resources:
+          requests:
+            cpu: 500m
+            memory: 500Mi
+          limits:
+            cpu: '1'
+            memory: 1Gi
+      volumes:
+      - name: var-run-celery
+        emptyDir: {}
+      {{- if .Values.persistence.enabled }}
+      - name: shared-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.name }}
+      {{- end }}
+      {{- if .Values.worker.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.worker.imagePullSecret }}
+      {{- end }}
