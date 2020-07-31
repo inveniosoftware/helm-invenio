@@ -113,6 +113,9 @@ Parameter | Description | Default
 `worker.concurrency` | Number of concurrent celery workers per pod | `2`
 `worker.log_level` | Logging level in the invenio worker | `INFO`
 `worker.replicas` | Number of replicas for the invenio worker pods | `2`
+`worker.run_mount_path` | `run` folder path | `/var/run`
+`worker.celery_pidfile` | Celery beat PID file | `/var/run/celerybeat.pid`
+`worker.celery_schedule` | Celery schedule folder | `/var/run/celery-schedule`
 
 ### Redis
 Parameter | Description | Default
