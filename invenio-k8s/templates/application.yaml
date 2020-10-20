@@ -217,7 +217,7 @@ spec:
         command: [
           "/bin/bash",
           "-c",
-          "celery -A worker {{ .Values.worker.app }} -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+          "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
         ]
         envFrom:
           - configMapRef:
@@ -257,7 +257,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - "celery inspect ping -d celery@$(hostname) -A {{ .Values.worker.app }}"
+              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
           initialDelaySeconds: 15
           timeoutSeconds: 10
         resources:
