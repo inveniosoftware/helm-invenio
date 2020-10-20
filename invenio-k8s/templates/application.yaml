@@ -217,7 +217,7 @@ spec:
         command: [
           "/bin/bash",
           "-c",
-          "celery worker -A {{ .Values.worker.app }} -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+          "celery -A worker {{ .Values.worker.app }} -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
         ]
         envFrom:
           - configMapRef:
