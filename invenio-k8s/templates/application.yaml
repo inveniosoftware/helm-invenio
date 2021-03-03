@@ -262,9 +262,9 @@ spec:
           timeoutSeconds: 10
         resources:
           requests:
-            memory: 200Mi
+            memory: 2Gi
           limits:
-            memory: 1Gi
+            memory: 2Gi
       imagePullSecrets:
         - name: ulbreg
 {{- if .Values.web.horizontal_pod_autoscaler -}}
