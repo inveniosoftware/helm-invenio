@@ -252,14 +252,6 @@ spec:
                 name: elasticsearch-secrets
                 key: INVENIO_SEARCH_ELASTIC_HOSTS
           {{ end }}
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
-          initialDelaySeconds: 15
-          timeoutSeconds: 10
         resources:
           requests:
             memory: 2Gi
