@@ -1,0 +1,62 @@
+host: yourhost.localhost
+
+ingress:
+  enabled: true
+  class: nginx-internal
+
+haproxy:
+  inside_cluster: true
+  maxconn: 100
+
+volume:
+  assets:
+    size: 10Gi
+nginx:
+  max_conns: 100
+  assets:
+    location: /opt/invenio/var/instance/static
+
+web:
+  imagePullSecret: your/image-pull-secret
+  image: your/invenio-image
+  replicas: 6
+  uwsgi:
+    processes: 6
+    threads: 4
+  autoscaler:
+    enabled: false
+    # Scale when CPU usage gets to
+    scaler_cpu_utilization: 65
+    max_web_replicas: 10
+    min_web_replicas: 2
+  assets:
+    location: /opt/invenio/var/instance/static
+
+worker:
+  enabled: true
+  imagePullSecret: your/image-pull-secret
+  image: your/invenio-image
+  # Invenio Celery worker application
+  app: invenio_app.celery
+  # Number of concurrent Celery workers per pod
+  concurrency: 2
+  log_level: INFO
+  replicas: 2
+
+redis:
+  inside_cluster: true
+
+rabbitmq:
+  inside_cluster: true
+
+postgresql:
+  inside_cluster: true
+
+elasticsearch:
+  inside_cluster: true
+
+logstash:
+  enabled: false
+  # Used for the generated local filebeat image.
+  # It is recommended to use the one generated via the ImageStream
+  environment: "qa"

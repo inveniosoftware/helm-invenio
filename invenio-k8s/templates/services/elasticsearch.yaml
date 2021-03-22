@@ -1,0 +1,68 @@
+{{- if .Values.elasticsearch.inside_cluster -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es
+spec:
+  selector:
+    app: es
+  ports:
+  - port: 9200
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es
+  template:
+    metadata:
+      labels:
+        app: es
+    spec:
+      containers:
+      - name: es
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.2.0
+        ports:
+        - containerPort: 9200
+        resources:
+          requests:
+            cpu: 1
+            memory: 512Mi
+          limits:
+            cpu: 2
+            memory: 1Gi
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        - name: "discovery.type"
+          value: "single-node"
+        volumeMounts:
+          - name: data
+            mountPath: /usr/share/elasticsearch/data/elasticsearch
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9200
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: 9200
+            scheme: HTTP
+          initialDelaySeconds: 360
+          timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end -}}

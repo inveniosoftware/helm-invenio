@@ -1,0 +1,53 @@
+{{- if .Values.redis.inside_cluster -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cache
+  labels:
+    run: cache
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    app: cache
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      containers:
+      - name: cache
+        image: redis
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        ports:
+        - containerPort: 6379
+          name: tcp
+        volumeMounts:
+          - name: data
+            mountPath: /data
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "redis-cli -h $(hostname) ping"
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end -}}

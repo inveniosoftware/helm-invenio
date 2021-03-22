@@ -1,0 +1,56 @@
+{{- if .Values.rabbitmq.inside_cluster -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mq
+  labels:
+    app: mq
+spec:
+  ports:
+  - name: tcp
+    port: 4369
+    protocol: TCP
+  - name: management
+    port: 5672
+    protocol: TCP
+  selector:
+    app: mq
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mq
+  template:
+    metadata:
+      labels:
+        app: mq
+    spec:
+      containers:
+      - name: mq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 4369
+        - containerPort: 5672
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mq-secrets
+              key: RABBITMQ_DEFAULT_PASS
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "rabbitmqctl status"
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+{{- end -}}

@@ -1,0 +1,60 @@
+{{- if .Values.postgresql.inside_cluster -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: db
+  ports:
+  - port: 5432
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: centos/postgresql-95-centos7
+        ports:
+        - containerPort: 5432
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: POSTGRESQL_USER
+          value: invenio
+        - name: POSTGRESQL_DATABASE
+          value: invenio
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: POSTGRESQL_PASSWORD
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/pgsql/data
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -i
+            - -c
+            - "pg_isready"
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end -}}
