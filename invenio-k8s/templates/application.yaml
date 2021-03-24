@@ -4,23 +4,11 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: invenio-ingress
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      send_timeout 240s;
-      client_body_timeout 240s;
 spec:
   tls:
   - hosts:
     - "{{ .Values.host }}"
-    secretName: "{{ .Values.invenio.secret_key }}"
+    secretName: {{ .Values.ingress.sslSecretName }}
   rules:
   - host: "{{ .Values.host }}"
     http:
@@ -263,14 +251,6 @@ spec:
                 name: elasticsearch-secrets
                 key: INVENIO_SEARCH_ELASTIC_HOSTS
           {{ end }}
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "celery inspect ping -d celery@$(hostname) -A {{ .Values.worker.app }}"
-          initialDelaySeconds: 15
-          timeoutSeconds: 10
         resources:
           requests:
             memory: 2Gi
@@ -278,7 +258,7 @@ spec:
             memory: 2Gi
       imagePullSecrets:
         - name: {{ .Values.worker.imagePullSecret }}
-{{- if .Values.web.horizontal_pod_autoscaler -}}
+{{- if .Values.web.autoscaler.enabled -}}
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -288,11 +268,11 @@ metadata:
     template: invenio-application
   name: web
 spec:
-  maxReplicas: {{ .Values.web.horizontal_pod_autoscaler.max_web_replicas }}
-  minReplicas: {{ .Values.web.horizontal_pod_autoscaler.min_web_replicas }}
+  maxReplicas: {{ .Values.web.autoscaler.max_web_replicas }}
+  minReplicas: {{ .Values.web.autoscaler.min_web_replicas }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: web
-  targetCPUUtilizationPercentage: {{ .Values.web.horizontal_pod_autoscaler.scaler_cpu_utilization }}
+  targetCPUUtilizationPercentage: {{ .Values.web.autoscaler.scaler_cpu_utilization }}
 {{- end }}
