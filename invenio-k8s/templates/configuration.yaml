@@ -130,7 +130,7 @@ data:
   INVENIO_COLLECT_STORAGE: flask_collect.storage.file
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://cache:6379/3'
   {{ if .Values.elasticsearch.inside_cluster }}
-  INVENIO_SEARCH_ELASTIC_HOSTS: "[{'host': 'es'}]"
+  INVENIO_SEARCH_ELASTIC_HOSTS: "{{ .Values.elasticsearch.invenio_hosts }}"
   {{ end }}
 {{ if .Values.logstash.enabled }}
 ---

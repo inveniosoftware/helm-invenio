@@ -45,7 +45,6 @@ spec:
           items:
             - key: logstash.conf
               path: logstash.conf
-              resources:
 ---
 kind: Service
 apiVersion: v1

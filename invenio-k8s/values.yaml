@@ -3,6 +3,10 @@ host: yourhost.localhost
 ingress:
   enabled: true
   class: nginx-internal
+  sslSecretName: your-ssl-secret
+
+invenio:
+  secret_key: "secret-key"
 
 haproxy:
   inside_cluster: true
@@ -17,8 +21,8 @@ nginx:
     location: /opt/invenio/var/instance/static
 
 web:
-  imagePullSecret: your/image-pull-secret
   image: your/invenio-image
+  imagePullSecret: your/image-pull-secret
   replicas: 6
   uwsgi:
     processes: 6
@@ -34,8 +38,8 @@ web:
 
 worker:
   enabled: true
-  imagePullSecret: your/image-pull-secret
   image: your/invenio-image
+  imagePullSecret: your/image-pull-secret
   # Invenio Celery worker application
   app: invenio_app.celery
   # Number of concurrent Celery workers per pod
@@ -48,15 +52,27 @@ redis:
 
 rabbitmq:
   inside_cluster: true
+  default_password: "mq_password"
+  celery_broker_url: "amqp://guest:mq_password@mq:5672/"
 
 postgresql:
   inside_cluster: true
+  user: "invenio"
+  password: "db_password"
+  host: "db"
+  port: "5432"
+  database: "invenio"
+  sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
 
 elasticsearch:
   inside_cluster: true
+  user: "username"
+  password: "password"
+  invenio_hosts: "[{'host': 'es'}]"
 
 logstash:
   enabled: false
   # Used for the generated local filebeat image.
   # It is recommended to use the one generated via the ImageStream
+  filebeat_image: filebeat_image_to_be_used 
   environment: "qa"
