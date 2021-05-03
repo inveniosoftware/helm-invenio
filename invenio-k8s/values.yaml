@@ -10,7 +10,7 @@ invenio:
   demo_data: false
 
 haproxy:
-  inside_cluster: true
+  inside_cluster: false
   maxconn: 100
 
 volume:
