@@ -8,6 +8,7 @@ ingress:
 invenio:
   secret_key: "secret-key"
   demo_data: false
+  default_users:
 
 haproxy:
   inside_cluster: false

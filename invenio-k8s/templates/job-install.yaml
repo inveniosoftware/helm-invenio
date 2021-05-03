@@ -9,25 +9,25 @@ metadata:
     "helm.sh/hook": post-install
     "helm.sh/hook-weight": "1"
 {{/*    "helm.sh/hook-delete-policy": hook-succeeded*/}}
+{{- $cmd := "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin" -}}
+{{- if .Values.invenio.demo_data -}}
+  {{- $cmd = cat $cmd "&& invenio rdm-records demo" -}}
+{{- end -}}
+{{- range $usr, $pass := .Values.invenio.default_users -}}
+  {{- $cmd = printf "%s && invenio users create --active --password=%s %s" $cmd $pass $usr -}}
+{{- end -}}
+
 spec:
   template:
     spec:
       containers:
       - name: install-init
         image: {{ .Values.web.image }}
-        {{ if .Values.invenio.demo_data }}
         command: [
           "/bin/bash",
           "-c",
-          "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin && invenio rdm-records demo",
+          {{ $cmd | quote }}
         ]
-        {{ else}}
-        command: [
-          "/bin/bash",
-          "-c",
-          "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin",
-        ]
-        {{ end }}
         envFrom:
           - configMapRef:
               name: invenio-config
