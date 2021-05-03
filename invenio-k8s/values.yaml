@@ -7,6 +7,7 @@ ingress:
 
 invenio:
   secret_key: "secret-key"
+  demo_data: false
 
 haproxy:
   inside_cluster: true

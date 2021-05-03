@@ -15,11 +15,19 @@ spec:
       containers:
       - name: install-init
         image: {{ .Values.web.image }}
+        {{ if .Values.invenio.demo_data }}
+        command: [
+          "/bin/bash",
+          "-c",
+          "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin && invenio rdm-records demo",
+        ]
+        {{ else}}
         command: [
           "/bin/bash",
           "-c",
           "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin",
         ]
+        {{ end }}
         envFrom:
           - configMapRef:
               name: invenio-config
