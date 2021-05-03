@@ -13,9 +13,6 @@ haproxy:
   inside_cluster: false
   maxconn: 100
 
-volume:
-  assets:
-    size: 10Gi
 nginx:
   max_conns: 100
   assets:
