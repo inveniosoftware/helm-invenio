@@ -7,6 +7,7 @@ ingress:
 
 invenio:
   secret_key: "secret-key"
+  init: false
   demo_data: false
   default_users:
 
@@ -52,7 +53,7 @@ redis:
 rabbitmq:
   inside_cluster: true
   default_password: "mq_password"
-  celery_broker_url: "amqp://guest:mq_password@mq:5672/"
+  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
 
 postgresql:
   inside_cluster: true
@@ -65,9 +66,9 @@ postgresql:
 
 elasticsearch:
   inside_cluster: true
-  user: "username"
-  password: "password"
   invenio_hosts: "[{'host': 'es'}]"
+  user: "username"  # unimplemented
+  password: "password"  # unimplemented
 
 logstash:
   enabled: false
