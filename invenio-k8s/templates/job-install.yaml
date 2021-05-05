@@ -1,0 +1,73 @@
+{{- if .Values.invenio.init -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: install-init
+  labels:
+    app: install-init
+    module: install
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "1"
+{{/*    "helm.sh/hook-delete-policy": hook-succeeded*/}}
+{{- $cmd := "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin" -}}
+{{- range $usr, $pass := .Values.invenio.default_users -}}
+  {{- $cmd = printf "%s && invenio users create --active --password=%s %s" $cmd $pass $usr -}}
+{{- end -}}
+{{- if and .Values.invenio.demo_data .Values.invenio.default_users -}}
+  {{- $cmd = cat $cmd "&& invenio rdm-records demo" -}}
+{{- end -}}
+
+spec:
+  template:
+    spec:
+      containers:
+      - name: install-init
+        image: {{ .Values.web.image }}
+        command: [
+          "/bin/bash",
+          "-c",
+          {{ $cmd | quote }}
+        ]
+        envFrom:
+          - configMapRef:
+              name: invenio-config
+        env:
+          - name: TZ
+            value: "Europe/Zurich"
+          - name: INVENIO_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mq-secrets
+                key: CELERY_BROKER_URL
+          - name: INVENIO_SQLALCHEMY_DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: SQLALCHEMY_DB_URI
+          - name: INVENIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_SECRET_KEY
+          {{ if not .Values.elasticsearch.inside_cluster }}
+          - name: INVENIO_SEARCH_ELASTIC_HOSTS
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-secrets
+                key: INVENIO_SEARCH_ELASTIC_HOSTS
+          {{ end }}
+        resources:
+          requests:
+            memory: 200Mi
+          limits:
+            memory: 1Gi
+      restartPolicy: OnFailure
+      imagePullSecrets:
+      - name: github
+{{- end -}}

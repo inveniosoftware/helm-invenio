@@ -1,11 +1,10 @@
 ---
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: invenio-ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
@@ -19,16 +18,17 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Values.host }}
-    secretName: tls-secret
+    - "{{ .Values.host }}"
+    secretName: {{ .Values.ingress.sslSecretName }}
   rules:
-  - host: {{ .Values.host }}
+  - host: "{{ .Values.host }}"
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: web
-          servicePort: 80
+        - path: ""
+          backend:
+            serviceName: {{ if .Values.haproxy.inside_cluster }}haproxy{{ else }}web{{ end }}
+            servicePort: http
+
 ---
 {{ end }}
 apiVersion: v1
@@ -50,10 +50,10 @@ kind: Deployment
 metadata:
   name: web
 spec:
-  replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
       app: web
+  replicas: {{ .Values.web.replicas }}
   template:
     metadata:
       labels:
@@ -67,7 +67,7 @@ spec:
           "/bin/bash",
           "-c",
           "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
-          uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini --http 0.0.0.0:5050",
+          uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
         ]
         envFrom:
           - configMapRef:
@@ -113,6 +113,17 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+          failureThreshold: 1
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
@@ -151,7 +162,7 @@ spec:
           timeoutSeconds: 1
       {{ if .Values.logstash.enabled }}
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat-oss:7.6.1
+        image: {{ .Values.logstash.filebeat_image }}
         args: [
           "-c", "/etc/filebeat.yml",
           "-e",
@@ -213,7 +224,6 @@ spec:
       containers:
       - name: worker
         image: {{ .Values.worker.image }}
-        imagePullPolicy: IfNotPresent
         command: [
           "/bin/bash",
           "-c",
@@ -258,8 +268,8 @@ spec:
           limits:
             memory: 2Gi
       imagePullSecrets:
-        - name: ulbreg
-{{- if .Values.web.horizontal_pod_autoscaler -}}
+        - name: {{ .Values.worker.imagePullSecret }}
+{{- if .Values.web.autoscaler.enabled -}}
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -269,11 +279,11 @@ metadata:
     template: invenio-application
   name: web
 spec:
-  maxReplicas: {{ .Values.web.horizontal_pod_autoscaler.max_web_replicas }}
-  minReplicas: {{ .Values.web.horizontal_pod_autoscaler.min_web_replicas }}
+  maxReplicas: {{ .Values.web.autoscaler.max_web_replicas }}
+  minReplicas: {{ .Values.web.autoscaler.min_web_replicas }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: web
-  targetCPUUtilizationPercentage: {{ .Values.web.horizontal_pod_autoscaler.scaler_cpu_utilization }}
+  targetCPUUtilizationPercentage: {{ .Values.web.autoscaler.scaler_cpu_utilization }}
 {{- end }}

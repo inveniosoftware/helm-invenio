@@ -124,6 +124,7 @@ data:
 
   INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://cache:6379/1'
   INVENIO_APP_ALLOWED_HOSTS: '[''{{ .Values.host }}'']'
+  INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
   INVENIO_CACHE_REDIS_HOST: 'cache'
   INVENIO_CACHE_REDIS_URL: 'redis://cache:6379/0'
   INVENIO_CELERY_RESULT_BACKEND: 'redis://cache:6379/2'

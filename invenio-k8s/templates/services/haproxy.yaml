@@ -20,10 +20,10 @@ kind: Deployment
 metadata:
   name: haproxy
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: haproxy
+  replicas: 1
   template:
     metadata:
       labels:
