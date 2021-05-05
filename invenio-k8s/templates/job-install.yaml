@@ -11,11 +11,11 @@ metadata:
     "helm.sh/hook-weight": "1"
 {{/*    "helm.sh/hook-delete-policy": hook-succeeded*/}}
 {{- $cmd := "invenio db init && invenio db create && invenio index init && invenio index queue init purge && invenio files location --default 'default-location'  $(invenio shell --no-term-title -c \"print(app.instance_path)\")'/data' && invenio roles create admin && invenio access allow superuser-access role admin" -}}
-{{- if .Values.invenio.demo_data -}}
-  {{- $cmd = cat $cmd "&& invenio rdm-records demo" -}}
-{{- end -}}
 {{- range $usr, $pass := .Values.invenio.default_users -}}
   {{- $cmd = printf "%s && invenio users create --active --password=%s %s" $cmd $pass $usr -}}
+{{- end -}}
+{{- if and .Values.invenio.demo_data .Values.invenio.default_users -}}
+  {{- $cmd = cat $cmd "&& invenio rdm-records demo" -}}
 {{- end -}}
 
 spec:

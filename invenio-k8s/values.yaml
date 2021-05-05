@@ -8,8 +8,9 @@ ingress:
 invenio:
   secret_key: "secret-key"
   init: false
-  demo_data: false
-  default_users:
+  # The variables below requires init to be true
+  default_users:  # key:value where key is the email and value is the password
+  demo_data: false  # if true, also requires default_users to be set
 
 haproxy:
   inside_cluster: false

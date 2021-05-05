@@ -138,8 +138,8 @@ Parameter | Description | Default
 `host` | Your hostname | `yourhost.localhost`
 `invenio.secret_key` | The invenio secret key; **set it**! | `secret-key`
 `invenio.init` | Whether to initiate database, index and roles | `false`
-`invenio.demo_data` | Whether to create demo data on install (only works if init=true) | `false`
 `invenio.default_users` | If set, create users identified by email:password on install (only works if init=true) | `nil`
+`invenio.demo_data` | Whether to create demo data on install (only works if init=true and if `default_users` isn't empty) | `false`
 `ingress.enabled` | Whether to enable ingress | `true`
 `ingress.class` | Class of the ingress if enabled | `nginx-internal`
 `ingress.sslSecretName` | The ingress ssl secret for HTTPS | `your-ssl-secret`
