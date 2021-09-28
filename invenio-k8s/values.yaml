@@ -60,7 +60,7 @@ postgresql:
   inside_cluster: true
   user: "invenio"
   password: "db_password"
-  existing_secret: ""
+  existing_secret: "db-secrets"
   host: "db"
   port: "5432"
   database: "invenio"
