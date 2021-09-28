@@ -5,7 +5,7 @@ Get the password secret.
 {{- if .Values.postgresql.existing_secret }}
     {{- printf "%s" (tpl .Values.postgresql.existing_secret $) -}}
 {{- else -}}
-    {{- `"db-secrets"` -}}
+    {{- `db-secrets` -}}
 {{- end -}}
 {{- end -}}
 
