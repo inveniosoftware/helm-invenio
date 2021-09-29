@@ -1,0 +1,80 @@
+---
+{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+{{- end }}
+metadata:
+  name: worker
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
+  selector:
+    matchLabels:
+      app: worker
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: {{ .Values.worker.image }}
+        command: [
+            "/bin/bash",
+            "-c",
+            "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+        ]
+        envFrom:
+          - configMapRef:
+              name: invenio-config
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: INVENIO_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret_name }}
+              key: SQLALCHEMY_DB_URI
+        - name: INVENIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: invenio-secrets
+              key: INVENIO_SECRET_KEY
+        {{- if not .Values.elasticsearch.enabled }}
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.elasticsearch.secret_name }}
+              key: INVENIO_SEARCH_ELASTIC_HOSTS
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "celery inspect ping -d celery@$(hostname) -A {{ .Values.worker.app }}"
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 200Mi
+          limits:
+            memory: 1Gi
+      {{- if .Values.worker.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.worker.imagePullSecret }}
+      {{- end }}

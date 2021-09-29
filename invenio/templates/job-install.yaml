@@ -1,4 +1,4 @@
-{{- if .Values.invenio.init -}}
+{{- if .Values.invenio.init }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -30,44 +30,46 @@ spec:
           {{ $cmd | quote }}
         ]
         envFrom:
-          - configMapRef:
-              name: invenio-config
+        - configMapRef:
+            name: invenio-config
         env:
-          - name: TZ
-            value: "Europe/Zurich"
-          - name: INVENIO_BROKER_URL
-            valueFrom:
-              secretKeyRef:
-                name: mq-secrets
-                key: CELERY_BROKER_URL
-          - name: INVENIO_CELERY_BROKER_URL
-            valueFrom:
-              secretKeyRef:
-                name: mq-secrets
-                key: CELERY_BROKER_URL
-          - name: INVENIO_SQLALCHEMY_DATABASE_URI
-            valueFrom:
-              secretKeyRef:
-                name: db-secrets
-                key: SQLALCHEMY_DB_URI
-          - name: INVENIO_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                name: invenio-secrets
-                key: INVENIO_SECRET_KEY
-          {{ if not .Values.elasticsearch.inside_cluster }}
-          - name: INVENIO_SEARCH_ELASTIC_HOSTS
-            valueFrom:
-              secretKeyRef:
-                name: elasticsearch-secrets
-                key: INVENIO_SEARCH_ELASTIC_HOSTS
-          {{ end }}
+        - name: TZ
+          value: "Europe/Zurich"
+        - name: INVENIO_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitmq.secret_name }}
+              key: CELERY_BROKER_URL
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret_name }}
+              key: SQLALCHEMY_DB_URI
+        - name: INVENIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: invenio-secrets
+              key: INVENIO_SECRET_KEY
+        {{- if not .Values.elasticsearch.enabled }}
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.elasticsearch.secret_name }}
+              key: INVENIO_SEARCH_ELASTIC_HOSTS
+        {{- end }}
         resources:
           requests:
             memory: 200Mi
           limits:
             memory: 1Gi
       restartPolicy: OnFailure
+      {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:
-      - name: github
-{{- end -}}
+      - name: {{ .Values.web.imagePullSecret }}
+      {{- end }}
+{{- end }}

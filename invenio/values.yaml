@@ -1,26 +1,55 @@
 host: yourhost.localhost
 
-haproxy:
-  inside_cluster: true
-  maxconn: 100
-
 volume:
   assets:
     size: 10Gi
+    
+ingress:
+  # these values have no effect on openshift
+  class: nginx-internal
+  sslSecretName: your-ssl-secret
+
+invenio:
+  secret_key: "secret-key"
+  existing_secret: false
+  init: false
+  # the variables below requires init=true
+  default_users:  # email:password
+  demo_data: false  # requires default_users
+  logging:
+    console:
+      level: "WARNING"
+    sentry:
+      level: "WARNING"
+      celery: true
+      environment: "qa"
+  search:
+    index_prefix: ""
+  datacite:
+    enable: false
+    prefix: ""
+
+haproxy:
+  enabled: true
+  image: haproxy:2.1.3'
+  maxconn: 100
+
 nginx:
   max_conns: 100
+  client_max_body_size: 50G
   assets:
     location: /opt/invenio/var/instance/static
 
 web:
   image: your/invenio-image
+  imagePullSecret: ""
   replicas: 6
   uwsgi:
     processes: 6
     threads: 4
   autoscaler:
     enabled: false
-    # Scale when CPU usage gets to
+    # scale when CPU usage gets to
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
@@ -30,28 +59,43 @@ web:
 worker:
   enabled: true
   image: your/invenio-image
-  # Invenio Celery worker application
+  imagePullSecret: ""
   app: invenio_app.celery
-  # Number of concurrent Celery workers per pod
   concurrency: 2
   log_level: INFO
   replicas: 2
 
 redis:
-  inside_cluster: true
+  enabled: true
+  host: ""
 
 rabbitmq:
-  inside_cluster: true
+  enabled: true
+  existing_secret: false
+  secret_name: "mq-secrets"
+  default_password: "mq_password"
+  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
 
 postgresql:
-  inside_cluster: false
+  enabled: false
+  existing_secret: false
+  secret_name: "db-secrets"
+  user: "invenio"
+  password: "db_password"
+  host: "db"
+  port: "5432"
+  database: "invenio"
+  sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
 
 elasticsearch:
-  inside_cluster: false
+  enabled: false
+  existing_secret: false
+  secret_name: "es-secrets"
+  invenio_hosts: "[{'host': 'es'}]"
+  user: "username"  # unimplemented
+  password: "password"  # unimplemented
 
 logstash:
   enabled: false
-  # Used for the generated local filebeat image.
-  # It is recommended to use the one generated via the ImageStream
   filebeat_image: filebeat_image_to_be_used 
   environment: "qa"

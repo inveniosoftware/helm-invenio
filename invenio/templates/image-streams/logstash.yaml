@@ -1,14 +1,13 @@
-{{ if .Values.logstash.enabled }}
+{{ if and .Values.logstash.enabled (.Capabilities.APIVersions.Has "build.openshift.io/v1/BuildConfig") }}
 ---
-kind: BuildConfig
 apiVersion: build.openshift.io/v1
+kind: BuildConfig
 metadata:
   name: "filebeat" 
 spec:
   runPolicy: "Serial" 
   triggers: 
-    -
-      type: "ImageChange"
+  - type: "ImageChange"
   source: 
     dockerfile: |
       FROM docker.elastic.co/beats/filebeat-oss:7.6.1
@@ -16,7 +15,6 @@ spec:
       RUN chgrp -R 0 /usr/share/filebeat && \             
       chmod -R o=rx /usr/share/filebeat
       RUN chown -R root:root /usr/share/filebeat
-                  
   strategy: 
     dockerStrategy:
       type: Docker
@@ -25,8 +23,8 @@ spec:
       kind: "ImageStreamTag"
       name: "filebeat:latest"
 ---
-kind: "ImageStream"
 apiVersion: "image.openshift.io/v1"
+kind: "ImageStream"
 metadata:
   name: "filebeat"
 spec:

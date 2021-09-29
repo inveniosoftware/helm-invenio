@@ -1,0 +1,46 @@
+{{- if .Values.rabbitmq.enabled -}}
+---
+{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+{{- end }}
+metadata:
+  name: mq
+spec:
+  replicas: 1
+  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
+  selector:
+    matchLabels:
+      app: mq
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: mq
+    spec:
+      containers:
+        - name: mq
+          image: rabbitmq:3-management
+          ports:
+            - containerPort: 4369
+            - containerPort: 5672
+          env:
+            - name: TZ
+              value: "Europe/Zurich"
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{  .Values.rabbitmq.secret_name }}
+                  key: RABBITMQ_DEFAULT_PASS
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "rabbitmqctl status"
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+{{- end -}}
