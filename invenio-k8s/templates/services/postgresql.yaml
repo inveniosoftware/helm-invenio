@@ -34,13 +34,19 @@ spec:
         - name: TZ
           value: "Europe/Zurich"
         - name: POSTGRESQL_USER
-          value: invenio
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "postgresql.secret_name" . }}
+              key: POSTGRESQL_USER
         - name: POSTGRESQL_DATABASE
-          value: invenio
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "postgresql.secret_name" . }}
+              key: POSTGRESQL_DATABASE
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-secrets
+              name: {{  include "postgresql.secret_name" . }}
               key: POSTGRESQL_PASSWORD
         volumeMounts:
           - name: data

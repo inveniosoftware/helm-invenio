@@ -73,6 +73,7 @@ data:
             uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
             uwsgi_param X-Forwarded-Proto $http_x_forwarded_proto;
             uwsgi_ignore_headers Set-Cookie;
+            client_max_body_size {{ .Values.nginx.client_max_body_size }};
         }
         location /static {
           alias "{{ .Values.nginx.assets.location }}";
@@ -121,16 +122,15 @@ kind: ConfigMap
 metadata:
   name: invenio-config
 data:
-
-  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://cache:6379/1'
+  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/1'
   INVENIO_APP_ALLOWED_HOSTS: '[''{{ .Values.host }}'']'
   INVENIO_SITE_UI_URL: '{{ .Values.host }}'
   INVENIO_SITE_API_URL: '{{ .Values.host }}/api'
-  INVENIO_CACHE_REDIS_HOST: 'cache'
-  INVENIO_CACHE_REDIS_URL: 'redis://cache:6379/0'
-  INVENIO_CELERY_RESULT_BACKEND: 'redis://cache:6379/2'
+  INVENIO_CACHE_REDIS_HOST: '{{ include "redis.host_name" . }}'
+  INVENIO_CACHE_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/0'
+  INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "redis.host_name" . }}:6379/2'
   INVENIO_COLLECT_STORAGE: flask_collect.storage.file
-  INVENIO_RATELIMIT_STORAGE_URL: 'redis://cache:6379/3'
+  INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:6379/3'
   {{ if .Values.elasticsearch.inside_cluster }}
   INVENIO_SEARCH_ELASTIC_HOSTS: "{{ .Values.elasticsearch.invenio_hosts }}"
   {{ end }}
