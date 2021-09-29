@@ -18,6 +18,7 @@ haproxy:
 
 nginx:
   max_conns: 100
+  client_max_body_size: 50G
   assets:
     location: /opt/invenio/var/instance/static
 
@@ -50,17 +51,20 @@ worker:
 
 redis:
   inside_cluster: true
+  # The following must be set if inside_cluster is 'false'
+  host: ""
 
 rabbitmq:
   inside_cluster: true
+  existing_secret: ""
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
 
 postgresql:
   inside_cluster: true
+  existing_secret: ""
   user: "invenio"
   password: "db_password"
-  existing_secret: ""
   host: "db"
   port: "5432"
   database: "invenio"
@@ -68,6 +72,7 @@ postgresql:
 
 elasticsearch:
   inside_cluster: true
+  existing_secret: ""
   invenio_hosts: "[{'host': 'es'}]"
   user: "username"  # unimplemented
   password: "password"  # unimplemented

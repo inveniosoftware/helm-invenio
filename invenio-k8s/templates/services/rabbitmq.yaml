@@ -43,7 +43,7 @@ spec:
         - name: RABBITMQ_DEFAULT_PASS
           valueFrom:
             secretKeyRef:
-              name: mq-secrets
+              name: {{  include "rabbitmq.secret_name" . }}
               key: RABBITMQ_DEFAULT_PASS
         readinessProbe:
           exec:

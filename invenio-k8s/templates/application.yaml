@@ -1,10 +1,13 @@
 ---
 {{- if .Values.ingress.enabled -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: invenio-ingress
   annotations:
+    {{- if .Values.ingress.class }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+    {{- end }}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
@@ -78,30 +81,30 @@ spec:
           - name: INVENIO_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: {{ include "rabbitmq.secret_name" . }}
                 key: CELERY_BROKER_URL
           - name: INVENIO_CELERY_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: {{ include "rabbitmq.secret_name" . }}
                 key: CELERY_BROKER_URL
           - name: INVENIO_SQLALCHEMY_DATABASE_URI
             valueFrom:
               secretKeyRef:
-                name: db-secrets
+                name: {{ include "postgresql.secret_name" . }}
                 key: SQLALCHEMY_DB_URI
           - name: INVENIO_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: invenio-secrets
                 key: INVENIO_SECRET_KEY
-          {{ if not .Values.elasticsearch.inside_cluster }}
+          {{- if not .Values.elasticsearch.inside_cluster }}
           - name: INVENIO_SEARCH_ELASTIC_HOSTS
             valueFrom:
               secretKeyRef:
-                name: elasticsearch-secrets
+                name: {{ include "elasticsearch.secret_name" . }}
                 key: INVENIO_SEARCH_ELASTIC_HOSTS
-          {{ end }}
+          {{- end }}
         readinessProbe:
           exec:
             command:
@@ -238,17 +241,17 @@ spec:
           - name: INVENIO_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: {{ include "rabbitmq.secret_name" . }}
                 key: CELERY_BROKER_URL
           - name: INVENIO_CELERY_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: {{ include "rabbitmq.secret_name" . }}
                 key: CELERY_BROKER_URL
           - name: INVENIO_SQLALCHEMY_DATABASE_URI
             valueFrom:
               secretKeyRef:
-                name: db-secrets
+                name: {{ include "postgresql.secret_name" . }}
                 key: SQLALCHEMY_DB_URI
           - name: INVENIO_SECRET_KEY
             valueFrom:
@@ -259,7 +262,7 @@ spec:
           - name: INVENIO_SEARCH_ELASTIC_HOSTS
             valueFrom:
               secretKeyRef:
-                name: elasticsearch-secrets
+                name: {{  include "elasticsearch.secret_name" . }}
                 key: INVENIO_SEARCH_ELASTIC_HOSTS
           {{ end }}
         resources:
