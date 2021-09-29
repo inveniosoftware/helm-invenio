@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+data:
+  haproxy.cfg: |
+    global
+      quiet
+
+    defaults
+      mode http
+      maxconn 3000
+
+      stats enable
+      stats uri /stats
+      stats hide-version
+
+      timeout  http-request 10s
+      timeout  queue 2m
+      timeout  connect 10s
+      timeout  client 2m
+      timeout  server 2m
+      timeout  http-keep-alive 10s
+      timeout  check 10s
+
+    frontend public
+      bind *:8080
+      default_backend apps
+
+    backend apps
+      server web web:80 check maxconn {{ .Values.haproxy.maxconn }}

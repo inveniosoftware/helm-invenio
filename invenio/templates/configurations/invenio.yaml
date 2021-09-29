@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invenio-config
+data:
+  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/1'
+  INVENIO_APP_ALLOWED_HOSTS: '[''{{ .Values.host }}'']'
+  INVENIO_CACHE_REDIS_HOST: '{{ include "redis.host_name" . }}'
+  INVENIO_CACHE_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/0'
+  INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "redis.host_name" . }}:6379/2'
+  INVENIO_COLLECT_STORAGE: flask_collect.storage.file
+  INVENIO_LOGGING_CONSOLE_LEVEL: "{{ .Values.invenio.logging.console.level }}"
+  INVENIO_LOGGING_SENTRY_CELERY: "{{ .Values.invenio.logging.sentry.celery }}"
+  INVENIO_LOGGING_SENTRY_LEVEL: "{{ .Values.invenio.logging.sentry.level }}"
+  INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:6379/3'
+  INVENIO_RDM_RECORDS_DATACITE_ENABLED: "{{ .Values.invenio.datacite.enable }}"
+  INVENIO_RDM_RECORDS_DATACITE_PREFIX: "{{ .Values.invenio.datacite.prefix }}"
+  {{ if .Values.elasticsearch.enabled }}
+  INVENIO_SEARCH_ELASTIC_HOSTS: "{{ .Values.elasticsearch.invenio_hosts }}"
+  {{ end }}
+  INVENIO_SEARCH_INDEX_PREFIX: "{{ .Values.invenio.search.index_prefix }}"
+  INVENIO_SITE_UI_URL: '{{ .Values.host }}'
+  INVENIO_SITE_API_URL: '{{ .Values.host }}/api'
+  SENTRY_ENVIRONMENT: "{{ .Values.invenio.logging.sentry.environment }}"
+  

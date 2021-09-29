@@ -1,0 +1,115 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  invenio.conf: |
+    upstream web {
+        server 127.0.0.1:5000 max_conns={{ .Values.nginx.max_conns }} fail_timeout=0;
+    }
+
+    log_format trace '$remote_addr - $time_iso8601 "$request" '
+        '$status  $body_bytes_sent $request_length "$http_referer"  '
+        '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
+        'rt=$request_time uct="$upstream_connect_time" '
+        'uht="$upstream_header_time" urt="$upstream_response_time" '
+        'sid=$upstream_http_x_session_id uid=$upstream_http_x_user_id';
+
+    access_log  /var/log/nginx/access.log  trace;
+
+    server {
+        listen 8080;
+        server_name localhost;
+        charset utf-8;
+        keepalive_timeout 5;
+
+          # SSL configuration removed, using the route from OpenShift
+          add_header Strict-Transport-Security "max-age=15768000"; # 6 months
+
+          # Request ID tracing (allows end-to-end tracking of requests for better
+          # troubleshooting)
+          add_header X-Request-ID $request_id;
+
+          # The request body is sent to the proxied server immediately as it is
+          # received
+          proxy_request_buffering off;
+
+          # Sets the HTTP protocol v1.1 for proxying in order to not use the buffer
+          # in case of chunked transfer encoding
+          proxy_http_version 1.1;
+
+
+        location /ping {
+            access_log off;
+            return 200 "ok\n";
+        }
+
+        # Proxying to the application server
+        ## UI server
+        location / {
+          uwsgi_pass web;
+          include uwsgi_params;
+          uwsgi_buffering off;
+          uwsgi_request_buffering off;
+          uwsgi_param Host $host;
+          uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+          uwsgi_param X-Forwarded-Proto $scheme;
+          # Pass request id to the ui server
+          uwsgi_param X-Request-ID $request_id;
+          # X-Session-ID / X-User-ID is read by nginx and included in the logs,
+          # however we don't want to expose them to clients so we are hiding them.
+          uwsgi_hide_header X-Session-ID;
+          uwsgi_hide_header X-User-ID;
+          # Max upload size (except for files) is set to 100mb as default.
+          client_max_body_size {{ .Values.nginx.client_max_body_size }};
+        }
+
+        ## API except files
+        location /api {
+          uwsgi_pass web;
+          include uwsgi_params;
+          uwsgi_buffering off;
+          uwsgi_request_buffering off;
+          uwsgi_param Host $host;
+          uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+          uwsgi_param X-Forwarded-Proto $scheme;
+          # Pass request id to the api server
+          uwsgi_param X-Request-ID $request_id;
+          # X-Session-ID / X-User-ID is read by nginx and included in the logs,
+          # however we don't want to expose them to clients so we are hiding them.
+          uwsgi_hide_header X-Session-ID;
+          uwsgi_hide_header X-User-ID;
+          # Max upload size (except for files) is set to 100mb as default.
+          client_max_body_size 100m;
+        }
+
+        ## API files
+        # Another location is defined in order to allow large file uploads in the files
+        # API without exposing the other parts of the application to receive huge
+        # request bodies.
+        location ~ /api/records/.+/draft/files/.+/content {
+          gzip off;
+          uwsgi_pass web;
+          include uwsgi_params;
+          uwsgi_buffering off;
+          uwsgi_request_buffering off;
+          uwsgi_param Host $host;
+          uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+          uwsgi_param X-Forwarded-Proto $scheme;
+          # Pass request id to api server
+          uwsgi_param X-Request-ID $request_id;
+          # X-Session-ID / X-User-ID is read by nginx and included in the logs,
+          # however we don't want to expose them to clients so we are hiding them.
+          uwsgi_hide_header X-Session-ID;
+          uwsgi_hide_header X-User-ID;
+          # Max upload size for files is set to 50GB (configure as needed).
+          client_max_body_size 50G;
+        }
+
+        # Static content is served directly by nginx and not the application server.
+        location /static {
+          alias "{{ .Values.nginx.assets.location }}";
+          autoindex off;
+        }
+    }
