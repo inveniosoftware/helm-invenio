@@ -6,7 +6,9 @@ The login to your Kubernetes cluster depends to your provider. For the purpose o
 
 ### 1. Secrets
 
-:warning: Most secrets are created automatically through the default `values` file. It's however **strongly advised** to override them (either through a value file or through the `--set` flag), especially if running anything else than a private test environment.
+:warning: Most secrets are created automatically through the default `values` file. It's however **strongly advised** to override them 
+(either through a value file or through the `--set` flag), especially if running anything else than a private test environment.
+Just enter your secret's name(s) in your own `values` file.
 
 #### Docker secrets
 
@@ -131,7 +133,7 @@ invenio rdm-records demo
 
 
 ## Configuration
-The following table lists the configurable parameters of the `invenio-k8s` chart and their default values, and can be overwritten via the helm `--set` flag.
+The following table lists the configurable parameters of the `invenio` chart and their default values, and can be overwritten via the helm `--set` flag.
 
 Parameter | Description | Default
 ---                                             | ---       | ---

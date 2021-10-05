@@ -2,7 +2,6 @@ host: yourhost.localhost
 
 ingress:
   # these values have no effect on openshift!
-  enabled: true
   class: nginx-internal
   sslSecretName: your-ssl-secret
 
@@ -29,6 +28,7 @@ nginx:
 
 web:
   image: your/invenio-image
+  # imagePullSecret is "" if not needed
   imagePullSecret: your/image-pull-secret
   replicas: 6
   uwsgi:
@@ -46,6 +46,7 @@ web:
 worker:
   enabled: true
   image: your/invenio-image
+  # imagePullSecret is "" if not needed
   imagePullSecret: your/image-pull-secret
   # Invenio Celery worker application
   app: invenio_app.celery

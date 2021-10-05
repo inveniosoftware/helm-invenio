@@ -12,6 +12,10 @@ This repository contains the helm chart to deploy an Invenio instance.
 
 ## Usage
 
+### Kubernetes
+
+See the [dedicated documentation](README-Kubernetes.md)
+
 ### OpenShift
 
 Login and select the right project:
@@ -172,7 +176,3 @@ $ oc process -f job.yml --param JOB_NAME='demo-data-1' \
 $ oc process -f cronjob.yml --param JOB_NAME=index-run \
   --param JOB_COMMAND=invenio index run -d | oc create -f -
 ```
-
-### Kubernetes
-
-See the [dedicated documentation](invenio-k8s/README.md)
