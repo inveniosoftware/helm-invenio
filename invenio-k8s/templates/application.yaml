@@ -1,5 +1,5 @@
----
 {{- if .Values.ingress.enabled -}}
+---
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
 apiVersion: networking.k8s.io/v1
 {{- else }}
@@ -35,22 +35,7 @@ spec:
           backend:
             serviceName: {{ if .Values.haproxy.inside_cluster }}haproxy{{ else }}web{{ end }}
             servicePort: http
-
----
-{{ end }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: web
-  labels:
-    run: web
-spec:
-  ports:
-  - name: 'http'
-    port: 80
-    targetPort: 8080
-  selector:
-    app: web
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment

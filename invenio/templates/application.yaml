@@ -14,20 +14,6 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: web
-  labels:
-    run: web
-spec:
-  ports:
-  - name: 'http'
-    port: 80
-    targetPort: 8080
-  selector:
-    app: web
----
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
