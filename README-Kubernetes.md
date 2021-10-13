@@ -6,7 +6,9 @@ The login to your Kubernetes cluster depends to your provider. For the purpose o
 
 ### 1. Secrets
 
-:warning: Most secrets are created automatically through the default `values` file. It's however **strongly advised** to override them (either through a value file or through the `--set` flag), especially if running anything else than a private test environment.
+:warning: Most secrets are created automatically through the default `values` file. It's however **strongly advised** to override them 
+(either through a value file or through the `--set` flag), especially if running anything else than a private test environment.
+Just enter your secret's name(s) in your own `values` file.
 
 #### Docker secrets
 
@@ -131,7 +133,7 @@ invenio rdm-records demo
 
 
 ## Configuration
-The following table lists the configurable parameters of the `invenio-k8s` chart and their default values, and can be overwritten via the helm `--set` flag.
+The following table lists the configurable parameters of the `invenio` chart and their default values, and can be overwritten via the helm `--set` flag.
 
 Parameter | Description | Default
 ---                                             | ---       | ---
@@ -165,10 +167,13 @@ Parameter | Description | Default
 `worker.log_level` | Logging level in the invenio worker | `INFO`
 `worker.replicas` | Number of replicas for the invenio worker pods | `2`
 `redis.inside_cluster` | Whether to enable redis within the cluster | `true`
+`redis.host` | Name of Redis host if `inside_cluster` is `false` | ""
 `rabbitmq.inside_cluster` | Whether to enable rabbitmq within the cluster | `true`
+`rabbitmq.existing_secret` | Name of an existing secret with redis configuration values | ""
 `rabbitmq.default_password` | The rabbitmq password | `mq_password`
 `rabbitmq.celery_broker_uri` | The celery broker URL | `amqp://guest:mq_password@mq:5672/`
 `postgresql.inside_cluster` | Whether to enable postgresql within the cluster | `true`
+`postgresql.existing_secret` | Name of an existing secret with postgresql configuration values | ""
 `postgresql.user` | The postgresql user | `invenio`
 `postgresql.password` | The postgresql password | `db_password`
 `postgresql.host` | The postgresql host name | `db`
@@ -176,6 +181,7 @@ Parameter | Description | Default
 `postgresql.database` | The postgresql database name | `invenio`
 `postgresql.sqlalchemy_db_uri` | The postgresql DB URI | `postgresql+psycopg2://invenio:db_password@db:5432/invenio`
 `elasticsearch.inside_cluster` | Whether to enable Elastic Search within the cluster | `true`
+`elasticsearch.existing_secret` | Name of an existing secret with elasticsearch configuration values | ""
 `elasticsearch.invenio_hosts` | The Elastic Search hosts as used by invenio | `[{'host': 'es'}]`
 `elasticsearch.user` | [Unimplemented] The Elastic Search username | `username`
 `elasticsearch.password` | [Unimplemented] The Elastic Search password | `password`

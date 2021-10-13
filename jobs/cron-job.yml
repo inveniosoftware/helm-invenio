@@ -10,8 +10,7 @@ metadata:
 labels:
   template: "invenio-cron-job"
 objects:
-  -
-    apiVersion: batch/v1beta1
+  - apiVersion: batch/v1beta1
     kind: CronJob
     metadata:
       name: "${JOB_NAME}"
@@ -24,7 +23,7 @@ objects:
               restartPolicy: Never
               containers:
               - name: invenio-job
-                image: your/invenio-image
+                image: {{ .Values.web.image }}
                 command:
                   - /bin/bash
                   - -c
@@ -37,31 +36,31 @@ objects:
                     cpu: 1
                     memory: 2Gi
                 envFrom:
-                  - configMapRef:
-                      name: invenio-config
+                - configMapRef:
+                    name: invenio-config
                 env:
-                  - name: TZ
-                    value: "Europe/Zurich"
-                  - name: INVENIO_BROKER_URL
-                    valueFrom:
-                      secretKeyRef:
-                        name: mq-password
-                        key: CELERY_BROKER_URL
-                  - name: INVENIO_CELERY_BROKER_URL
-                    valueFrom:
-                      secretKeyRef:
-                        name: mq-password
-                        key: CELERY_BROKER_URL
-                  - name: INVENIO_SQLALCHEMY_DATABASE_URI
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-password
-                        key: SQLALCHEMY_DB_URI
-                  - name: ELASTICSEARCH_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: elasticsearch-password
-                        key: ELASTICSEARCH_PASSWORD
+                - name: TZ
+                  value: "Europe/Zurich"
+                - name: INVENIO_BROKER_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "rabbitmq.secret_name" . }}
+                      key: CELERY_BROKER_URL
+                - name: INVENIO_CELERY_BROKER_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "rabbitmq.secret_name" . }}
+                      key: CELERY_BROKER_URL
+                - name: INVENIO_SQLALCHEMY_DATABASE_URI
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "postgresql.secret_name" . }}
+                      key: SQLALCHEMY_DB_URI
+                - name: ELASTICSEARCH_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "elasticsearch.secret_name" . }}
+                      key: ELASTICSEARCH_PASSWORD
 parameters:
   - name: JOB_NAME
     required: true

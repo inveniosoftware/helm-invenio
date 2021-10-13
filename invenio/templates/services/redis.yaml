@@ -12,39 +12,4 @@ spec:
     protocol: TCP
   selector:
     app: cache
----
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
-metadata:
-  name: cache
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: cache
-    spec:
-      containers:
-      - name: cache
-        image: redis
-        env:
-        - name: TZ
-          value: "Europe/Zurich"
-        ports:
-        - containerPort: 6379
-          name: tcp
-        volumeMounts:
-          - name: data
-            mountPath: /data
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - "redis-cli -h $(hostname) ping"
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
-      volumes:
-        - name: data
-          emptyDir: {}
-{{- end -}}
+{{- end }}

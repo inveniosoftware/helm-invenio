@@ -12,4 +12,6 @@ keywords:
   - multimedia-repository
 type: application
 # Chart version.
-version: 0.0.0
+version: 0.1.0
+appVersion: 2.0.0
+

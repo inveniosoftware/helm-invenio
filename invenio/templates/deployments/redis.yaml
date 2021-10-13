@@ -1,0 +1,47 @@
+{{- if .Values.redis.inside_cluster -}}
+---
+{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+{{- end }}
+metadata:
+  name: cache
+spec:
+  replicas: 1
+  {{- if not .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
+  selector:
+    matchLabels:
+      app: cache
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      containers:
+        - name: cache
+          image: redis
+          env:
+            - name: TZ
+              value: "Europe/Zurich"
+          ports:
+            - containerPort: 6379
+              name: tcp
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "redis-cli -h $(hostname) ping"
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end -}}

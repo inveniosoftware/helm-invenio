@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uwsgi-config
+data:
+  uwsgi.ini: |
+    [uwsgi]
+    stats = 0.0.0.0:9000
+    socket = 0.0.0.0:5000
+    module = invenio_app.wsgi:application
+    master = true
+    processes = {{ .Values.web.uwsgi.processes }}
+    threads = {{ .Values.web.uwsgi.threads }}
+    single-interpreter = true
+    need-app = true
+    disable-logging = true
+    log-4xx = true
+    log-5xx = true
+    auto-procname = true
+    buffer-size =  10240
+    post-buffering = true
+    lazy-apps = true
+    # thunder-lock = true # https://marc.info/?l=uwsgi&m=140473636200986&w=2
+                          # https://uwsgi-docs.readthedocs.io/en/latest/articles/SerializingAccept.html
+
+    # Workers management
+    max-requests = 1999
+    max-requests-delta = 149
+    # max-worker-lifetime = 3600 # https://github.com/unbit/uwsgi/issues/1894
+    reload-on-rss = 250
+
+    # fix up signal handling
+    die-on-term: true
+    hook-master-start: unix_signal:2 gracefully_kill_them_all
+    hook-master-start: unix_signal:15 gracefully_kill_them_all
