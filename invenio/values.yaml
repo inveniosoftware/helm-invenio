@@ -20,14 +20,31 @@ invenio:
     console:
       level: "WARNING"
     sentry:
+      enabled: false
+      existing_secret: false
+      secret_name: "sentry-secrets"
+      dsn: ""
       level: "WARNING"
       celery: true
       environment: "qa"
   search:
     index_prefix: ""
   datacite:
-    enable: false
+    enabled: false
+    existing_secret: false
+    secret_name: "datacite-secrets"
+    password: ""
+    username: ""
     prefix: ""
+    test_mode: true
+  remote_apps:
+    enabled: false
+    existing_secret: false
+    secret_name: "remote-apps-secrets"
+    credentials:
+      - name: ""
+        consumer_key: ""
+        consumer_secret: ""
 
 haproxy:
   enabled: true
