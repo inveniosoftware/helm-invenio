@@ -61,14 +61,33 @@ spec:
               name: {{ .Values.elasticsearch.secret_name }}
               key: INVENIO_SEARCH_ELASTIC_HOSTS
         {{- end }}
+        {{- if .Values.invenio.logging.sentry.enabled }}
+        - name: INVENIO_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.logging.sentry.secret_name }}
+              key: SENTRY_DSN
+        {{- end }}
+        {{- if .Values.invenio.datacite.enabled }}
+        - name: DATACITE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_USERNAME
+        - name: DATACITE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_PASSWORD
+        {{- end }}
         livenessProbe:
           exec:
             command:
               - /bin/bash
               - -c
-              - "celery inspect ping -d celery@$(hostname) -A {{ .Values.worker.app }}"
-          initialDelaySeconds: 15
-          timeoutSeconds: 10
+              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+          initialDelaySeconds: 20
+          timeoutSeconds: 30
         resources:
           requests:
             memory: 200Mi

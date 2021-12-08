@@ -56,12 +56,25 @@ Parameter | Description | Default
 `invenio.default_users` | If set, create users identified by email:password on install (only works if init=true) | `nil`
 `invenio.demo_data` | Whether to create demo data on install (only works if init=true and if `default_users` isn't empty) | `false`
 `logging.console.level` | Console logging level | `WARNING`
+`logging.sentry.enabled` | Enable Sentry logging | `false`
+`logging.sentry.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`logging.sentry.secret_name` | Name of the secret to use or create | `sentry-secrets`
+`logging.sentry.dsn` | DSN for sentry | `""`
 `logging.sentry.level` | Sentry logging level | `WARNING`
 `logging.sentry.celery` | Configure Celery to send logging to Sentry | `true`
 `logging.sentry.environment` | Sentry environment | `qa`
 `search.index_prefix` | Elasticsearch index prefix | `""`
 `datacite.enable` | Enable DataCite provider | `false`
+`datacite.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`datacite.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
 `datacite.prefix` | DataCite prefix | `""`
+`datacite.username` | DataCite username | `""`
+`datacite.password` | DataCite password | `""`
+`datacite.test_mode` | When using testing mode requests will be done against DataCite's test fabrica | `""`
+`remote_apps.enabled` | Enable logging with remote applications | `false`
+`remote_apps.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`remote_apps.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
+`remote_apps.credentials` | List of remote applications' credentials (name, consume_key, consumer_secret) | `""`
 
 ### HAProxy
 Parameter | Description | Default

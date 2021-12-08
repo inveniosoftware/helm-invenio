@@ -62,6 +62,34 @@ spec:
               name: {{ .Values.elasticsearch.secret_name }}
               key: INVENIO_SEARCH_ELASTIC_HOSTS
         {{- end }}
+        {{- if .Values.invenio.logging.sentry.enabled }}
+        - name: INVENIO_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.logging.sentry.secret_name }}
+              key: SENTRY_DSN
+        {{- end }}
+        {{- if .Values.invenio.datacite.enabled }}
+        - name: DATACITE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_USERNAME
+        - name: DATACITE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.invenio.datacite.secret_name }}
+              key: DATACITE_PASSWORD
+        {{- end }}
+        {{- if .Values.invenio.remote_apps.enabled }}
+        {{- range .Values.invenio.remote_apps.credentials }}
+        - name: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $.Values.invenio.remote_apps.secret_name }}
+              key: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+        {{- end }}
+        {{- end }}
         readinessProbe:
           exec:
             command:
