@@ -29,7 +29,7 @@ If you need to run an specific set of tests:
   $ firefox http://127.0.0.1:8089
 """
 
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 
 # The recid to query is not randomized because without caching
 # there is no difference. When having a different recid queried the output
@@ -116,13 +116,13 @@ class APIRecordsTaskSet(TaskSet):
     def api_search_random(self):
         """API Random search."""
         params = {'q': SEARCH_QUERY}
-        self.client.get('/api/records/', params=params)
+        self.client.get('/api/records', params=params)
 
 
     @task
     def api_search_full(self):
         """API Random search."""
-        self.client.get('/api/records/')
+        self.client.get('/api/records')
 
     # @task
     # def api_search_malformed(self):
@@ -180,21 +180,21 @@ class UserTaskSet(TaskSet):
     pass
 
 
-class UIRecords(HttpLocust):
-    task_set = UIRecordsTaskSet
+class UIRecords(HttpUser):
+    tasks = [UIRecordsTaskSet]
     wait_time = between(1.0, 2.0)
 
 
-class APIRecords(HttpLocust):
-    task_set = APIRecordsTaskSet
+class APIRecords(HttpUser):
+    tasks = [APIRecordsTaskSet]
     wait_time = between(1.0, 2.0)
 
 
-class Files(HttpLocust):
-    task_set = FilesTaskSet
+class Files(HttpUser):
+    tasks = [FilesTaskSet]
     wait_time = between(1.0, 2.0)
 
 
-class User(HttpLocust):
-    task_set = UserTaskSet
+class User(HttpUser):
+    tasks = [UserTaskSet]
     wait_time = between(1.0, 2.0)
