@@ -90,8 +90,10 @@ spec:
           timeoutSeconds: 30
         resources:
           requests:
-            memory: 200Mi
+            cpu: 500m
+            memory: 500Mi
           limits:
+            cpu: '1'
             memory: 1Gi
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
