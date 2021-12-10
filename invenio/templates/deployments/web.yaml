@@ -119,9 +119,11 @@ spec:
           mountPath: /opt/nginx-invenio-assets
         resources:
           requests:
-            memory: 200Mi
+              cpu: 500m
+              memory: 200Mi
           limits:
-            memory: 1Gi
+              cpu: '1'
+              memory: 1Gi
         {{- if .Values.web.imagePullSecret }}
         imagePullSecrets:
         - name: {{ .Values.web.imagePullSecret }}
