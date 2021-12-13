@@ -253,7 +253,7 @@ If for some reason you need to update parameters you can simply edit them in
 the `values-overrides.yaml` file and use the `upgrade` command:
 
 ```bash
-$ helm upgrade -f values-overrides.yaml invenio ./invenio
+$ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 # Release "invenio" has been upgraded. Happy Helming!
 # NAME: invenio
 # LAST DEPLOYED: Tue Dec  7 15:29:08 2021

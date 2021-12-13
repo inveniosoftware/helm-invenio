@@ -117,6 +117,10 @@ spec:
           mountPath: '/opt/invenio/src/uwsgi'
         - name: nginx-invenio-assets
           mountPath: /opt/nginx-invenio-assets
+        {{- if .Values.persistence.enabled }}
+        - mountPath: /opt/invenio/var/instance/data
+          name: shared-volume
+        {{- end }}
         resources:
           requests:
               cpu: 500m
@@ -185,6 +189,7 @@ spec:
       {{- end }}
       - name: nginx-config
         configMap:
+          defaultMode: 420
           name: nginx-config
       - name: var-run
         emptyDir: {}
@@ -198,3 +203,8 @@ spec:
           name: uwsgi-config
       - name: nginx-invenio-assets
         emptyDir: {}
+      {{- if .Values.persistence.enabled }}
+      - name: shared-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.name }}
+      {{- end }}

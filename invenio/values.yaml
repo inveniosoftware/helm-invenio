@@ -82,6 +82,13 @@ worker:
   log_level: INFO
   replicas: 2
 
+persistence:
+  enabled: true
+  name: "shared-volume"
+  access_mode: ReadWriteMany
+  size: 10G
+  storage_class: ""
+
 redis:
   enabled: true
   host: ""
