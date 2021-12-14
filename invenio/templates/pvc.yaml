@@ -5,6 +5,8 @@ metadata:
   name: {{ .Values.persistence.name }}
   labels:
     app: web
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   storageClassName: {{ .Values.persistence.storage_class }}
   accessModes:
