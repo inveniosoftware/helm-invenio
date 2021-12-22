@@ -1,4 +1,4 @@
-# [Beta] Invenio Helm Chart
+# Invenio Helm Chart
 
 This repository contains the helm chart to deploy an Invenio instance.
 
@@ -9,6 +9,7 @@ not suit a production deployment.
 2. [Configuration](#configuration)
 3. [Secret management](#secret-management)
 4. [Deploy your instance](#deploy-your-instance)
+5. [Releasing this chart](#release)
 
 ## Pre-requisites
 
@@ -267,3 +268,9 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 # NOTES:
 # Invenio is ready to rock 🚀
 ```
+
+## Release
+
+This repository uses the [chart releaser GH action](https://helm.sh/docs/howto/chart_releaser_action/) to provide a self hosted chart via GH pages.
+
+In order to create a new release the `version` field has to be updated in the `charts/invenio/Char./yaml` file.
