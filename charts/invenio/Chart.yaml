@@ -1,6 +1,6 @@
 apiVersion: v2
 name: invenio
-description: Open Source framework for large-scale digital repositories
+description: Open Source framework for large-scale digital repositories, test
 home: https://inveniosoftware.org/
 icon: https://inveniosoftware.org/static/img/logo-invenio-white.svg
 sources:
