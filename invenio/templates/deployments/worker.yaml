@@ -95,14 +95,6 @@ spec:
         {{- end }}
         {{- if .Values.worker.resources }}
         resources: {{- toYaml .Values.worker.resources | nindent 10 }}
-        {{- else }}
-        resources:
-          requests:
-            cpu: 500m
-            memory: 500Mi
-          limits:
-            cpu: '1'
-            memory: 1Gi
         {{- end }}
       {{- if .Values.persistence.enabled }}
       volumes:
