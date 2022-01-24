@@ -6,6 +6,7 @@ volume:
     
 ingress:
   # these values have no effect on openshift
+  enabled: false
   class: nginx-internal
   sslSecretName: your-ssl-secret
 
@@ -72,6 +73,16 @@ web:
     min_web_replicas: 2
   assets:
     location: /opt/invenio/var/instance/static
+  # sometimes its desirable to set resources values here
+  #resources:
+  #  requests:
+  #    cpu: 500m
+  #    memory: 500Mi
+  #    ephemeral-storage: 2Gi
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1Gi
+  #    ephemeral-storage: 2Gi
 
 worker:
   enabled: true
@@ -84,9 +95,20 @@ worker:
   run_mount_path: /var/run
   celery_pidfile: /var/run/celerybeat.pid
   celery_schedule: /var/run/celery-schedule
+  # sometimes its desirable to set resources values here
+  #resources:
+  #  requests:
+  #    cpu: 500m
+  #    memory: 500Mi
+  #    ephemeral-storage: 2Gi
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1Gi
+  #    ephemeral-storage: 2Gi
 
 persistence:
   enabled: true
+  existing_pvc: false
   name: "shared-volume"
   access_mode: ReadWriteMany
   size: 10G
