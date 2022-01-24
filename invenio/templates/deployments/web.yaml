@@ -121,16 +121,8 @@ spec:
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
         {{- end }}
-        resources:
-          requests:
-              cpu: 500m
-              memory: 200Mi
-          limits:
-              cpu: '1'
-              memory: 1Gi
-        {{- if .Values.web.imagePullSecret }}
-        imagePullSecrets:
-        - name: {{ .Values.web.imagePullSecret }}
+        {{- if .Values.web.resources }}
+        resources: {{- toYaml .Values.web.resources | nindent 10 }}
         {{- end }}
       - name: nginx
         image: nginx
@@ -158,7 +150,7 @@ spec:
             port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 1
-      {{ if .Values.logstash.enabled }}
+      {{- if .Values.logstash.enabled }}
       - name: filebeat
         image: {{ .Values.logstash.filebeat_image }}
         args: [
@@ -179,7 +171,7 @@ spec:
         - name: var-log-nginx
           mountPath: /var/log/nginx
           readOnly: true
-      {{ end }}
+      {{- end }}
       volumes:
       {{- if .Values.logstash.enabled }}
       - name: config
@@ -207,4 +199,8 @@ spec:
       - name: shared-volume
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
+      {{- end }}
+      {{- if .Values.web.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.web.imagePullSecret }}
       {{- end }}

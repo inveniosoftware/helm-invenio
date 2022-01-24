@@ -93,13 +93,9 @@ spec:
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
         {{- end }}
-        resources:
-          requests:
-            cpu: 500m
-            memory: 500Mi
-          limits:
-            cpu: '1'
-            memory: 1Gi
+        {{- if .Values.worker.resources }}
+        resources: {{- toYaml .Values.worker.resources | nindent 10 }}
+        {{- end }}
       {{- if .Values.persistence.enabled }}
       volumes:
       - name: shared-volume
@@ -174,13 +170,13 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_SECRET_KEY
-        {{ if not .Values.elasticsearch.inside_cluster }}
+        {{- if not .Values.elasticsearch.enabled }}
         - name: INVENIO_SEARCH_ELASTIC_HOSTS
           valueFrom:
             secretKeyRef:
               name: {{ .Values.elasticsearch.secret_name }}
               key: INVENIO_SEARCH_ELASTIC_HOSTS
-        {{ end }}
+        {{- end }}
         {{- if .Values.invenio.logging.sentry.enabled }}
         - name: INVENIO_SENTRY_DSN
           valueFrom:
@@ -208,6 +204,9 @@ spec:
               - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
           initialDelaySeconds: 20
           timeoutSeconds: 30
+        {{- if .Values.worker.resources }}
+        resources: {{- toYaml .Values.worker.resources | nindent 10 }}
+        {{- else }}
         resources:
           requests:
             cpu: 500m
@@ -215,6 +214,7 @@ spec:
           limits:
             cpu: '1'
             memory: 1Gi
+        {{- end }}
       volumes:
       - name: var-run-celery
         emptyDir: {}

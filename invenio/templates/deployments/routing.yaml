@@ -15,6 +15,7 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
 {{- else }}
+{{- if .Values.ingress.enabled }}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
 apiVersion: networking.k8s.io/v1
 {{- else }}
@@ -50,4 +51,5 @@ spec:
             backend:
               serviceName: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
               servicePort: http
+{{- end }}
 {{- end }}

@@ -3,9 +3,10 @@ host: yourhost.localhost
 volume:
   assets:
     size: 10Gi
-    
+
 ingress:
   # these values have no effect on openshift
+  enabled: false
   class: nginx-internal
   sslSecretName: your-ssl-secret
 
@@ -14,8 +15,8 @@ invenio:
   existing_secret: false
   init: false
   # the variables below requires init=true
-  default_users:  # email:password
-  demo_data: false  # requires default_users
+  default_users: # email:password
+  demo_data: false # requires default_users
   logging:
     console:
       level: "WARNING"
@@ -72,6 +73,13 @@ web:
     min_web_replicas: 2
   assets:
     location: /opt/invenio/var/instance/static
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
 
 worker:
   enabled: true
@@ -84,6 +92,13 @@ worker:
   run_mount_path: /var/run
   celery_pidfile: /var/run/celerybeat.pid
   celery_schedule: /var/run/celery-schedule
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
 
 persistence:
   enabled: true
@@ -119,10 +134,10 @@ elasticsearch:
   existing_secret: false
   secret_name: "es-secrets"
   invenio_hosts: "[{'host': 'es'}]"
-  user: "username"  # unimplemented
-  password: "password"  # unimplemented
+  user: "username" # unimplemented
+  password: "password" # unimplemented
 
 logstash:
   enabled: false
-  filebeat_image: filebeat_image_to_be_used 
+  filebeat_image: filebeat_image_to_be_used
   environment: "qa"
