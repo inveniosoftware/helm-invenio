@@ -62,11 +62,9 @@ spec:
               name: {{ .Values.elasticsearch.secret_name }}
               key: INVENIO_SEARCH_ELASTIC_HOSTS
         {{- end }}
-        resources:
-          requests:
-            memory: 200Mi
-          limits:
-            memory: 1Gi
+        {{- if .Values.web.resources }}
+        resources: {{- toYaml .Values.web.resources | nindent 10 }}
+        {{- end }}
       restartPolicy: OnFailure
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:

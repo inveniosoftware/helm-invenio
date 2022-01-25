@@ -150,6 +150,9 @@ spec:
             port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 1
+        {{- if .Values.nginx.resources }}
+        resources: {{- toYaml .Values.nginx.resources | nindent 10 }}
+        {{- end }}
       {{- if .Values.logstash.enabled }}
       - name: filebeat
         image: {{ .Values.logstash.filebeat_image }}
