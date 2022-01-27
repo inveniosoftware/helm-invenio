@@ -94,6 +94,7 @@ web:
     limits:
       cpu: 1000m
       memory: 1Gi
+  annotations: []
 
 worker:
   enabled: true
