@@ -5,6 +5,9 @@ metadata:
   name: web
   labels:
     run: web
+  {{- if .Values.web.annotations }}
+  annotations: {{- toYaml .Values.web.annotations | nindent 4 }}
+  {{- end }}
 spec:
   ports:
     - name: 'http'

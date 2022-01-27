@@ -100,6 +100,7 @@ web:
       cpu: 1000m
       memory: 1Gi
   #    ephemeral-storage: 2Gi
+  annotations: []
 
 worker:
   enabled: true
