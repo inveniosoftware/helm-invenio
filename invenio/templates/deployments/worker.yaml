@@ -80,6 +80,9 @@ spec:
               name: {{ .Values.invenio.datacite.secret_name }}
               key: DATACITE_PASSWORD
         {{- end }}
+        {{- if .Values.extraEnv }}
+        {{- toYaml .Values.extraEnv | nindent 8 }}
+        {{- end }}
         livenessProbe:
           exec:
             command:
@@ -195,6 +198,9 @@ spec:
             secretKeyRef:
               name: {{ .Values.invenio.datacite.secret_name }}
               key: DATACITE_PASSWORD
+        {{- end }}
+        {{- if .Values.extraEnv }}
+        {{- toYaml .Values.extraEnv | nindent 8 }}
         {{- end }}
         livenessProbe:
           exec:

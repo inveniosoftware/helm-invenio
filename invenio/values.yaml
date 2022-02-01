@@ -123,6 +123,8 @@ worker:
       memory: 1Gi
   #    ephemeral-storage: 2Gi
 
+extraEnv: []
+
 persistence:
   enabled: true
   name: "shared-volume"
