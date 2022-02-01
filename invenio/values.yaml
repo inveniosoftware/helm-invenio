@@ -118,6 +118,8 @@ worker:
       cpu: 1000m
       memory: 1Gi
 
+extraEnv: []
+
 persistence:
   enabled: true
   name: "shared-volume"

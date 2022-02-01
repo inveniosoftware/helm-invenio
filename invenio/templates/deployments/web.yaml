@@ -90,6 +90,9 @@ spec:
               key: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
         {{- end }}
         {{- end }}
+        {{- if .Values.extraEnv }}
+        {{- toYaml .Values.extraEnv | nindent 8 }}
+        {{- end }}
         readinessProbe:
           exec:
             command:
