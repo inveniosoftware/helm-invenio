@@ -223,7 +223,8 @@ spec:
         {{- end }}
       volumes:
       - name: var-run-celery
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
       {{- if .Values.persistence.enabled }}
       - name: shared-volume
         persistentVolumeClaim:
