@@ -62,7 +62,7 @@ data:
           uwsgi_hide_header X-Session-ID;
           uwsgi_hide_header X-User-ID;
           # Max upload size (except for files) is set to 100mb as default.
-          client_max_body_size {{ .Values.nginx.client_max_body_size }};
+          client_max_body_size 100m;
         }
 
         ## API except files
@@ -104,7 +104,7 @@ data:
           uwsgi_hide_header X-Session-ID;
           uwsgi_hide_header X-User-ID;
           # Max upload size for files is set to 50GB (configure as needed).
-          client_max_body_size 50G;
+          client_max_body_size {{ .Values.nginx.client_max_body_size }};
         }
 
         # Static content is served directly by nginx and not the application server.
