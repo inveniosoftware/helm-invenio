@@ -61,9 +61,12 @@ haproxy:
 
 nginx:
   max_conns: 100
-  client_max_body_size: 50G
   assets:
     location: /opt/invenio/var/instance/static
+  records:
+    client_max_body_size: 100m
+  files:
+    client_max_body_size: 50G
   resources:
     requests:
       cpu: 250m
