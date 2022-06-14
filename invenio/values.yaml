@@ -3,7 +3,7 @@ host: yourhost.localhost
 volume:
   assets:
     size: 10Gi
-    
+
 ingress:
   # these values have no effect on openshift
   enabled: false
@@ -15,8 +15,8 @@ invenio:
   existing_secret: false
   init: false
   # the variables below requires init=true
-  default_users:  # email:password
-  demo_data: false  # requires default_users
+  default_users: # email:password
+  demo_data: false # requires default_users
   logging:
     console:
       level: "WARNING"
@@ -63,9 +63,12 @@ haproxy:
 
 nginx:
   max_conns: 100
-  client_max_body_size: 50G
   assets:
     location: /opt/invenio/var/instance/static
+  records:
+    client_max_body_size: 100m
+  files:
+    client_max_body_size: 50G
   resources:
     requests:
       cpu: 250m
@@ -122,6 +125,15 @@ worker:
       cpu: 1000m
       memory: 1Gi
   #    ephemeral-storage: 2Gi
+
+workerBeat:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
 
 extraEnv: []
 
