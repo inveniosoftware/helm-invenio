@@ -93,28 +93,28 @@ spec:
         {{- if .Values.extraEnv }}
         {{- toYaml .Values.extraEnv | nindent 8 }}
         {{- end }}
-        readinessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
-          failureThreshold: 3
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
-          failureThreshold: 1
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
+#        readinessProbe:
+#          exec:
+#            command:
+#              - /bin/bash
+#              - -c
+#              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+#          failureThreshold: 3
+#          initialDelaySeconds: 15
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 1
+#        livenessProbe:
+#          exec:
+#            command:
+#              - /bin/bash
+#              - -c
+#              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+#          failureThreshold: 1
+#          initialDelaySeconds: 15
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 1
         volumeMounts:
         - name: uwsgi-config
           mountPath: '/opt/invenio/src/uwsgi'
