@@ -210,7 +210,7 @@ spec:
               - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
           initialDelaySeconds: 20
           timeoutSeconds: 30
-        {{- if .Values.worker.resources }}
+        {{- if .Values.workerBeat.resources }}
         resources: {{- toYaml .Values.workerBeat.resources | nindent 10 }}
         {{- else }}
         resources:
