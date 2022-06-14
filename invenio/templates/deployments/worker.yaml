@@ -211,15 +211,15 @@ spec:
           initialDelaySeconds: 20
           timeoutSeconds: 30
         {{- if .Values.worker.resources }}
-        resources: {{- toYaml .Values.worker.resources | nindent 10 }}
+        resources: {{- toYaml .Values.workerBeat.resources | nindent 10 }}
         {{- else }}
         resources:
           requests:
             cpu: 500m
             memory: 500Mi
           limits:
-            cpu: '1'
-            memory: 1Gi
+            cpu: '2'
+            memory: 2Gi
         {{- end }}
       volumes:
       - name: var-run-celery
