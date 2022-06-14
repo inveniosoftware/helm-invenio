@@ -118,6 +118,15 @@ worker:
       cpu: 1000m
       memory: 1Gi
 
+workerBeat:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+
 extraEnv: []
 
 persistence:
