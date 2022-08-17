@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: cache
-          image: redis
+          image: redis:7
           env:
             - name: TZ
               value: "Europe/Zurich"
