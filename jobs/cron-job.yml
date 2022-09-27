@@ -56,11 +56,11 @@ objects:
                     secretKeyRef:
                       name: {{ .Values.postgresql.secret_name }}
                       key: SQLALCHEMY_DB_URI
-                - name: ELASTICSEARCH_PASSWORD
+                - name: SEARCH_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: {{ .Values.elasticsearch.secret_name }}
-                      key: ELASTICSEARCH_PASSWORD
+                      name: {{ .Values.search.secret_name }}
+                      key: SEARCH_PASSWORD
 parameters:
   - name: JOB_NAME
     required: true

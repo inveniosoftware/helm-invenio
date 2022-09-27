@@ -59,11 +59,11 @@ objects:
                 secretKeyRef:
                   name: {{ .Values.postgresql.secret_name }}
                   key: SQLALCHEMY_DB_URI
-            - name: INVENIO_SEARCH_ELASTIC_HOSTS
+            - name: INVENIO_SEARCH_HOSTS
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.elsaticsearch.secret_name }}
-                  key: INVENIO_SEARCH_ELASTIC_HOSTS
+                  name: {{ .Values.search.secret_name }}
+                  key: INVENIO_SEARCH_HOSTS
 parameters:
   - name: JOB_NAME
     required: true

@@ -1,12 +1,12 @@
-{{- if .Values.elasticsearch.enabled -}}
+{{- if .Values.search.enabled -}}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: es
+  name: search
 spec:
   selector:
-    app: es
+    app: search
   ports:
   - port: 9200
     protocol: TCP
