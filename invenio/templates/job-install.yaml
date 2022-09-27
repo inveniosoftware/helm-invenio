@@ -55,12 +55,12 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_SECRET_KEY
-        {{- if not .Values.elasticsearch.enabled }}
-        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+        {{- if not .Values.search.enabled }}
+        - name: INVENIO_SEARCH_HOSTS
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.elasticsearch.secret_name }}
-              key: INVENIO_SEARCH_ELASTIC_HOSTS
+              name: {{ .Values.search.secret_name }}
+              key: INVENIO_SEARCH_HOSTS
         {{- end }}
         {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}

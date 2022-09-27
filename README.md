@@ -2,8 +2,9 @@
 
 This repository contains the helm chart to deploy an Invenio instance.
 
-:warning: Please note that this is a work in progress, the configuration might
-not suit a production deployment.
+:warning: Please note that this configuration is not meant to be used in production.
+This configuration should be adapted and hardened depending on your infrastructure and
+constraints.
 
 1. [Pre-requisites](#pre-requisites)
 2. [Configuration](#configuration)
@@ -63,7 +64,7 @@ Parameter | Description | Default
 `logging.sentry.level` | Sentry logging level | `WARNING`
 `logging.sentry.celery` | Configure Celery to send logging to Sentry | `true`
 `logging.sentry.environment` | Sentry environment | `qa`
-`search.index_prefix` | Elasticsearch index prefix | `""`
+`search.index_prefix` | Search index prefix | `""`
 `datacite.enable` | Enable DataCite provider | `false`
 `datacite.existing_secret` | Whether to use an existing secret or create a new one | `false`
 `datacite.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
@@ -145,21 +146,21 @@ Parameter | Description | Default
 `postgresql.database` | The postgresql database name | `invenio`
 `postgresql.sqlalchemy_db_uri` | The postgresql DB URI | `postgresql+psycopg2://invenio:db_password@db:5432/invenio`
 
-### Elasticsearch
+### Search
 Parameter | Description | Default
 ----------|-------------|--------
-`elasticsearch.enabled` | Whether to enable Elastic Search within the cluster | `true`
-`elasticsearch.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`elasticsearch.secret_name` | Name of the secret to use or create | `es-secrets`
-`elasticsearch.invenio_hosts` | The Elastic Search hosts as used by invenio | `[{'host': 'es'}]`
-`elasticsearch.user` | [Unimplemented] The Elastic Search username | `username`
-`elasticsearch.password` | [Unimplemented] The Elastic Search password | `password`
+`search.enabled` | Whether to enable the search cluster | `true`
+`search.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`search.secret_name` | Name of the secret to use or create | `es-secrets`
+`search.invenio_hosts` | The search hosts as used by invenio | `[{'host': 'es'}]`
+`search.user` | [Unimplemented] The search username | `username`
+`search.password` | [Unimplemented] The search password | `password`
 
 ### Logstash
 Parameter | Description | Default
 ----------|-------------|--------
 `logstash.enabled` | Whether to enable Logstash within the cluster | `false`
-`logstash.filebeat_image` | The Filebeat image Logstash uses. It is recommended to use the one generated via the ImageStream | `filebeat_image_to_be_used` 
+`logstash.filebeat_image` | The Filebeat image Logstash uses. It is recommended to use the one generated via the ImageStream | `filebeat_image_to_be_used`
 `logstash.environment` | The environment Logstash uses | `qa`
 
 ## Secret management
@@ -202,7 +203,7 @@ flags can be used in the same command.
 ```bash
 DB_PASSWORD=$(openssl rand -hex 8)
 helm install -f safe-values.yaml \
-  --set elasticsearch.password=$ES_PASSWORD \
+  --set search.password=$SEARCH_PASSWORD \
   --set postgresql.password=$DB_PASSWORD \
   invenio ./invenio-k8s --namespace invenio
 ```

@@ -57,31 +57,27 @@ $ oc create secret generic \
 secret "mq-secrets" created
 ```
 
-Elasticsearch secrets:
+search secrets:
 
 ```console
-$ ELASTICSEARCH_PASSWORD=$(openssl rand -hex 8)
-$ ELASTICSEARCH_USER=username
+$ SEARCH_PASSWORD=$(openssl rand -hex 8)
+$ SEARCH_USER=username
 $ oc create secret generic \
-  --from-literal="ELASTICSEARCH_PASSWORD=$ELASTICSEARCH_PASSWORD" \
-  --from-literal="ELASTICSEARCH_USER=$ELASTICSEARCH_USER" \
-  elasticsearch-secrets
+  --from-literal="SEARCH_PASSWORD=$SEARCH_PASSWORD" \
+  --from-literal="SEARCH_USER=$SEARCH_USER" \
+  search-secrets
+$ export INVENIO_SEARCH_HOSTS="[{'host': 'localhost', 'timeout': 30, 'port': 9200, 'use_ssl': True, 'http_auth':('USERNAME_CHANGEME', 'PASSWORD_CHANGEME')}]"
+$ oc create secret generic \
+  --from-literal="INVENIO_SEARCH_HOSTS=$INVENIO_SEARCH_HOSTS" \
+  search-secrets
 ```
 
-:warning: For now the previous Elasticsearch environment variables are not
-ported to `invenio-search`, therefore the way to create the secret is:
-
-``` console
-$ export INVENIO_SEARCH_ELASTIC_HOSTS="[{'host': 'localhost', 'timeout': 30, 'port': 9200, 'use_ssl': True, 'http_auth':('USERNAME_CHANGEME', 'PASSWORD_CHANGEME')}]"
-$ oc create secret generic \
-  --from-literal="INVENIO_SEARCH_ELASTIC_HOSTS=$INVENIO_SEARCH_ELASTIC_HOSTS" \
-  elasticsearch-secrets
-```
-
-:warning: Note that you might need to add extra configuration to the
-elasticsearch hosts, sucha as vertificate verification (`verify_certs`),
+:note: Note that you might need to add extra configuration to the
+search hosts, such as certificate verification (`verify_certs`),
 prefixing (`url_prefix`) and more.
 
+:warning: The provided configuration of OpenSearch is for demo only and **it should
+not be used in production**. Please refer to the [official OpenSearch Helm charts](https://opensearch.org/docs/latest/opensearch/install/helm/) for a production deployment.
 
 ## Instance setup
 

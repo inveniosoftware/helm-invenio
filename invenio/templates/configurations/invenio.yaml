@@ -19,12 +19,11 @@ data:
   INVENIO_LOGGING_SENTRY_CELERY: "{{ .Values.invenio.logging.sentry.celery }}"
   INVENIO_LOGGING_SENTRY_LEVEL: "{{ .Values.invenio.logging.sentry.level }}"
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:6379/3'
-  {{ if .Values.elasticsearch.enabled }}
-  INVENIO_SEARCH_ELASTIC_HOSTS: "{{ .Values.elasticsearch.invenio_hosts }}"
+  {{ if .Values.search.enabled }}
+  INVENIO_SEARCH_HOSTS: "{{ .Values.search.invenio_hosts }}"
   {{ end }}
   INVENIO_SEARCH_INDEX_PREFIX: "{{ .Values.invenio.search.index_prefix }}"
   INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
   INVENIO_SITE_UI_URL: 'https://{{ .Values.host }}'
   INVENIO_SITE_API_URL: 'https://{{ .Values.host }}/api'
   SENTRY_ENVIRONMENT: "{{ .Values.invenio.logging.sentry.environment }}"
-  
