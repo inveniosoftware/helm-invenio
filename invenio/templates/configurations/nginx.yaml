@@ -112,4 +112,10 @@ data:
           alias "{{ .Values.nginx.assets.location }}";
           autoindex off;
         }
+
+        # Robots.txt file is served by nginx.
+        location /robots.txt {
+          alias {{ .Values.nginx.assets.location }}/robots.txt;
+          autoindex off;
+        }
     }
