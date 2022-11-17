@@ -12,10 +12,14 @@ data:
   INVENIO_COLLECT_STORAGE: flask_collect.storage.file
   {{ if .Values.invenio.datacite.enabled }}
   INVENIO_DATACITE_PREFIX: "{{ .Values.invenio.datacite.prefix }}"
-  INVENIO_DATACITE_TEST_MODE: "{{ .Values.invenio.datacite.test_mode }}"
   INVENIO_DATACITE_ENABLED: "True"
   {{ else }}
   INVENIO_DATACITE_ENABLED: "False"
+  {{ end }}
+  {{ if .Values.invenio.datacite.test_mode }}
+  INVENIO_DATACITE_TEST_MODE: "True"
+  {{ else }}
+  INVENIO_DATACITE_TEST_MODE: "False"
   {{ end }}
   INVENIO_LOGGING_CONSOLE_LEVEL: "{{ .Values.invenio.logging.console.level }}"
   INVENIO_LOGGING_SENTRY_CELERY: "{{ .Values.invenio.logging.sentry.celery }}"
