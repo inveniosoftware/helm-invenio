@@ -1,9 +1,5 @@
 host: yourhost.localhost
 
-volume:
-  assets:
-    size: 10Gi
-
 ingress:
   # these values have no effect on openshift
   enabled: false
@@ -12,6 +8,8 @@ ingress:
 
 invenio:
   secret_key: "secret-key"
+  security_login_salt: "security_login_salt"
+  csrf_secret_salt: "csrf_secret_salt"
   existing_secret: false
   init: false
   # the variables below requires init=true
@@ -28,6 +26,11 @@ invenio:
       level: "WARNING"
       celery: true
       environment: "qa"
+  mail:
+    suppress: true
+    server: ""
+    port: 25
+    sender: ""
   search:
     index_prefix: ""
   datacite:
@@ -49,8 +52,9 @@ invenio:
 
 haproxy:
   enabled: true
-  image: haproxy:2.1.3
+  image: "haproxy:2.2"
   maxconn: 100
+  maxconn_static: 500
   resources:
     requests:
       cpu: 250m
@@ -60,6 +64,7 @@ haproxy:
       memory: 500Mi
 
 nginx:
+  image: "nginx:1.23"
   max_conns: 100
   assets:
     location: /opt/invenio/var/instance/static
@@ -136,10 +141,12 @@ persistence:
 
 redis:
   enabled: true
+  image: "redis:7"
   host: ""
 
 rabbitmq:
   enabled: true
+  image: "rabbitmq:3-management"
   existing_secret: false
   secret_name: "mq-secrets"
   default_password: "mq_password"

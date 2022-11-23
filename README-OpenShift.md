@@ -25,16 +25,20 @@ Create all the needed secrets and install Invenio.
 Invenio secret key:
 
 ```console
-$ SECRET_KEY=$(openssl rand -hex 8)
+$ SECRET_KEY=$(openssl rand -hex 50)
+$ SECURITY_LOGIN_SALT=$(openssl rand -hex 128)
+$ CSRF_SECRET_SALT=$(openssl rand -hex 128)
 $ oc create secret generic \
   --from-literal="INVENIO_SECRET_KEY=$SECRET_KEY" \
-  invenio-secrets
+  --from-literal="INVENIO_SECURITY_LOGIN_SALT=$SECURITY_LOGIN_SALT" \
+  --from-literal="INVENIO_CSRF_SECRET_SALT=$CSRF_SECRET_SALT" \
+    invenio-secrets
 ```
 
 Database secrets:
 
 ```console
-$ POSTGRESQL_PASSWORD=$(openssl rand -hex 8)
+$ read POSTGRESQL_PASSWORD
 $ POSTGRESQL_USER=invenio
 $ POSTGRESQL_HOST=db
 $ POSTGRESQL_PORT=5432
@@ -57,18 +61,35 @@ $ oc create secret generic \
 secret "mq-secrets" created
 ```
 
+sentry secrets:
+
+```
+$ read SENTRY_DSN
+$ oc create secret generic \
+  --from-literal="SENTRY_DSN=$SENTRY_DSN" \
+    sentry-secrets
+```
+
+datacite secrets:
+
+```
+$ read DATACITE_USERNAME
+$ read DATACITE_PASSWORD
+$ oc create secret generic \
+  --from-literal="DATACITE_USERNAME=$DATACITE_USERNAME" \
+  --from-literal="DATACITE_PASSWORD=$DATACITE_PASSWORD" \
+    datacite-secrets
+```
+
 search secrets:
 
 ```console
-$ SEARCH_PASSWORD=$(openssl rand -hex 8)
-$ SEARCH_USER=username
+$ read SEARCH_USER
+$ read SEARCH_PASSWORD
+$ SEARCH_HOST=search
+$ SEARCH_PORT=9200
 $ oc create secret generic \
-  --from-literal="SEARCH_PASSWORD=$SEARCH_PASSWORD" \
-  --from-literal="SEARCH_USER=$SEARCH_USER" \
-  search-secrets
-$ export INVENIO_SEARCH_HOSTS="[{'host': 'localhost', 'timeout': 30, 'port': 9200, 'use_ssl': True, 'http_auth':('USERNAME_CHANGEME', 'PASSWORD_CHANGEME')}]"
-$ oc create secret generic \
-  --from-literal="INVENIO_SEARCH_HOSTS=$INVENIO_SEARCH_HOSTS" \
+  --from-literal="INVENIO_SEARCH_HOSTS=[{'host': '$SEARCH_HOST', 'timeout': 30, 'port': $SEARCH_PORT, 'use_ssl': True, 'http_auth':('$SEARCH_USER', '$SEARCH_PASSWORD')}]" \
   search-secrets
 ```
 
