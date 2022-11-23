@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: cache
-          image: redis:7
+          image: {{ .Values.redis.image }}
           env:
             - name: TZ
               value: "Europe/Zurich"

@@ -26,7 +26,16 @@ data:
 
     frontend public
       bind *:8080
+      acl is_static path_beg -i /static /robots.txt
       default_backend apps
+      use_backend     static if is_static
 
     backend apps
-      server web web:80 check maxconn {{ .Values.haproxy.maxconn }}
+      http-check disable-on-404
+      option httpchk OPTIONS /ping HTTP/1.1\nHost:\ {{ .Values.host }}
+      option http-server-close
+
+      server web web:80 check fall 2 inter 5000 maxconn {{ .Values.haproxy.maxconn }}
+
+    backend static
+      server web web:80 check fall 2 inter 5000 maxconn {{ .Values.haproxy.maxconn_static }}

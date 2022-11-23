@@ -47,45 +47,53 @@ The following table lists the configurable parameters of the `invenio` chart and
 Parameter | Description | Default
 ----------|-------------|--------
 `host` | Your hostname | `yourhost.localhost`
-`volume.assets.size` | Size of the assets volume | `10Gi`
 
 ### Invenio
 Parameter | Description | Default
 ----------|-------------|--------
-`invenio.secret_key` | The invenio secret key; **set it**! | `secret-key`
+`invenio.secret_key` | The Invenio secret key used for encryption; **set it**! | `secret-key`
+`invenio.security_login_salt` | The Invenio salt value, used when generating login links/tokens; **set it**! | `security_login_salt`
+`invenio.csrf_secret_salt` | The Invenio salt value, used when generating login CSRF tokens; **set it**! | `csrf_secret_salt`
 `invenio.init` | Whether to initiate database, index and roles | `false`
 `invenio.default_users` | If set, create users identified by email:password on install (only works if init=true) | `nil`
 `invenio.demo_data` | Whether to create demo data on install (only works if init=true and if `default_users` isn't empty) | `false`
-`logging.console.level` | Console logging level | `WARNING`
-`logging.sentry.enabled` | Enable Sentry logging | `false`
-`logging.sentry.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`logging.sentry.secret_name` | Name of the secret to use or create | `sentry-secrets`
-`logging.sentry.dsn` | DSN for sentry | `""`
-`logging.sentry.level` | Sentry logging level | `WARNING`
-`logging.sentry.celery` | Configure Celery to send logging to Sentry | `true`
-`logging.sentry.environment` | Sentry environment | `qa`
-`search.index_prefix` | Search index prefix | `""`
-`datacite.enable` | Enable DataCite provider | `false`
-`datacite.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`datacite.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
-`datacite.prefix` | DataCite prefix | `""`
-`datacite.username` | DataCite username | `""`
-`datacite.password` | DataCite password | `""`
-`datacite.test_mode` | When using testing mode requests will be done against DataCite's test fabrica | `""`
-`remote_apps.enabled` | Enable logging with remote applications | `false`
-`remote_apps.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`remote_apps.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
-`remote_apps.credentials` | List of remote applications' credentials (name, consume_key, consumer_secret) | `""`
+`invenio.logging.console.level` | Console logging level | `WARNING`
+`invenio.logging.sentry.enabled` | Enable Sentry logging | `false`
+`invenio.logging.sentry.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`invenio.logging.sentry.secret_name` | Name of the secret to use or create | `sentry-secrets`
+`invenio.logging.sentry.dsn` | DSN for sentry | `""`
+`invenio.logging.sentry.level` | Sentry logging level | `WARNING`
+`invenio.logging.sentry.celery` | Configure Celery to send logging to Sentry | `true`
+`invenio.logging.sentry.environment` | Sentry environment | `qa`
+`invenio.mail.suppress` | Suppress (`true`) or allow (`false` sending e-mails | `true`
+`invenio.mail.server` | Mail server hostname | `""`
+`invenio.mail.port` | Mail server port | `25`
+`invenio.mail.sender` | Mail sender | `""`
+`invenio.search.index_prefix` | Search index prefix | `""`
+`invenio.datacite.enable` | Enable DataCite provider | `false`
+`invenio.datacite.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`invenio.datacite.secret_name` | Name of the secret to use or create | `datacite-secrets`
+`invenio.datacite.prefix` | DataCite prefix | `""`
+`invenio.datacite.username` | DataCite username | `""`
+`invenio.datacite.password` | DataCite password | `""`
+`invenio.datacite.test_mode` | When using testing mode requests will be done against DataCite's test fabrica | `""`
+`invenio.remote_apps.enabled` | Enable logging with remote applications | `false`
+`invenio.remote_apps.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`invenio.remote_apps.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
+`invenio.remote_apps.credentials` | List of remote applications' credentials (name, consume_key, consumer_secret) | `""`
 
 ### HAProxy
 Parameter | Description | Default
 ----------|-------------|--------
 `haproxy.enabled` | Whether to enable haproxy workers inside the cluster | `false`
-`haproxy.maxconn` | Number of maximum connections to haproxy workers | `100`
+`haproxy.image`   | Image to use for HaProxy | `haproxy:2.2`
+`haproxy.maxconn` | Number of maximum connections to backend | `100`
+`haproxy.maxconn_static` | Number of maximum connections to static files | `500`
 
 ### Nginx
 Parameter | Description | Default
 ----------|-------------|--------
+`nginx.image`   | Image to use for nginx | `nginx:1.23`
 `nginx.max_conns` | Number of maximum connections to the nginx workers | `100`
 `nginx.assets.location` | Mount point of the assets | `/opt/invenio/var/instance/static`
 `nginx.client_max_body_size` | Max size of the request body | `50G`
@@ -122,15 +130,17 @@ Parameter | Description | Default
 Parameter | Description | Default
 ----------|-------------|--------
 `redis.enabled` | Whether to enable redis within the cluster | `true`
+`redis.image`   | Image to use for Redis | `redis:7`
 `redis.host` | Name of Redis host if `enabled` is `false` | `""`
 
 ### RabbitMQ
 Parameter | Description | Default
 ----------|-------------|--------
-`rabbitmq.enabled` | Whether to enable rabbitmq within the cluster | `true`
+`rabbitmq.enabled` | Whether to enable RabbitMQ within the cluster | `true`
+`rabbitmq.image`   | Image to use for RabbitMQ | `rabbitmq:3-management`
 `rabbitmq.existing_secret` | Whether to use an existing secret or create a new one | `false`
 `rabbitmq.secret_name` | Name of the secret to use or create | `mq-secrets`
-`rabbitmq.default_password` | The rabbitmq password | `mq_password`
+`rabbitmq.default_password` | The RabbitMQ password | `mq_password`
 `rabbitmq.celery_broker_uri` | The celery broker URL | `amqp://guest:mq_password@mq:5672/`
 
 ### PostgreSQL

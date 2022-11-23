@@ -55,6 +55,16 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_SECRET_KEY
+        - name: INVENIO_SECURITY_LOGIN_SALT
+          valueFrom:
+            secretKeyRef:
+              name: invenio-secrets
+              key: INVENIO_SECURITY_LOGIN_SALT
+        - name: INVENIO_CSRF_SECRET_SALT
+          valueFrom:
+            secretKeyRef:
+              name: invenio-secrets
+              key: INVENIO_CSRF_SECRET_SALT
         {{- if not .Values.search.enabled }}
         - name: INVENIO_SEARCH_HOSTS
           valueFrom:
