@@ -145,7 +145,7 @@ spec:
         command: [
           "/bin/bash",
           "-c",
-          "celery -A {{ .Values.worker.app }} worker --beat -l {{ .Values.worker.log_level }}  -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
+          "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
         volumeMounts:
         - name: var-run-celery
@@ -230,10 +230,10 @@ spec:
         resources:
           requests:
             cpu: 500m
-            memory: 500Mi
+            memory: 200Mi
           limits:
             cpu: '2'
-            memory: 2Gi
+            memory: 500Mi
         {{- end }}
       volumes:
       - name: var-run-celery
