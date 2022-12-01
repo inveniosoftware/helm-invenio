@@ -127,10 +127,10 @@ workerBeat:
   resources:
     requests:
       cpu: 500m
-      memory: 500Mi
+      memory: 200Mi
     limits:
       cpu: '2'
-      memory: 2Gi
+      memory: 500Mi
 
 persistence:
   enabled: true
