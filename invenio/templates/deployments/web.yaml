@@ -105,7 +105,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+              - "uwsgi_curl $(hostname):5000 /api/ping -H 'Host: {{ .Values.host }}'"
           failureThreshold: 3
           initialDelaySeconds: 15
           periodSeconds: 10
@@ -116,7 +116,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - "uwsgi_curl $(hostname):5000 /ping -H 'Host: {{ .Values.host }}'"
+              - "uwsgi_curl $(hostname):5000 /api/ping -H 'Host: {{ .Values.host }}'"
           failureThreshold: 1
           initialDelaySeconds: 15
           periodSeconds: 10
