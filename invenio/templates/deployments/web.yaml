@@ -72,11 +72,11 @@ spec:
               name: {{ .Values.search.secret_name }}
               key: INVENIO_SEARCH_HOSTS
         {{- end }}
-        {{- if .Values.invenio.logging.sentry.enabled }}
+        {{- if .Values.invenio.sentry.enabled }}
         - name: INVENIO_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.invenio.logging.sentry.secret_name }}
+              name: {{ .Values.invenio.sentry.secret_name }}
               key: SENTRY_DSN
         {{- end }}
         {{- if .Values.invenio.datacite.enabled }}

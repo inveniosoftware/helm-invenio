@@ -9,31 +9,11 @@ data:
   INVENIO_CACHE_REDIS_HOST: '{{ include "redis.host_name" . }}'
   INVENIO_CACHE_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/0'
   INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "redis.host_name" . }}:6379/2'
-  INVENIO_COLLECT_STORAGE: flask_collect.storage.file
-  {{ if .Values.invenio.datacite.enabled }}
-  INVENIO_DATACITE_PREFIX: "{{ .Values.invenio.datacite.prefix }}"
-  INVENIO_DATACITE_ENABLED: "True"
-  {{ else }}
-  INVENIO_DATACITE_ENABLED: "False"
-  {{ end }}
-  {{ if .Values.invenio.datacite.test_mode }}
-  INVENIO_DATACITE_TEST_MODE: "True"
-  {{ else }}
-  INVENIO_DATACITE_TEST_MODE: "False"
-  {{ end }}
-  INVENIO_LOGGING_CONSOLE_LEVEL: "{{ .Values.invenio.logging.console.level }}"
-  INVENIO_LOGGING_SENTRY_CELERY: "{{ .Values.invenio.logging.sentry.celery }}"
-  INVENIO_LOGGING_SENTRY_LEVEL: "{{ .Values.invenio.logging.sentry.level }}"
-  INVENIO_MAIL_NOTIFY_SENDER: "{{ .Values.invenio.mail.sender }}"
-  INVENIO_MAIL_SUPPRESS_SEND: "{{ .Values.invenio.mail.suppress }}"
-  INVENIO_MAIL_SERVER: "{{ .Values.invenio.mail.server }}"
-  INVENIO_MAIL_PORT: "{{ .Values.invenio.mail.port }}"
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:6379/3'
-  {{ if .Values.search.enabled }}
   INVENIO_SEARCH_HOSTS: "{{ .Values.search.invenio_hosts }}"
-  {{ end }}
-  INVENIO_SEARCH_INDEX_PREFIX: "{{ .Values.invenio.search.index_prefix }}"
   INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
   INVENIO_SITE_UI_URL: 'https://{{ .Values.host }}'
   INVENIO_SITE_API_URL: 'https://{{ .Values.host }}/api'
-  SENTRY_ENVIRONMENT: "{{ .Values.invenio.logging.sentry.environment }}"
+  {{- range $key, $value := .Values.invenio.extra_config }}
+  {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
+  {{- end }}

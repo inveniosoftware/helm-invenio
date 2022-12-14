@@ -57,30 +57,18 @@ Parameter | Description | Default
 `invenio.init` | Whether to initiate database, index and roles | `false`
 `invenio.default_users` | If set, create users identified by email:password on install (only works if init=true) | `nil`
 `invenio.demo_data` | Whether to create demo data on install (only works if init=true and if `default_users` isn't empty) | `false`
-`invenio.logging.console.level` | Console logging level | `WARNING`
-`invenio.logging.sentry.enabled` | Enable Sentry logging | `false`
-`invenio.logging.sentry.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`invenio.logging.sentry.secret_name` | Name of the secret to use or create | `sentry-secrets`
-`invenio.logging.sentry.dsn` | DSN for sentry | `""`
-`invenio.logging.sentry.level` | Sentry logging level | `WARNING`
-`invenio.logging.sentry.celery` | Configure Celery to send logging to Sentry | `true`
-`invenio.logging.sentry.environment` | Sentry environment | `qa`
-`invenio.mail.suppress` | Suppress (`true`) or allow (`false` sending e-mails | `true`
-`invenio.mail.server` | Mail server hostname | `""`
-`invenio.mail.port` | Mail server port | `25`
-`invenio.mail.sender` | Mail sender | `""`
-`invenio.search.index_prefix` | Search index prefix | `""`
+`invenio.sentry.enabled` | Enable Sentry logging | `false`
+`invenio.sentry.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`invenio.sentry.secret_name` | Name of the secret to use or create | `sentry-secrets`
+`invenio.sentry.dsn` | DSN for sentry | `""`
 `invenio.datacite.enable` | Enable DataCite provider | `false`
 `invenio.datacite.existing_secret` | Whether to use an existing secret or create a new one | `false`
 `invenio.datacite.secret_name` | Name of the secret to use or create | `datacite-secrets`
-`invenio.datacite.prefix` | DataCite prefix | `""`
-`invenio.datacite.username` | DataCite username | `""`
-`invenio.datacite.password` | DataCite password | `""`
-`invenio.datacite.test_mode` | When using testing mode requests will be done against DataCite's test fabrica | `""`
 `invenio.remote_apps.enabled` | Enable logging with remote applications | `false`
 `invenio.remote_apps.existing_secret` | Whether to use an existing secret or create a new one | `false`
 `invenio.remote_apps.secret_name` | Name of the secret to use or create | `remote-apps-secrets`
 `invenio.remote_apps.credentials` | List of remote applications' credentials (name, consume_key, consumer_secret) | `""`
+`invenio.extra_config` | List of key:value configuration variables accepted by the python application | `""`
 
 ### HAProxy
 Parameter | Description | Default
