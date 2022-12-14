@@ -15,32 +15,15 @@ invenio:
   # the variables below requires init=true
   default_users: # email:password
   demo_data: false # requires default_users
-  logging:
-    console:
-      level: "WARNING"
-    sentry:
-      enabled: false
-      existing_secret: false
-      secret_name: "sentry-secrets"
-      dsn: ""
-      level: "WARNING"
-      celery: true
-      environment: "qa"
-  mail:
-    suppress: true
-    server: ""
-    port: 25
-    sender: ""
-  search:
-    index_prefix: ""
+  sentry:
+    enabled: false
+    existing_secret: false
+    secret_name: "sentry-secrets"
+    dsn: ""
   datacite:
     enabled: false
     existing_secret: false
     secret_name: "datacite-secrets"
-    password: ""
-    username: ""
-    prefix: ""
-    test_mode: true
   remote_apps:
     enabled: false
     existing_secret: false
@@ -49,6 +32,11 @@ invenio:
       - name: ""
         consumer_key: ""
         consumer_secret: ""
+  extra_config:
+    INVENIO_COLLECT_STORAGE: "flask_collect.storage.file"
+    INVENIO_DATACITE_ENABLED: "False"
+    INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
+    INVENIO_SEARCH_INDEX_PREFIX: ""
 
 haproxy:
   enabled: true
