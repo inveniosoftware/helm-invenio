@@ -221,7 +221,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+              - "celery -A {{ .Values.worker.app }} inspect ping"
           initialDelaySeconds: 20
           timeoutSeconds: 30
         {{- if .Values.worker.resources }}
