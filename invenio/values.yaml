@@ -161,12 +161,11 @@ postgresql:
       existingClaim: db-claim
       enabled: "true"
   invenio:
-    enabled: true
+    enabled: false
     existing_secret: false
     password: "db_password"
     database: "invenio"
     port: "5432"
-    sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
 
 # WARNING: do not use in production!
 # See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
