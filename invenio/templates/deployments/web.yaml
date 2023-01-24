@@ -48,7 +48,7 @@ spec:
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.secret_name }}
+              name: {{ .Values.postgresql.global.postgresql.auth.existingSecret }}
               key: SQLALCHEMY_DB_URI
         - name: INVENIO_SECRET_KEY
           valueFrom:

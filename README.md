@@ -239,6 +239,12 @@ cd helm-invenio/
 If using kubernetes, you might need to add `--namespace invenio` to the
 install command.
 
+If you use one of the proposed dependencies you have to start with
+```bash
+$ helm dependency update ./invenio
+```
+to download the proper dependent helm charts.
+
 Then proceed to the installation
 ```bash
 $ helm install [-f values-overrides.yaml] invenio ./invenio

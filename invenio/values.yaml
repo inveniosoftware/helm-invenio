@@ -128,33 +128,52 @@ persistence:
   storage_class: ""
 
 redis:
-  enabled: true
+  enabled: false
   image: "redis:7"
   host: ""
 
 rabbitmq:
-  enabled: true
+  enabled: false
   image: "rabbitmq:3-management"
-  existing_secret: false
+  existing_secret: true
   secret_name: "mq-secrets"
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
 
 postgresql:
-  enabled: false
-  existing_secret: false
-  secret_name: "db-secrets"
-  user: "invenio"
-  password: "db_password"
-  host: "db"
-  port: "5432"
-  database: "invenio"
-  sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
+  global:
+    postgresql:
+      auth:
+        username: invenio
+        database: invenio
+        existingSecret: "db-secrets"
+  primary:
+    resources:
+      requests:
+        ephemeral-storage: 500Mi
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        ephemeral-storage: 500Mi
+        cpu: 500m
+    persistence:
+      existingClaim: db-claim
+      enabled: "true"
+  invenio:
+    enabled: true
+    existing_secret: false
+    password: "db_password"
+    database: "invenio"
+    port: "5432"
+    sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
 
 # WARNING: do not use in production!
 # See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
 search:
   enabled: false
+  dashboard:
+    enabled: false
   existing_secret: false
   secret_name: "search-secrets"
   invenio_hosts: "[{'host': 'search'}]"

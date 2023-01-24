@@ -12,5 +12,25 @@ keywords:
   - multimedia-library
   - multimedia-repository
 type: application
-version: 0.2.0
-
+version: 0.3.0
+dependencies:
+  - name: postgresql
+    version: 12.1.8
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.invenio.enabled
+  - name: opensearch
+    version: 2.9.1
+    repository: https://opensearch-project.github.io/helm-charts
+    condition: search.enabled
+  - name: opensearch-dashboards
+    version: 2.7.0
+    repository: https://opensearch-project.github.io/helm-charts
+    condition: search.dashboard.enabled
+  - name: rabbitmq
+    version: 11.5.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: rabbitmq.enabled
+  - name: redis
+    version: 17.5.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
