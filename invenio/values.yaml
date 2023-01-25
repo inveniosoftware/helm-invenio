@@ -161,23 +161,34 @@ postgresql:
       existingClaim: db-claim
       enabled: "true"
   invenio:
-    enabled: false
+    enabled: true
     existing_secret: false
     password: "db_password"
     database: "invenio"
+    # The 'host' setting will only be used if postgresql.invenio.enabled = false
+    host: "db"
     port: "5432"
 
 # WARNING: do not use in production!
 # See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
 search:
-  enabled: false
-  dashboard:
-    enabled: false
-  existing_secret: false
-  secret_name: "search-secrets"
-  invenio_hosts: "[{'host': 'search'}]"
-  user: "username" # unimplemented
-  password: "password" # unimplemented
+  opensearchJavaOpts: "-Xmx512M -Xms512M"
+  config:
+    opensearch.yml: |
+      cluster.name: opensearch-cluster
+      network.host: 0.0.0.0
+      discovery.type: single-node
+      plugins.security.disabled: true
+  invenio:
+    enabled: true
+    dashboard:
+      enabled: false
+    existing_secret: false
+    secret_name: "search-secrets"
+    # The 'invenio_hosts' setting will only be used if search.invenio.enabled = false
+    host: "search"
+    user: "username" # unimplemented
+    password: "password" # unimplemented
 
 logstash:
   enabled: false

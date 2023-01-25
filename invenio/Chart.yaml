@@ -21,11 +21,13 @@ dependencies:
   - name: opensearch
     version: 2.9.1
     repository: https://opensearch-project.github.io/helm-charts
-    condition: search.enabled
+    condition: search.invenio.enabled
+    alias: search
   - name: opensearch-dashboards
     version: 2.7.0
     repository: https://opensearch-project.github.io/helm-charts
-    condition: search.dashboard.enabled
+    condition: search.invenio.dashboard.enabled
+    alias: dashboard
   - name: rabbitmq
     version: 11.5.0
     repository: https://charts.bitnami.com/bitnami

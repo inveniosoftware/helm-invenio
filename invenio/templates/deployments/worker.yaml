@@ -47,7 +47,7 @@ spec:
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.secret_name }}
+              name: {{ .Values.postgresql.global.postgresql.auth.existingSecret }}
               key: SQLALCHEMY_DB_URI
         - name: INVENIO_SECRET_KEY
           valueFrom:
@@ -64,11 +64,11 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
-        {{- if not .Values.search.enabled }}
+        {{- if .Values.search.invenio.enabled }}
         - name: INVENIO_SEARCH_HOSTS
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.search.secret_name }}
+              name: {{ .Values.search.invenio.secret_name }}
               key: INVENIO_SEARCH_HOSTS
         {{- end }}
         {{- if .Values.invenio.sentry.enabled }}
@@ -173,7 +173,7 @@ spec:
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.secret_name }}
+              name: {{ .Values.postgresql.global.postgresql.auth.existingSecret }}
               key: SQLALCHEMY_DB_URI
         - name: INVENIO_SECRET_KEY
           valueFrom:
@@ -190,11 +190,11 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
-        {{- if not .Values.search.enabled }}
+        {{- if .Values.search.invenio.enabled }}
         - name: INVENIO_SEARCH_HOSTS
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.search.secret_name }}
+              name: {{ .Values.search.invenio.secret_name }}
               key: INVENIO_SEARCH_HOSTS
         {{- end }}
         {{- if .Values.invenio.sentry.enabled }}
