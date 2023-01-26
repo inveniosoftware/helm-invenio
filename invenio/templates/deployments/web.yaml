@@ -38,12 +38,12 @@ spec:
         - name: INVENIO_BROKER_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
+              name: {{ .Values.rabbitmq.invenio.secret_name }}
               key: CELERY_BROKER_URL
         - name: INVENIO_CELERY_BROKER_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
+              name: {{ .Values.rabbitmq.invenio.secret_name }}
               key: CELERY_BROKER_URL
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:

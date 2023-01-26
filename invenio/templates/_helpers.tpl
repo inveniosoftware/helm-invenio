@@ -27,3 +27,33 @@ Get the rabbitmq host name.
     {{ printf "%s" (include "common.names.fullname" .Subcharts.rabbitmq) }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get the postgresql host name.
+*/}}
+{{- define "postgresql.host_name" -}}
+{{- if not (.Values.postgresql.invenio.enabled) }}
+    {{- if .Values.postgresql.invenio.host}}
+        {{- printf "%s" (tpl .Values.postgresql.invenio.host $) -}}
+    {{- else}}
+        {{- printf "%s" "db" -}}
+    {{- end}}
+{{- else -}}
+    {{ printf "%s" (include "postgresql.primary.fullname" .Subcharts.postgresql) }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the search host name.
+*/}}
+{{- define "search.host_name" -}}
+{{- if not (.Values.search.invenio.enabled) }}
+    {{- if .Values.search.invenio.host}}
+        {{- printf "%s" (tpl .Values.search.invenio.host $) -}}
+    {{- else}}
+        {{- printf "%s" "search" -}}
+    {{- end}}
+{{- else -}}
+    {{ printf "%s" (include "opensearch.serviceName" .Subcharts.search) }}
+{{- end -}}
+{{- end -}}
