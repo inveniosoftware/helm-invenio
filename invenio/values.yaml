@@ -179,7 +179,7 @@ search:
 
 redis:
   invenio:
-    enabled: true
+    enabled: false
     # The 'host' setting will only be used if redis.invenio.enabled = false. If 'host' is not set, "cache" will be used
     host: ""
   architecture: standalone
@@ -188,12 +188,14 @@ redis:
 
 rabbitmq:
   invenio:
-    enabled: false
-  image: "rabbitmq:3-management"
-  existing_secret: true
-  secret_name: "mq-secrets"
-  default_password: "mq_password"
-  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
+    enabled: true
+    existing_secret: false
+    secret_name: "mq-secrets"
+    # The 'host' setting will only be used if rabbitmq.invenio.enabled = false. If 'host' is not set, "mq" will be used
+    host: ""
+  auth:
+    username: guest
+    password: mq_password
 
 logstash:
   enabled: false
