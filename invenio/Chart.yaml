@@ -31,8 +31,8 @@ dependencies:
   - name: rabbitmq
     version: 11.5.0
     repository: https://charts.bitnami.com/bitnami
-    condition: rabbitmq.enabled
+    condition: rabbitmq.invenio.enabled
   - name: redis
     version: 17.5.1
     repository: https://charts.bitnami.com/bitnami
-    condition: redis.enabled
+    condition: redis.invenio.enabled

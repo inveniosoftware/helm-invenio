@@ -127,19 +127,6 @@ persistence:
   size: 10G
   storage_class: ""
 
-redis:
-  enabled: false
-  image: "redis:7"
-  host: ""
-
-rabbitmq:
-  enabled: false
-  image: "rabbitmq:3-management"
-  existing_secret: true
-  secret_name: "mq-secrets"
-  default_password: "mq_password"
-  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
-
 postgresql:
   global:
     postgresql:
@@ -161,7 +148,7 @@ postgresql:
       existingClaim: db-claim
       enabled: "true"
   invenio:
-    enabled: true
+    enabled: false
     existing_secret: false
     password: "db_password"
     database: "invenio"
@@ -180,15 +167,33 @@ search:
       discovery.type: single-node
       plugins.security.disabled: true
   invenio:
-    enabled: true
+    enabled: false
     dashboard:
       enabled: false
     existing_secret: false
     secret_name: "search-secrets"
-    # The 'invenio_hosts' setting will only be used if search.invenio.enabled = false
+    # The 'host' setting will only be used if search.invenio.enabled = false
     host: "search"
     user: "username" # unimplemented
     password: "password" # unimplemented
+
+redis:
+  invenio:
+    enabled: true
+    # The 'host' setting will only be used if redis.invenio.enabled = false. If 'host' is not set, "cache" will be used
+    host: ""
+  architecture: standalone
+  auth:
+    enabled: false
+
+rabbitmq:
+  invenio:
+    enabled: false
+  image: "rabbitmq:3-management"
+  existing_secret: true
+  secret_name: "mq-secrets"
+  default_password: "mq_password"
+  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
 
 logstash:
   enabled: false

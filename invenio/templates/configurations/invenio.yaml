@@ -4,13 +4,19 @@ kind: ConfigMap
 metadata:
   name: invenio-config
 data:
-  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/1'
+  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:{{ .Values.redis.master.containerPorts.redis }}/1'
   INVENIO_APP_ALLOWED_HOSTS: '[''{{ .Values.host }}'']'
   INVENIO_CACHE_REDIS_HOST: '{{ include "redis.host_name" . }}'
-  INVENIO_CACHE_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:6379/0'
-  INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "redis.host_name" . }}:6379/2'
-  INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:6379/3'
-  INVENIO_SEARCH_HOSTS: "{{ .Values.search.invenio_hosts }}"
+  INVENIO_CACHE_REDIS_URL: 'redis://{{ include "redis.host_name" . }}:{{ .Values.redis.master.containerPorts.redis }}/0'
+  INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "redis.host_name" . }}:{{ .Values.redis.master.containerPorts.redis }}/2'
+  INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "redis.host_name" . }}:{{ .Values.redis.master.containerPorts.redis }}/3'
+{{- if .Values.search.invenio.enabled }}
+{{- $host := include "opensearch.serviceName" .Subcharts.search }}
+  INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" $host }}
+{{- else }}
+{{- $host := .Values.search.invenio.host }}
+  INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" $host }}
+{{- end }}
   INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
   INVENIO_SITE_UI_URL: 'https://{{ .Values.host }}'
   INVENIO_SITE_API_URL: 'https://{{ .Values.host }}/api'
