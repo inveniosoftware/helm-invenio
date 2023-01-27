@@ -160,6 +160,7 @@ postgresql:
 # See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
 search:
   opensearchJavaOpts: "-Xmx512M -Xms512M"
+  singleNode: true
   config:
     opensearch.yml: |
       cluster.name: opensearch-cluster
