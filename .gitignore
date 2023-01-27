@@ -2,3 +2,4 @@
 .idea
 
 ./invenio/charts/*
+./invenio/values-*.yaml

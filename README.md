@@ -243,7 +243,13 @@ If you use one of the proposed dependencies you have to start with
 ```bash
 $ helm dependency update ./invenio
 ```
-to download the proper dependent helm charts.
+to download the proper dependent helm charts. Supported are PostgreSQL, OpenSearch, OpenSearch Dashboard, 
+Redis and RabbitMQ.
+The dependent applications are configured in the central `values.yaml` or, even better, your own local version
+of the file. The parts starting with `postgresql, search, dashboard, redis` and `rabbitmq` are taken as configuration
+These tokens are defined in the `Chart.yaml` as name or alias of the dependent application. If you prefer other
+helm charts or version you can change them there, but you also have to change these configurations in your local
+`values.yaml` to match those of your own helm chart.
 
 Then proceed to the installation
 ```bash
