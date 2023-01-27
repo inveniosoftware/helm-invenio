@@ -38,17 +38,17 @@ spec:
         - name: INVENIO_BROKER_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
+              name: {{ .Values.rabbitmq.invenio.secret_name }}
               key: CELERY_BROKER_URL
         - name: INVENIO_CELERY_BROKER_URL
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
+              name: {{ .Values.rabbitmq.invenio.secret_name }}
               key: CELERY_BROKER_URL
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.secret_name }}
+              name: {{ .Values.postgresql.invenio.secret_name }}
               key: SQLALCHEMY_DB_URI
         - name: INVENIO_SECRET_KEY
           valueFrom:
@@ -69,7 +69,7 @@ spec:
         - name: INVENIO_SEARCH_HOSTS
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.search.secret_name }}
+              name: {{ .Values.search.invenio.secret_name }}
               key: INVENIO_SEARCH_HOSTS
         {{- end }}
         {{- if .Values.web.resources }}
