@@ -132,8 +132,9 @@ postgresql:
     postgresql:
       auth:
         username: invenio
+        password: db_password
         database: invenio
-        existingSecret: "db-secrets"
+        existingSecret: db-secrets
   primary:
     resources:
       requests:
@@ -148,10 +149,8 @@ postgresql:
       existingClaim: db-claim
       enabled: "true"
   invenio:
-    enabled: false
+    enabled: true
     existing_secret: false
-    password: "db_password"
-    database: "invenio"
     # The 'host' setting will only be used if postgresql.invenio.enabled = false. If 'host' is not set, "db" will be used
     host: ""
     port: 5432
@@ -180,7 +179,7 @@ search:
 
 redis:
   invenio:
-    enabled: false
+    enabled: true
     # The 'host' setting will only be used if redis.invenio.enabled = false. If 'host' is not set, "cache" will be used
     host: ""
   architecture: standalone
@@ -189,7 +188,7 @@ redis:
 
 rabbitmq:
   invenio:
-    enabled: false
+    enabled: true
     existing_secret: false
     secret_name: "mq-secrets"
     # The 'host' setting will only be used if rabbitmq.invenio.enabled = false. If 'host' is not set, "mq" will be used

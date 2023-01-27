@@ -115,44 +115,53 @@ Parameter | Description | Default
 `worker.celery_schedule` | Celery schedule folder | `/var/run/celery-schedule`
 
 ### Redis
-Parameter | Description | Default
-----------|-------------|--------
-`redis.enabled` | Whether to enable redis within the cluster | `true`
-`redis.image`   | Image to use for Redis | `redis:7`
-`redis.host` | Name of Redis host if `enabled` is `false` | `""`
+Parameter | Description                                                                            | Default
+----------|----------------------------------------------------------------------------------------|--------
+`redis.invenio.enabled` | Whether to enable redis within the cluster                                             | `true`
+`redis.invenio.host` | Name of Redis host if `enabled` is `false`. If 'host' is not set, "cache" will be used | `cache`
+`redis.architecture` | Redis' architecture. Allowed values: `standalone` or `replication`                      | `standalone`
+`redis.auth.enabled` | Enable password authentication | `false`
 
 ### RabbitMQ
-Parameter | Description | Default
-----------|-------------|--------
-`rabbitmq.enabled` | Whether to enable RabbitMQ within the cluster | `true`
-`rabbitmq.image`   | Image to use for RabbitMQ | `rabbitmq:3-management`
-`rabbitmq.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`rabbitmq.secret_name` | Name of the secret to use or create | `mq-secrets`
-`rabbitmq.default_password` | The RabbitMQ password | `mq_password`
-`rabbitmq.celery_broker_uri` | The celery broker URL | `amqp://guest:mq_password@mq:5672/`
+Parameter | Description                                                                                                       | Default
+----------|-------------------------------------------------------------------------------------------------------------------|--------
+`rabbitmq.invenio.enabled` | Whether to enable RabbitMQ within the cluster                                                                     | `true`
+`rabbitmq.invenio.existing_secret` | Whether to use an existing secret or create a new one                                                             | `false`
+`rabbitmq.invenio.secret_name` | Name of the secret to use or create                                                                               | `mq-secrets`
+`rabbitmq.invenio.host` | The 'host' setting will only be used if rabbitmq.invenio.enabled = false. If 'host' is not set, "mq" will be used | `mq-secrets`
+`rabbitmq.auth.username` | The RabbitMQ username                                                                                             | `guest`
+`rabbitmq.auth.password` | The RabbitMQ password                                                                                             | `mq_password`
 
 ### PostgreSQL
-Parameter | Description | Default
-----------|-------------|--------
-`postgresql.enabled` | Whether to enable postgresql within the cluster | `true`
-`postgresql.existing_secret` |Whether to use an existing secret or create a new one | `false`
-`postgresql.secret_name` | Name of the secret to use or create | `db-secrets`
-`postgresql.user` | The postgresql user | `invenio`
-`postgresql.password` | The postgresql password | `db_password`
-`postgresql.host` | The postgresql host name | `db`
-`postgresql.port` | The postgresql port | `5432`
-`postgresql.database` | The postgresql database name | `invenio`
-`postgresql.sqlalchemy_db_uri` | The postgresql DB URI | `postgresql+psycopg2://invenio:db_password@db:5432/invenio`
+Parameter | Description                                           | Default
+----------|-------------------------------------------------------|--------
+`postgresql.global.postgresql.auth.username` | The postgresql user                                   | `db-invenio`
+`postgresql.global.postgresql.auth.password` | The postgresql password                               | `db_password`
+`postgresql.global.postgresql.auth.database` | The postgresql database name                          | `invenio`
+`postgresql.global.postgresql.auth.existingSecret` | Name of the secret to use or create                   | `db-secrets`
+`postgresql.primary.resources.requests.ephemeral-storage` | Init. size of ephemeral storage         | `500Mi`
+`postgresql.primary.resources.requests.memory` | Init. size memory                                    | `512Mi`
+`postgresql.primary.resources.requests.cpu` | Init. amount of cpu time                              | `500Mi`
+`postgresql.primary.limits.requests.ephemeral-storage` | Max size of ephemeral storage                         | `500Mi`
+`postgresql.primary.limits.requests.memory` | Max size memory                                       | `512Mi`
+`postgresql.primary.limits.requests.cpu` | Max amount of cpu time                                | `500m`
+`postgresql.invenio.enabled` | Whether to enable postgresql within the cluster       | `true`
+`postgresql.invenio.existing_secret` | Whether to use an existing secret or create a new one | `false`
+`postgresql.invenio.host` | The postgresql host name                              | `db`
+`postgresql.invenio.port` | The postgresql port                                   | `5432`
 
 ### Search
-Parameter | Description | Default
-----------|-------------|--------
-`search.enabled` | Whether to enable the search cluster | `true`
-`search.existing_secret` | Whether to use an existing secret or create a new one | `false`
-`search.secret_name` | Name of the secret to use or create | `es-secrets`
-`search.invenio_hosts` | The search hosts as used by invenio | `[{'host': 'es'}]`
-`search.user` | [Unimplemented] The search username | `username`
-`search.password` | [Unimplemented] The search password | `password`
+Parameter | Description                                                                                                         | Default
+----------|---------------------------------------------------------------------------------------------------------------------|--------
+`search.opensearchJavaOpts` | Min and max heap space for the JVM                                                                                  | `-Xmx512M -Xms512M`
+`search.singleNode` | Should be set to true, if 'discovery-type' in 'opensearch.yml' is 'discovery-type' too                              | `true`
+`search.config.opensearch.yml` | Settings for OpenSearch                                                                                             | ``
+`search.invenio.enabled` | Whether to enable the search cluster                                                                                | `true`
+`search.invenio.existing_secret` | Whether to use an existing secret or create a new one                                                               | `false`
+`search.invenio.secret_name` | Name of the secret to use or create                                                                                 | `search-secrets`
+`search.invenio.host` | The 'host' setting will only be used if search.invenio.enabled = false. If 'host' is not set, "search" will be used | `search`
+`search.invenio.user` | [Unimplemented] The search username                                                                                 | `username`
+`search.invenio.password` | [Unimplemented] The search password                                                                                 | `password`
 
 ### Logstash
 Parameter | Description | Default
@@ -176,18 +185,25 @@ invenio:
   secret-key: "my-very-safe-secret"
 
 rabbitmq:
-  default_password: "mq_password"
-  # Edit the following URI with the values from just above
-  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
+  invenio:
+    enabled: true
+    existing_secret: false
+    secret_name: mq-secrets
+  auth:
+    username: guest
+    password: mq_password
 
 postgresql:
-  user: "invenio"
-  password: "db_password"
-  host: "db"
-  port: "5432"
-  database: "invenio"
-  # Edit the following URI with the values from just above
-  sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
+  global:
+    postgresql:
+      auth:
+        username: invenio
+        password: db_password
+        database: invenio
+  invenio:
+    enabled: true
+    existing_secret: false
+    port: 5432
 ```
 
 It's however **strongly advised** to override them either through a value file
@@ -201,8 +217,8 @@ flags can be used in the same command.
 ```bash
 DB_PASSWORD=$(openssl rand -hex 8)
 helm install -f safe-values.yaml \
-  --set search.password=$SEARCH_PASSWORD \
-  --set postgresql.password=$DB_PASSWORD \
+  --set search.invenio.password=$SEARCH_PASSWORD \
+  --set postgresql.global.postgresql.auth.password=$DB_PASSWORD \
   invenio ./invenio-k8s --namespace invenio
 ```
 
