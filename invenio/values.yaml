@@ -148,12 +148,14 @@ postgresql:
     persistence:
       existingClaim: db-claim
       enabled: "true"
+    service:
+      ports:
+        postgresql: 5432
   invenio:
     enabled: true
     existing_secret: false
     # The 'host' setting will only be used if postgresql.invenio.enabled = false. If 'host' is not set, "db" will be used
     host: ""
-    port: 5432
 
 # WARNING: do not use in production!
 # See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
@@ -185,6 +187,10 @@ redis:
   architecture: standalone
   auth:
     enabled: false
+  master:
+    service:
+      ports:
+        redis: 6379
 
 rabbitmq:
   invenio:
@@ -196,6 +202,9 @@ rabbitmq:
   auth:
     username: guest
     password: mq_password
+  service:
+    ports:
+      amqp: 5672
 
 logstash:
   enabled: false
