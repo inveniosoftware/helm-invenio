@@ -128,7 +128,7 @@ Parameter | Description                                                         
 `rabbitmq.invenio.enabled` | Whether to enable RabbitMQ within the cluster                                                                     | `true`
 `rabbitmq.invenio.existing_secret` | Whether to use an existing secret or create a new one                                                             | `false`
 `rabbitmq.invenio.secret_name` | Name of the secret to use or create                                                                               | `mq-secrets`
-`rabbitmq.invenio.host` | The 'host' setting will only be used if rabbitmq.invenio.enabled = false. If 'host' is not set, "mq" will be used | `mq-secrets`
+`rabbitmq.invenio.host` | The 'host' setting will only be used if rabbitmq.invenio.enabled = false. If 'host' is not set, "mq" will be used | `mq`
 `rabbitmq.auth.username` | The RabbitMQ username                                                                                             | `guest`
 `rabbitmq.auth.password` | The RabbitMQ password                                                                                             | `mq_password`
 
