@@ -175,6 +175,10 @@ Parameter | Description | Default
 It is recommended to configure the following variables. It can be done in the
 `values-overrides.yaml` file.
 
+!!! info
+
+    There are different settings available: **existing_secret** is a boolean while **existingSecret** is the name of the secret! Have a look at the `values.yaml` of the dependent charts!
+
 ```yaml
 
 invenio:
@@ -200,10 +204,10 @@ postgresql:
         username: invenio
         password: db_password
         database: invenio
+        existingSecret: db-secrets
   invenio:
     enabled: true
     existing_secret: false
-    port: 5432
 ```
 
 It's however **strongly advised** to override them either through a value file
