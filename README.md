@@ -135,7 +135,7 @@ Parameter | Description                                                         
 ### PostgreSQL
 Parameter | Description                                           | Default
 ----------|-------------------------------------------------------|--------
-`postgresql.global.postgresql.auth.username` | The postgresql user                                   | `db-invenio`
+`postgresql.global.postgresql.auth.username` | The postgresql user                                   | `invenio`
 `postgresql.global.postgresql.auth.password` | The postgresql password                               | `db_password`
 `postgresql.global.postgresql.auth.database` | The postgresql database name                          | `invenio`
 `postgresql.global.postgresql.auth.existingSecret` | Name of the secret to use or create                   | `db-secrets`
