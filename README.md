@@ -175,9 +175,8 @@ Parameter | Description | Default
 It is recommended to configure the following variables. It can be done in the
 `values-overrides.yaml` file.
 
-!!! info
-
-    There are different settings available: **existing_secret** is a boolean while **existingSecret** is the name of the secret! Have a look at the `values.yaml` of the dependent charts!
+> There are different settings available: **existing_secret** is a boolean while **existingSecret** 
+> is the name of the secret! Have a look at the `values.yaml` of the dependent charts!
 
 ```yaml
 
