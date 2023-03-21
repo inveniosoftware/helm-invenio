@@ -176,7 +176,9 @@ It is recommended to configure the following variables. It can be done in the
 `values-overrides.yaml` file.
 
 > There are different settings available: **existing_secret** is a boolean while **existingSecret** 
-> is the name of the secret! Have a look at the `values.yaml` of the dependent charts!
+> is the name of the secret! Have a look at the `values.yaml` of the dependent charts! You can achieve this by either
+> run `helm dependency update ./invenio` and untar the downloaded charts or by running 
+> `helm pull bitnami/postgresql --untar`.
 
 ```yaml
 
