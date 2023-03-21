@@ -2,4 +2,4 @@
 .idea
 
 invenio/charts/
-./invenio/values-*.yaml
+/invenio/values-*.yaml
