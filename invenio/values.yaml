@@ -131,6 +131,13 @@ redis:
   enabled: true
   image: "redis:7"
   host: ""
+  persistence:
+    enabled: true
+    name: "redis-volume"
+    access_mode: ReadWriteMany
+    size: 5G
+    storage_class: ""
+
 
 rabbitmq:
   enabled: true
@@ -139,6 +146,12 @@ rabbitmq:
   secret_name: "mq-secrets"
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
+  persistence:
+    enabled: true
+    name: "rabbitmq-volume"
+    access_mode: ReadWriteMany
+    size: 10G
+    storage_class: ""
 
 postgresql:
   enabled: false

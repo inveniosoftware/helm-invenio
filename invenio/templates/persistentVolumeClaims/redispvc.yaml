@@ -1,0 +1,17 @@
+{{- if .Values.redis.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.redis.persistence.name }}
+  labels:
+    app: web
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  storageClassName: {{ .Values.redis.persistence.storage_class }}
+  accessModes:
+  - {{ .Values.redis.persistence.access_mode }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.persistence.size | quote }}
+{{- end }}
