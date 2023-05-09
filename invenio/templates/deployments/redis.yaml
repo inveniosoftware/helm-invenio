@@ -21,6 +21,10 @@ spec:
       labels:
         app: cache
     spec:
+      volumes:
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: redis-volume
       containers:
         - name: cache
           image: {{ .Values.redis.image }}
@@ -31,7 +35,7 @@ spec:
             - containerPort: 6379
               name: tcp
           volumeMounts:
-            - name: data
+            - name: redis-volume
               mountPath: /data
           readinessProbe:
             exec:
@@ -41,7 +45,4 @@ spec:
                 - "redis-cli -h $(hostname) ping"
             initialDelaySeconds: 15
             timeoutSeconds: 5
-      volumes:
-        - name: data
-          emptyDir: {}
 {{- end -}}

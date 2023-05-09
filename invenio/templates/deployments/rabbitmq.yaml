@@ -21,12 +21,19 @@ spec:
       labels:
         app: mq
     spec:
+      volumes:
+        - name: rabbitmq-volume
+          persistentVolumeClaim:
+            claimName: rabbitmq-volume
       containers:
         - name: mq
           image: rabbitmq:3-management
           ports:
             - containerPort: 4369
             - containerPort: 5672
+          volumeMounts:
+            - name: rabbitmq-volume
+              mountPath: /var/lib/rabbitmq
           env:
             - name: TZ
               value: "Europe/Zurich"
