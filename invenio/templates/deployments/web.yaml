@@ -80,12 +80,12 @@ spec:
               key: SENTRY_DSN
         {{- end }}
         {{- if .Values.invenio.datacite.enabled }}
-        - name: DATACITE_USERNAME
+        - name: INVENIO_DATACITE_USERNAME
           valueFrom:
             secretKeyRef:
               name: {{ .Values.invenio.datacite.secret_name }}
               key: DATACITE_USERNAME
-        - name: DATACITE_PASSWORD
+        - name: INVENIO_DATACITE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.invenio.datacite.secret_name }}
