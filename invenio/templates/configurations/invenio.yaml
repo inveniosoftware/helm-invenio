@@ -17,3 +17,14 @@ data:
   {{- range $key, $value := .Values.invenio.extra_config }}
   {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
   {{- end }}
+
+{{- range $key, $value := .Values.invenio.file_config_maps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $key }}
+data:
+  {{ $value.fileName }}: |
+    {{- $value.file | nindent 4 }}
+{{- end -}}
