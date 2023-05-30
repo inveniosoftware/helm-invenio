@@ -37,6 +37,8 @@ invenio:
     INVENIO_DATACITE_ENABLED: "False"
     INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
     INVENIO_SEARCH_INDEX_PREFIX: ""
+  extra_env_from_secret:
+  file_configs:
 
 haproxy:
   enabled: true
@@ -91,6 +93,12 @@ web:
       cpu: 1000m
       memory: 1Gi
   annotations: []
+  containers:
+    run_before_app: ""
+  extra_volumeMounts:
+  extra_volumes:
+
+
 
 worker:
   enabled: true
@@ -100,9 +108,9 @@ worker:
   concurrency: 2
   log_level: INFO
   replicas: 2
-  run_mount_path: /var/run
-  celery_pidfile: /var/run/celerybeat.pid
-  celery_schedule: /var/run/celery-schedule
+  run_mount_path: /var/run/celery
+  celery_pidfile: /var/run/celery/celerybeat.pid
+  celery_schedule: /var/run/celery/celery-schedule
   resources:
     requests:
       cpu: 500m
@@ -110,6 +118,10 @@ worker:
     limits:
       cpu: 1000m
       memory: 1Gi
+  containers:
+    run_before_app: ""
+  volumes:
+    enabled: false
 
 workerBeat:
   resources:
@@ -119,6 +131,8 @@ workerBeat:
     limits:
       cpu: '2'
       memory: 500Mi
+  containers:
+    run_before_app: ""
 
 persistence:
   enabled: true
@@ -178,3 +192,5 @@ logstash:
   enabled: false
   filebeat_image: filebeat_image_to_be_used
   environment: "qa"
+
+extra_secrets:

@@ -26,7 +26,10 @@ spec:
         command: [
             "/bin/bash",
             "-c",
-            "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+            "{{- if .Values.worker.containers.run_before_app -}}
+                {{ .Values.worker.containers.run_before_app }} &&
+            {{- end -}}
+             celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
         ]
         envFrom:
           - configMapRef:
@@ -90,6 +93,13 @@ spec:
               name: {{ .Values.invenio.datacite.secret_name }}
               key: DATACITE_PASSWORD
         {{- end }}
+        {{- range .Values.invenio.extra_env_from_secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .valueFrom.secretKeyRef.name }}
+              key: {{ .valueFrom.secretKeyRef.key }}
+        {{- end }}
         livenessProbe:
           exec:
             command:
@@ -102,15 +112,30 @@ spec:
         volumeMounts:
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
+        {{- range .Values.worker.extra_volumeMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ default "" .subPath }}
+        {{- end }}
         {{- end }}
         {{- if .Values.worker.resources }}
         resources: {{- toYaml .Values.worker.resources | nindent 10 }}
         {{- end }}
-      {{- if .Values.persistence.enabled }}
+      {{- if or .Values.worker.volumes.enabled .Values.persistence.enabled }}
       volumes:
+      {{- if .Values.persistence.enabled }}
       - name: shared-volume
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
+      {{- end }}
+      {{- if .Values.worker.volumes.enabled }}
+      {{- range .Values.worker.extra_volumes }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ .configMap.name }}
+          defaultMode: {{ .configMap.defaultMode }}
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
@@ -145,7 +170,10 @@ spec:
         command: [
           "/bin/bash",
           "-c",
-          "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
+          " {{- if .Values.workerBeat.containers.run_before_app -}}
+                {{ .Values.workerBeat.containers.run_before_app }} &&
+            {{- end -}}
+            celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
         volumeMounts:
         - name: var-run-celery
@@ -153,6 +181,11 @@ spec:
         {{- if .Values.persistence.enabled }}
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
+        {{- end }}
+        {{- range .Values.workerBeat.extra_volumeMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ default "" .subPath }}
         {{- end }}
         envFrom:
         - configMapRef:
@@ -216,6 +249,13 @@ spec:
               name: {{ .Values.invenio.datacite.secret_name }}
               key: DATACITE_PASSWORD
         {{- end }}
+        {{- range .Values.invenio.extra_env_from_secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .valueFrom.secretKeyRef.name }}
+              key: {{ .valueFrom.secretKeyRef.key }}
+        {{- end }}
         livenessProbe:
           exec:
             command:
@@ -239,6 +279,12 @@ spec:
       - name: var-run-celery
         emptyDir:
           medium: Memory
+      {{- range .Values.workerBeat.extra_volumes }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ .configMap.name }}
+          defaultMode: {{ .configMap.defaultMode }}
+      {{- end }}
       {{- if .Values.persistence.enabled }}
       - name: shared-volume
         persistentVolumeClaim:

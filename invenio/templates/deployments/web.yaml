@@ -26,8 +26,12 @@ spec:
         command: [
             "/bin/bash",
             "-c",
-            "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
-        uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
+            "
+            {{- if .Values.web.containers.run_before_app -}}
+            {{ .Values.web.containers.run_before_app }} &&
+            {{- end -}}
+            cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
+            uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
         ]
         envFrom:
         - configMapRef:
@@ -100,6 +104,13 @@ spec:
               key: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
         {{- end }}
         {{- end }}
+        {{- range .Values.invenio.extra_env_from_secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .valueFrom.secretKeyRef.name }}
+              key: {{ .valueFrom.secretKeyRef.key }}
+        {{- end }}
         readinessProbe:
           exec:
             command:
@@ -130,6 +141,11 @@ spec:
         {{- if .Values.persistence.enabled }}
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
+        {{- end }}
+        {{- range .Values.web.extra_volumeMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ default "" .subPath }}
         {{- end }}
         {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}
@@ -212,6 +228,12 @@ spec:
       - name: shared-volume
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
+      {{- end }}
+      {{- range .Values.web.extra_volumes }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ .configMap.name }}
+          defaultMode: {{ .configMap.defaultMode }}
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:
