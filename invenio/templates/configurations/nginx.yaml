@@ -39,6 +39,10 @@ data:
         # in case of chunked transfer encoding
         proxy_http_version 1.1;
 
+        if ($http_host ~ "\.$" ){
+          rewrite ^(.*) $scheme://$host$1 permanent;
+        }
+
         location /ping {
           access_log off;
           return 200 "ok\n";
