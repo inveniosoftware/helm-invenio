@@ -27,7 +27,7 @@ spec:
             claimName: rabbitmq-volume
       containers:
         - name: mq
-          image: rabbitmq:3-management
+          image: {{ .Values.rabbitmq.image }}
           ports:
             - containerPort: 4369
             - containerPort: 5672
