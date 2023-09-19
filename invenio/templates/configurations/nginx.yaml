@@ -10,19 +10,19 @@ data:
     }
 
     log_format trace '$remote_addr - $time_iso8601 "$request" '
-        '$status  $body_bytes_sent $request_length "$http_referer"  '
+        '$status $body_bytes_sent $request_length "$http_referer" '
         '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
         'rt=$request_time uct="$upstream_connect_time" '
         'uht="$upstream_header_time" urt="$upstream_response_time" '
         'sid=$upstream_http_x_session_id uid=$upstream_http_x_user_id';
-
-    access_log  /var/log/nginx/access.log  trace;
+    access_log off;
 
     server {
         listen 8080;
         server_name localhost;
         charset utf-8;
         keepalive_timeout 5;
+        access_log /var/log/nginx/access.log trace;
 
         # SSL configuration removed, using the route from OpenShift
         add_header Strict-Transport-Security "max-age=15768000"; # 6 months

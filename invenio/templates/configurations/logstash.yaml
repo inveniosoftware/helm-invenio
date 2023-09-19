@@ -43,7 +43,7 @@ data:
       # Use grok to parse the input string into an object.
       grok {
           match => {
-              "message" => "%{IP:client_ip} - %{TIMESTAMP_ISO8601:request_timestamp} \"%{WORD:http_method} %{PATH:url}(?:\?%{NOTSPACE:query_string}|) %{NOTSPACE:http_protocol}\" %{INT:http_code}  %{INT:bytes} %{INT:bytes_received} \"%{DATA:referer}\"  \"%{DATA:user_agent}\" \"%{DATA:http_x_forwarded_for}\" rid=%{WORD:request_id} rt=%{BASE16FLOAT:request_time} uct=\"%{DATA:connect_time}\" uht=\"%{DATA:upstream_header_time}\" urt=\"%{DATA:upstream_response_time}\" sid=%{NOTSPACE:session_id} uid=%{NOTSPACE:user_id}"
+              "message" => "%{IP:client_ip} - %{TIMESTAMP_ISO8601:request_timestamp} \"%{WORD:http_method} %{PATH:url}(?:\?%{NOTSPACE:query_string}|) %{NOTSPACE:http_protocol}\" %{INT:http_code} %{INT:bytes} %{INT:bytes_received} \"%{DATA:referer}\" \"%{DATA:user_agent}\" \"%{DATA:http_x_forwarded_for}\" rid=%{WORD:request_id} rt=%{BASE16FLOAT:request_time} uct=\"%{DATA:connect_time}\" uht=\"%{DATA:upstream_header_time}\" urt=\"%{DATA:upstream_response_time}\" sid=%{NOTSPACE:session_id} uid=%{NOTSPACE:user_id}"
           }
         }
         if ![data][query_string]{
@@ -52,67 +52,128 @@ data:
 
         # If request is a ping, then ignore it.
 
-        if [data][url] != "ping" {
-
-          if [data][upstream_header_time] == "-"{
-            mutate { replace => { upstream_header_time => 0 }}
-          }
-
-          if [data][connect_time] == "-"{
-            mutate { replace => { connect_time => 0 }}
-          }
-
-          if [data][upstream_response_time] == "-"{
-            mutate { replace => { upstream_response_time => 0 }}
-          }
-          # Enrich with geolocation data.
-          geoip {
-              source => "http_x_forwarded_for" #field name that contains the ip address
-              fields => [ "city_name", "country_name", "country_code2", "continent_code"]
-              target => "data"
-              # Download static database and point to it
-          }
-
-        useragent {
-            source => "[data][user_agent]"
-            target => "[@metadata]"
+        if [data][url] == "ping" {
+          drop{}
         }
-        ##############################################################
-        # USER AGENT
-        ##############################################################
-        # add ua/device only if set
-        if [@metadata][ua_device] {
-              mutate {
-                  add_field => { "[data][ua/device]" => "%{[@metadata][ua_device]}" }
-              }
-          }
-        # add ua/family only if set
-        if [@metadata][ua_name] {
+
+        if [data][upstream_header_time] == "-"{
+          mutate { replace => { upstream_header_time => 0 }}
+        }
+
+        if [data][connect_time] == "-"{
+          mutate { replace => { connect_time => 0 }}
+        }
+
+        if [data][upstream_response_time] == "-"{
+          mutate { replace => { upstream_response_time => 0 }}
+        }
+        # Enrich with geolocation data.
+        geoip {
+            source => "http_x_forwarded_for" #field name that contains the ip address
+            fields => [ "city_name", "country_name", "country_code2", "continent_code"]
+            target => "data"
+            # Download static database and point to it
+        }
+
+      useragent {
+          source => "[data][user_agent]"
+          target => "[@metadata]"
+      }
+      ##############################################################
+      # USER AGENT
+      ##############################################################
+      # add ua/device only if set
+      if [@metadata][ua_device] {
             mutate {
-                add_field => { "[data][ua/family]" => "%{[@metadata][ua_name]}" }
+                add_field => { "[data][ua/device]" => "%{[@metadata][ua_device]}" }
             }
         }
-        # add ua/patch only if set
-        if [@metadata][ua_patch] {
-            mutate {
-                add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}.%{[@metadata][ua_patch]}" }
-            }
-        } else {
-            mutate {
-                add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}" }
-            }
+      # add ua/family only if set
+      if [@metadata][ua_name] {
+          mutate {
+              add_field => { "[data][ua/family]" => "%{[@metadata][ua_name]}" }
+          }
+      }
+      # add ua/patch only if set
+      if [@metadata][ua_patch] {
+          mutate {
+              add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}.%{[@metadata][ua_patch]}" }
+          }
+      } else {
+          mutate {
+              add_field => { "[data][ua/full]" => "%{[@metadata][ua_name]}/%{[@metadata][ua_major]}.%{[@metadata][ua_minor]}" }
+          }
+      }
+      # add ua/os only if set
+      if [@metadata][ua_os] {
+          mutate {
+              add_field => { "[data][ua/os]" => "%{[@metadata][ua_os]}" }
+          }
+      }
+      # add a field with the category, based on the url
+      grok {
+         match => { "url" => ["^/(api/)?records?/%{DATA}/(media-)?files/"]}
+         add_field => {"[data][request_category]" => "files" }
+      }
+      if "_grokparsefailure" in [tags] {
+        grok {
+           match => { "url" => "^/%{WORD:[data][request_category]}"}
+           remove_tag => "_grokparsefailure"
         }
-        # add ua/os only if set
-        if [@metadata][ua_os] {
-            mutate {
-                add_field => { "[data][ua/os]" => "%{[@metadata][ua_os]}" }
-            }
-        }
+     }
+     if [data][request_category] not in [ "files", "api", "oai2d", "static" ]  {
+        mutate { replace => {"[data][request_category]" => "ui"}}
+     }
+
+    {{ if .Values.logstash.cern_monit }}
+    mutate { rename => { "data" => "[m][data]" }}
+    mutate {
+      add_field => {"[m][producer]" => "{{ .Values.logstash.cern_monit.producer }}"
+                    "[m][type]" => "{{ .Values.logstash.cern_monit.type }}"
+                    "[m][data][_environment]" => "rdm${ENVIRONMENT}"
+                 }
+      rename => {
+          "request_time" => "[m][data][request_time]"
+          "bytes_received" => "[m][data][bytes_received]"
+          "request_id" => "[m][data][request_id]"
+          "message" => "[m][data][message]"
+          "http_x_forwarded_for" => "[m][data][http_x_forwarded_for]"
+          "user_agent" => "[m][data][user_agent]"
+          "path" => "[m][data][path]"
+          "bytes" => "[m][data][bytes]"
+          "http_code" => "[m][data][http_code]"
+          "connect_time" => "[m][data][connect_time]"
+          "session_id" => "[m][data][session_id]"
+          "referer" => "[m][data][referer]"
+          "user_id" => "[m][data][user_id]"
+          "http_method" => "[m][data][http_method]"
+          "http_protocol" => "[m][data][http_protocol]"
+          "client_ip" => "[m][data][client_ip]"
+          "host" => "[m][data][host]"
+          "url" => "[m][data][url]"
+          "request_timestamp" => "[m][data][request_timestamp]"
+          "query_string" => "[m][data][query_string]"
+          "upstream_header_time" => "[m][data][upstream_header_time]"
+          "upstream_response_time" => "[m][data][upstream_response_time]"
       }
     }
+    mutate { rename => { "[m][data][country_name]" => "[m][data][country]" }}
+    json_encode{ source => "m" 
+                 target =>"records_json" }
+
+    {{ end }}
+    }
     output {
-      if [data][url] != "ping"{
-        stdout {}
-        }
+      stdout {}
+    {{ if .Values.logstash.cern_monit }}
+      http {
+        content_type     => "application/json"
+        follow_redirects => true
+        format           => "message"
+        http_method      => "post"
+        message          => "%{records_json}"
+        url              => "{{ .Values.logstash.cern_monit.endpoint }}"
+      }
+    {{ end }}
     }
 {{ end }}

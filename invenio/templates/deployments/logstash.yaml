@@ -18,7 +18,9 @@ spec:
     spec:
       containers:
         - name: logstash
-          image: docker.elastic.co/logstash/logstash-oss:6.3.1
+          image: {{ .Values.logstash.logstash_image }}
+          command: ["bash"]
+          args: ["-c", "logstash-plugin install logstash-filter-json_encode && logstash -f /usr/share/logstash/pipeline/logstash.conf"]
           ports:
             - containerPort: 5044
           volumeMounts:
@@ -30,10 +32,22 @@ spec:
             requests:
               memory: 200Mi
             limits:
-              memory: 1Gi
+              memory: 2Gi
           env:
             - name: ENVIRONMENT
               value: {{ .Values.logstash.environment }}
+            - name: LS_JAVA_OPTS
+              value: "-Xms2g -Xmx2g"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9600
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
       volumes:
         - name: config-volume
           configMap:

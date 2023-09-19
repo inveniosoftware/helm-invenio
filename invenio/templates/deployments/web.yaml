@@ -181,7 +181,7 @@ spec:
         {{- end }}
       {{- if .Values.logstash.enabled }}
       - name: filebeat
-        image: {{ .Values.logstash.filebeat_image }}
+        image: {{ .Values.logstash.filebeat_image }}  
         args: [
             "-c", "/etc/filebeat.yml",
             "-e",
