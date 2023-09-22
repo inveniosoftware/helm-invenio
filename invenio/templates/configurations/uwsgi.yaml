@@ -6,31 +6,47 @@ metadata:
 data:
   uwsgi.ini: |
     [uwsgi]
-    stats = 0.0.0.0:9000
+    stats = /tmp/stats.socket
     socket = 0.0.0.0:5000
     module = invenio_app.wsgi:application
     master = true
+    vacuum = true
+    enable-threads = true
     processes = {{ .Values.web.uwsgi.processes }}
     threads = {{ .Values.web.uwsgi.threads }}
-    single-interpreter = true
-    need-app = true
-    disable-logging = true
+    thunder-lock = true # https://marc.info/?l=uwsgi&m=140473636200986&w=2
+                        # https://uwsgi-docs.readthedocs.io/en/latest/articles/SerializingAccept.html
+
+    # disable-logging = true
     log-4xx = true
     log-5xx = true
-    auto-procname = true
-    buffer-size =  10240
-    post-buffering = true
+    log-ioerror = true
+    log-x-forwarded-for = true
+
+    single-interpreter = true
+    need-app = true
+    lazy = true
     lazy-apps = true
-    # thunder-lock = true # https://marc.info/?l=uwsgi&m=140473636200986&w=2
-                          # https://uwsgi-docs.readthedocs.io/en/latest/articles/SerializingAccept.html
+
+    # Silence write errors for misbehaving clients
+    # https://github.com/getsentry/raven-python/issues/732
+    # ignore-sigpipe = true
+    # ignore-write-errors = true
+    # disable-write-exception = true
+
+    # post-buffering = true
+    buffer-size = 65535
+    socket-timeout = 120
+    socket-write-timeout = 120
+    so-write-timeout = 120
+    so-send-timeout = 120
+    socket-send-timeout = 120
 
     # Workers management
-    max-requests = 1999
-    max-requests-delta = 149
-    # max-worker-lifetime = 3600 # https://github.com/unbit/uwsgi/issues/1894
-    reload-on-rss = 250
+    # max-requests = 1999
+    # max-requests-delta = 149
 
     # fix up signal handling
-    die-on-term: true
-    hook-master-start: unix_signal:2 gracefully_kill_them_all
-    hook-master-start: unix_signal:15 gracefully_kill_them_all
+    die-on-term = true
+    # hook-master-start = unix_signal:2 gracefully_kill_them_all
+    # hook-master-start = unix_signal:15 gracefully_kill_them_all
