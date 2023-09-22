@@ -83,6 +83,12 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
+  startupProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
   assets:
     location: /opt/invenio/var/instance/static
   resources:
@@ -97,8 +103,6 @@ web:
     run_before_app: ""
   extra_volumeMounts:
   extra_volumes:
-
-
 
 worker:
   enabled: true
@@ -151,7 +155,6 @@ redis:
     access_mode: ReadWriteMany
     size: 5G
     storage_class: ""
-
 
 rabbitmq:
   enabled: true
