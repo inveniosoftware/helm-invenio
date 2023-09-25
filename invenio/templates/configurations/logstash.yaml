@@ -114,22 +114,30 @@ data:
       grok {
          match => { "url" => ["^/(api/)?records?/%{DATA}/(media-)?files/"]}
          add_field => {"[data][request_category]" => "files" }
+         tag_on_failure => []
       }
-      if "_grokparsefailure" in [tags] {
-        grok {
-           match => { "url" => "^/%{WORD:[data][request_category]}"}
-           remove_tag => "_grokparsefailure"
-        }
-     }
-     if [data][request_category] not in [ "files", "api", "oai2d", "static" ]  {
+      # add a field with the category "legacy", based on the url
+      if "" not in [data][request_category] {
+         grok {
+            match => { "url" => ["^/communities/about/", "^/communities/%{DATA}/(about)|(edit)|(curate)|(search)", "^/collection/(user-%{INT})?$", "^/record/", "^/records/%{DATA}/export/", "^/deposit(/%{DATA})?$", "^/dev$", "^/faq$", "^/features$", "^/whatsnew$", "^/about$", "^/contact$", "^/policies$", "^/privacy-policy$", "^/terms$", "^/donate$"]}
+            add_field => {"[data][request_category]" => "legacy" }
+            tag_on_failure => []
+         }
+         if "" not in [data][request_category] {
+            grok {
+                match => { "url" => "/%{WORD:[data][request_category]}"}
+            }
+         }      
+     } 
+     if [data][request_category] not in [ "files", "api", "oai2d", "static", "legacy" ]  {
         mutate { replace => {"[data][request_category]" => "ui"}}
      }
-
-    {{ if .Values.logstash.cern_monit }}
+    
+    {{ if .Values.logstash.cern_monit.enabled }}
     mutate { rename => { "data" => "[m][data]" }}
     mutate {
       add_field => {"[m][producer]" => "{{ .Values.logstash.cern_monit.producer }}"
-                    "[m][type]" => "{{ .Values.logstash.cern_monit.type }}"
+                    "[m][type]" => "${ENVIRONMENT}-access"
                     "[m][data][_environment]" => "rdm${ENVIRONMENT}"
                  }
       rename => {
