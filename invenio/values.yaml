@@ -190,7 +190,11 @@ search:
 
 logstash:
   enabled: false
-  filebeat_image: filebeat_image_to_be_used
+  filebeat_image: "filebeat_image_to_be_used"
+  logstash_image: "logstash_image_to_be_used"
   environment: "qa"
+  cern_monit:
+    enabled: false
+    producer: "invenio"
 
 extra_secrets:

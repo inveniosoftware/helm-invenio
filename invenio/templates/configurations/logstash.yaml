@@ -110,19 +110,20 @@ data:
               add_field => { "[data][ua/os]" => "%{[@metadata][ua_os]}" }
           }
       }
-      # add a field with the category, based on the url
+      # Attempt to match category to 'files'
       grok {
          match => { "url" => ["^/(api/)?records?/%{DATA}/(media-)?files/"]}
          add_field => {"[data][request_category]" => "files" }
          tag_on_failure => []
       }
-      # add a field with the category "legacy", based on the url
+      # If the category did not match 'files', try to match 'legacy' endpoints
       if "" not in [data][request_category] {
          grok {
             match => { "url" => ["^/communities/about/", "^/communities/%{DATA}/(about)|(edit)|(curate)|(search)", "^/collection/(user-%{INT})?$", "^/record/", "^/records/%{DATA}/export/", "^/deposit(/%{DATA})?$", "^/dev$", "^/faq$", "^/features$", "^/whatsnew$", "^/about$", "^/contact$", "^/policies$", "^/privacy-policy$", "^/terms$", "^/donate$"]}
             add_field => {"[data][request_category]" => "legacy" }
             tag_on_failure => []
          }
+         # If the category did not match anything yet, infer the category from the url path
          if "" not in [data][request_category] {
             grok {
                 match => { "url" => "/%{WORD:[data][request_category]}"}
@@ -173,7 +174,7 @@ data:
     }
     output {
       stdout {}
-    {{ if .Values.logstash.cern_monit }}
+    {{ if .Values.logstash.cern_monit.enabled }}
       http {
         content_type     => "application/json"
         follow_redirects => true
