@@ -45,4 +45,7 @@ spec:
                 - "redis-cli -h $(hostname) ping"
             initialDelaySeconds: 15
             timeoutSeconds: 5
+      {{- if .Values.redis.resources }}
+        resources: {{- toYaml .Values.redis.resources | nindent 10 }}
+      {{- end }}
 {{- end -}}

@@ -42,13 +42,9 @@ spec:
                 secretKeyRef:
                   name: {{  .Values.rabbitmq.secret_name }}
                   key: RABBITMQ_DEFAULT_PASS
-          resources:
-            limits:
-              cpu: '1'
-              memory: 2Gi
-            requests:
-              cpu: 500m
-              memory: 500Mi
+          {{- if .Values.rabbitmq.resources }}
+            resources: {{- toYaml .Values.rabbitmq.resources | nindent 10 }}
+          {{- end }}
           readinessProbe:
             exec:
               command:
