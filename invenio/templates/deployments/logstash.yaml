@@ -6,11 +6,9 @@ metadata:
   name: logstash-deployment
 spec:
   replicas: 1
-  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
   selector:
     matchLabels:
       app: logstash
-  {{- end }}
   template:
     metadata:
       labels:
