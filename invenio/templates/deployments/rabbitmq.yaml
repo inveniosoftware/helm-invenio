@@ -43,7 +43,7 @@ spec:
                   name: {{  .Values.rabbitmq.secret_name }}
                   key: RABBITMQ_DEFAULT_PASS
           {{- if .Values.rabbitmq.resources }}
-          resources: {{- toYaml .Values.rabbitmq.resources | nindent 10 }}
+          resources: {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           {{- end }}
           readinessProbe:
             exec:
