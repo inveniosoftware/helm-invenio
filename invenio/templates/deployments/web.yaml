@@ -129,7 +129,11 @@ spec:
           mountPath: /opt/nginx-invenio-assets
         {{- if .Values.persistence.enabled }}
         - mountPath: /opt/invenio/var/instance/data
-          name: shared-volume
+          name: {{ .Values.persistence.name }}
+          subPath: data
+        - mountPath: /opt/invenio/var/instance/profiler
+          name: {{ .Values.persistence.name }}
+          subPath: profiler
         {{- end }}
         {{- range .Values.web.extra_volumeMounts }}
         - name: {{ .name }}
