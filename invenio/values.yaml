@@ -208,6 +208,12 @@ search:
 logstash:
   enabled: false
   filebeat_image: "docker.elastic.co/beats/filebeat-oss:8.10.2"
+  filebeat_resources:
+    limits:
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
   logstash_image: "docker.elastic.co/logstash/logstash-oss:8.10.2"
   environment: "qa"
   cern_monit:

@@ -1,20 +1,13 @@
 ---
-{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
-{{- else }}
 apiVersion: apps/v1
 kind: Deployment
-{{- end }}
 metadata:
   name: web
 spec:
   replicas: {{ .Values.web.replicas }}
-  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
   selector:
     matchLabels:
       app: web
-  {{- end }}
   template:
     metadata:
       labels:
@@ -179,12 +172,9 @@ spec:
             "-c", "/etc/filebeat.yml",
             "-e",
         ]
-        resources:
-          limits:
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
+        {{- if .Values.logstash.filebeat_resources }}
+        resources: {{- toYaml .Values.logstash.filebeat_resources | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/filebeat.yml
