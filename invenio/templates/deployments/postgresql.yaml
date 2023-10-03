@@ -1,21 +1,14 @@
 {{- if .Values.postgresql.enabled -}}
 ---
-{{- if .Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig" }}
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
-{{- else }}
 apiVersion: apps/v1
 kind: Deployment
-{{- end }}
 metadata:
   name: db
 spec:
   replicas: 1
-  {{- if not (.Capabilities.APIVersions.Has "apps.openshift.io/v1/DeploymentConfig") }}
   selector:
     matchLabels:
       app: db
-  {{- end }}
   template:
     metadata:
       labels:
