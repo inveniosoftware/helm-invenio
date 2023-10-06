@@ -45,7 +45,6 @@ haproxy:
   image: "haproxy:2.8.3"
   maxconn: 100
   maxconn_static: 500
-  stats_auth:
   resources:
     requests:
       cpu: 250m
@@ -53,6 +52,19 @@ haproxy:
     limits:
       cpu: 250m
       memory: 500Mi
+  denied_ips:  # list
+    - tst
+  denied_uas:  # list
+    - tst
+  http429_response: "You are being blocked. Please contact us."
+  html_backup_website: |-
+    <!DOCTYPE html>
+    <html>
+      <body>
+          <h1>503 Service Unavailable</h1>
+          <p>Under maintenance!</p>
+      </body>
+    </html>
 
 nginx:
   image: "nginx:1.24.0"
@@ -171,7 +183,7 @@ rabbitmq:
   secret_name: "mq-secrets"
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
-  management_host: 
+  management_host:
   persistence:
     enabled: true
     name: "rabbitmq-volume"

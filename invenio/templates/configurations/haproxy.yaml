@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: haproxy-config
 data:
-  haproxy.cfg: |
+  haproxy.cfg: |-
     global
       #quiet
       # uncomment the following to log to stdout configuration issues
@@ -65,38 +65,38 @@ data:
     backend static
       server web web:80 check fall 2 inter 5000 maxconn {{ .Values.haproxy.maxconn_static }}
 
-  denylist-ips.acl: |
+  denylist-ips.acl: |-
     # insert here the list of IPs to deny (IP ranges supported). Examples:
     # 192.168.1.1
     # 192.168.1.0/24
     # 192.168.0.0/16
     # 2001:db8::/48
+{{- range .Values.haproxy.denied_ips | default list }}
+{{ . | indent 4 }}
+{{- end }}
 
-  denylist-ua.acl: |
+  denylist-ua.acl: |-
     # insert here the list of User Agents to deny. Examples:
     # PetalBot
     # Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36
+{{- range .Values.haproxy.denied_uas | default list }}
+{{ . | indent 4 }}
+{{- end }}
 
-  error429.http: |
+  error429.http: |-
     HTTP/1.1 429 Too Many Requests
     Cache-Control: no-cache
     Connection: close
     Content-Type: text/plain
 
-    You are being blocked. Please contact us.
+{{ .Values.haproxy.http429_response | indent 4 }}
 
-  backup-website.http: |
+  backup-website.http: |-
     HTTP/1.0 503 Service Unavailable
     Cache-Control: no-cache
     Connection: close
     Content-Type: text/html
 
-    <!DOCTYPE html>
-    <html>
-      <body>
-          <h1>503 Service Unavailable</h1>
-          <p>Under maintenance!</p>
-      </body>
-    </html>
+{{ .Values.haproxy.html_backup_website | indent 4 }}
 
 
