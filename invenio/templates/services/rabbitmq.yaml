@@ -14,6 +14,9 @@ spec:
   - name: management
     port: 5672
     protocol: TCP
+  - name: management-console
+    protocol: TCP
+    port: 15672
   selector:
     app: mq
 {{- end }}

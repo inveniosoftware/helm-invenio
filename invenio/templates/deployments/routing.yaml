@@ -19,14 +19,14 @@ spec:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: invenio
+  name: mq
 spec:
-  host: {{ .Values.host }}
+  host: {{ .Values.management_host }}
   to:
     kind: Service
     name: mq
   port:
-    targetPort: management-console
+    targetPort: management
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge

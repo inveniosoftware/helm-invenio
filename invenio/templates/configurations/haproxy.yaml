@@ -4,19 +4,19 @@ kind: ConfigMap
 metadata:
   name: haproxy-config
 data:
-  haproxy.cfg: |-
+  haproxy.cfg: |
     global
-      #quiet
+      quiet
       # uncomment the following to log to stdout configuration issues
-      log stdout format raw local0 warning
+      #log stdout format raw local0 warning
 
     defaults
-      log global
-      mode http
+      log     global
+      mode    http
       maxconn 3000
 
       option  redispatch
-      retries  3
+      retries 3
 
 {{- if $haproxySecrets }}  # lookup return empty map when --dry-run
 {{- $statsUsername := index $haproxySecrets.data "stats-username"}}

@@ -53,9 +53,7 @@ haproxy:
       cpu: 250m
       memory: 500Mi
   denied_ips:  # list
-    - tst
   denied_uas:  # list
-    - tst
   http429_response: "You are being blocked. Please contact us."
   html_backup_website: |-
     <!DOCTYPE html>
