@@ -6,9 +6,10 @@ metadata:
 data:
   uwsgi.ini: |
     [uwsgi]
-    stats = /tmp/stats.socket
     socket = 0.0.0.0:5000
     module = invenio_app.wsgi:application
+    stats = /tmp/stats.socket
+
     master = true
     vacuum = true
     enable-threads = true
@@ -22,17 +23,21 @@ data:
     log-5xx = true
     log-ioerror = true
     log-x-forwarded-for = true
+    # req-logger = file:/var/log/uwsgi/req.log
+    # logger = file:/var/log/uwsgi/app.log
 
-    single-interpreter = true
-    need-app = true
+    # Fork then initialize application. This is to avoid issues with shared
+    # DB connections pools.
     lazy = true
     lazy-apps = true
+    single-interpreter = true
+    need-app = true
 
     # Silence write errors for misbehaving clients
     # https://github.com/getsentry/raven-python/issues/732
-    # ignore-sigpipe = true
-    # ignore-write-errors = true
-    # disable-write-exception = true
+    ignore-sigpipe = true
+    ignore-write-errors = true
+    disable-write-exception = true
 
     # post-buffering = true
     buffer-size = 65535
@@ -42,9 +47,9 @@ data:
     so-send-timeout = 120
     socket-send-timeout = 120
 
-    # Workers management
-    # max-requests = 1999
-    # max-requests-delta = 149
+    # Automatically respawn processes after serving
+    # max-requests = 4000
+    # max-requests-delta = 100
 
     # fix up signal handling
     die-on-term = true

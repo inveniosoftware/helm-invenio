@@ -42,9 +42,10 @@ invenio:
 
 haproxy:
   enabled: true
-  image: "haproxy:2.2"
+  image: "haproxy:2.8.3"
   maxconn: 100
   maxconn_static: 500
+  stats_auth:
   resources:
     requests:
       cpu: 250m
@@ -54,7 +55,7 @@ haproxy:
       memory: 500Mi
 
 nginx:
-  image: "nginx:1.23"
+  image: "nginx:1.24.0"
   max_conns: 100
   assets:
     location: /opt/invenio/var/instance/static
@@ -147,7 +148,7 @@ persistence:
 
 redis:
   enabled: true
-  image: "redis:7"
+  image: "redis:7.2.1"
   host: ""
   persistence:
     enabled: true
@@ -165,11 +166,12 @@ redis:
 
 rabbitmq:
   enabled: true
-  image: "rabbitmq:3-management"
+  image: "rabbitmq:3.12.6-management"
   existing_secret: false
   secret_name: "mq-secrets"
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
+  management_host: 
   persistence:
     enabled: true
     name: "rabbitmq-volume"

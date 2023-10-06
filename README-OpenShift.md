@@ -53,12 +53,24 @@ secret "db-secrets" created
 RabbitMQ secrets:
 
 ```console
-$ RABBITMQ_DEFAULT_PASS=$(openssl rand -hex 8)
+$ RABBITMQ_DEFAULT_PASS=$(openssl rand -hex 16)
 $ oc create secret generic \
   --from-literal="RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS" \
   --from-literal="CELERY_BROKER_URL=amqp://guest:$RABBITMQ_DEFAULT_PASS@mq:5672/" \
   mq-secrets
 secret "mq-secrets" created
+```
+
+HaProxy secrets:
+
+```console
+$ read HAPROXY_USERNAME
+$ HAPROXY_PSW=$(openssl rand -hex 16)
+$ oc create secret generic \
+  --from-literal="stats-username=$HAPROXY_USERNAME" \
+  --from-literal="stats-password=$HAPROXY_PSW" \
+  haproxy-secrets
+secret "haproxy-secrets" created
 ```
 
 sentry secrets:

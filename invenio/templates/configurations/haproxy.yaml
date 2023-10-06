@@ -1,4 +1,4 @@
----
+{{- $haproxySecrets := (lookup "v1" "Secret" .Release.Namespace "haproxy-secrets") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,15 +6,26 @@ metadata:
 data:
   haproxy.cfg: |
     global
-      quiet
+      #quiet
+      # uncomment the following to log to stdout configuration issues
+      log stdout format raw local0 warning
 
     defaults
+      log global
       mode http
       maxconn 3000
 
+      option  redispatch
+      retries  3
+
+{{- if $haproxySecrets }}  # lookup return empty map when --dry-run
+{{- $statsUsername := index $haproxySecrets.data "stats-username"}}
+{{- $statsPassword := index $haproxySecrets.data "stats-password"}}
       stats enable
       stats uri /stats
       stats hide-version
+      stats auth {{ $statsUsername | b64dec}}:{{ $statsPassword | b64dec}}
+{{- end }}
 
       timeout  http-request 10s
       timeout  queue 2m
@@ -27,8 +38,22 @@ data:
     frontend public
       bind *:8080
       acl is_static path_beg -i /static /robots.txt
+
+      # deny IPs/UserAgents
+      acl is_blocked_ip hdr_ip(X-Forwarded-For) -f /usr/local/etc/haproxy/denylist-ips.acl
+      acl is_blocked_ua hdr_sub(user-agent) -i -f /usr/local/etc/haproxy/denylist-ua.acl
+      acl is_blocked_ua req.fhdr(user-agent) -f /usr/local/etc/haproxy/denylist-ua.acl
+      http-request deny if is_blocked_ip OR is_blocked_ua
+      errorfiles custom_errors
+
       default_backend apps
       use_backend     static if is_static
+
+    http-errors custom_errors
+      # triggered when HaProxy blocks IPs/UAs
+      errorfile 403 /usr/local/etc/haproxy/error429.http
+      # show backup website when no backends available (503)
+      errorfile 503 /usr/local/etc/haproxy/backup-website.http
 
     backend apps
       http-check disable-on-404
@@ -39,3 +64,39 @@ data:
 
     backend static
       server web web:80 check fall 2 inter 5000 maxconn {{ .Values.haproxy.maxconn_static }}
+
+  denylist-ips.acl: |
+    # insert here the list of IPs to deny (IP ranges supported). Examples:
+    # 192.168.1.1
+    # 192.168.1.0/24
+    # 192.168.0.0/16
+    # 2001:db8::/48
+
+  denylist-ua.acl: |
+    # insert here the list of User Agents to deny. Examples:
+    # PetalBot
+    # Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36
+
+  error429.http: |
+    HTTP/1.1 429 Too Many Requests
+    Cache-Control: no-cache
+    Connection: close
+    Content-Type: text/plain
+
+    You are being blocked. Please contact us.
+
+  backup-website.http: |
+    HTTP/1.0 503 Service Unavailable
+    Cache-Control: no-cache
+    Connection: close
+    Content-Type: text/html
+
+    <!DOCTYPE html>
+    <html>
+      <body>
+          <h1>503 Service Unavailable</h1>
+          <p>Under maintenance!</p>
+      </body>
+    </html>
+
+

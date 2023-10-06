@@ -22,7 +22,20 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: haproxy-config
-              mountPath: /usr/local/etc/haproxy
+              mountPath: /usr/local/etc/haproxy/haproxy.cfg
+              subPath: haproxy.cfg
+            - name: haproxy-config
+              mountPath: /usr/local/etc/haproxy/denylist-ips.acl
+              subPath: denylist-ips.acl
+            - name: haproxy-config
+              mountPath: /usr/local/etc/haproxy/denylist-ua.acl
+              subPath: denylist-ua.acl
+            - name: haproxy-config
+              mountPath: /usr/local/etc/haproxy/error429.http
+              subPath: error429.http
+            - name: haproxy-config
+              mountPath: /usr/local/etc/haproxy/backup-website.http
+              subPath: backup-website.http
           {{- if .Values.haproxy.resources }}
           resources: {{- toYaml .Values.haproxy.resources | nindent 12 }}
           {{- end }}
