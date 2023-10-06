@@ -166,7 +166,7 @@ data:
           "upstream_response_time" => "[m][data][upstream_response_time]"
         }
       }
-      mutate { rename => { "[m][data][country_name]" => "[m][data][country]" }}
+      mutate { rename => { "[m][data][geo][country_name]" => "[m][data][country]" }}
       json_encode {
         source => "m"
         target =>"records_json"
