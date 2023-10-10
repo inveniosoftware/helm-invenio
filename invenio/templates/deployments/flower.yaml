@@ -1,0 +1,66 @@
+{{- if .Values.flower.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flower-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flower-management
+  template:
+    metadata:
+      labels:
+        app: flower-management
+    spec:
+      containers:
+        - name: flower-management
+          image: {{ .Values.flower.image }}
+          command:
+              [
+                "celery",
+                "--config=/var/celery/celeryconfig.py",
+                "--broker=amqp://guest:$(RABBITMQ_DEFAULT_PASS)@mq:5672/",
+                "flower",
+                "--broker_api=http://guest:$(RABBITMQ_DEFAULT_PASS)@mq:15672/api/",
+                "--basic_auth=$(FLOWER_BASIC_AUTH_CREDENTIALS)",
+                "--conf=/var/flower/flowerconfig.py"
+              ]
+          ports:
+            - containerPort: 5555
+          env:
+            - name: TZ
+              value: "Europe/Zurich"
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secret_name }}
+                  key: RABBITMQ_DEFAULT_PASS
+            - name: FLOWER_BASIC_AUTH_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.flower.secret_name }}
+                  key: FLOWER_BASIC_AUTH_CREDENTIALS
+          {{- if .Values.flower.resources }}
+          resources: {{- toYaml .Values.flower.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: celery-config-volume
+              mountPath: /var/celery
+            - name: flower-config-volume
+              mountPath: /var/flower
+      volumes:
+        - name: celery-config-volume
+          configMap:
+            name: flower-celery-config
+            items:
+              - key: celeryconfig.py
+                path: celeryconfig.py
+        - name: flower-config-volume
+          configMap:
+            name: flower-config
+            items:
+              - key: flowerconfig.py
+                path: flowerconfig.py
+{{- end -}}

@@ -1,0 +1,16 @@
+{{- if .Values.flower.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower-management
+  labels:
+    app: flower-management
+spec:
+  ports:
+  - name: flower-management-ui
+    protocol: TCP
+    port: 5555
+  selector:
+    app: flower-management
+{{- end }}
