@@ -1,5 +1,6 @@
----
+### main route
 {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -11,22 +12,6 @@ spec:
     name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
   port:
     targetPort: http
-  tls:
-    insecureEdgeTerminationPolicy: Redirect
-    termination: edge
-
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: mq
-spec:
-  host: {{ .Values.management_host }}
-  to:
-    kind: Service
-    name: mq
-  port:
-    targetPort: management-console
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
@@ -68,4 +53,42 @@ spec:
               serviceName: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
               servicePort: http
 {{- end }}
+{{- end }}
+
+{{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") .Values.rabbitmq.enabled }}
+### RabbitMQ Management
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: mq-management
+spec:
+  host: {{ .Values.rabbitmq.management_host }}
+  to:
+    kind: Service
+    name: mq
+  port:
+    targetPort: management-console
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+{{- end }}
+
+{{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") .Values.flower.enabled }}
+### Celery Flower
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: flower-management
+spec:
+  host: {{ .Values.flower.host }}
+  to:
+    kind: Service
+    name: flower-management
+  port:
+    targetPort: flower-management-ui
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
 {{- end }}

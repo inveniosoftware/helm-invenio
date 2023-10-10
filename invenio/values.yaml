@@ -52,8 +52,8 @@ haproxy:
     limits:
       cpu: 250m
       memory: 500Mi
-  denied_ips:  # list
-  denied_uas:  # list
+  denied_ips: ""
+  denied_uas: ""
   http429_response: "You are being blocked. Please contact us."
   html_backup_website: |-
     <!DOCTYPE html>
@@ -181,7 +181,7 @@ rabbitmq:
   secret_name: "mq-secrets"
   default_password: "mq_password"
   celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
-  management_host:
+  management_host: ""
   persistence:
     enabled: true
     name: "rabbitmq-volume"
@@ -195,6 +195,21 @@ rabbitmq:
     requests:
       cpu: 500m
       memory: 500Mi
+
+flower:
+  enabled: true
+  image: "mher/flower:2.0"
+  secret_name: "flower-secrets"
+  default_username: "flower"
+  default_password: "flower_password"
+  host: ""
+  resources:
+    requests:
+      memory: 125Mi
+      cpu: 0.02
+    limits:
+      memory: 250Mi
+      cpu: 0.1
 
 postgresql:
   enabled: false

@@ -71,17 +71,13 @@ data:
     # 192.168.1.0/24
     # 192.168.0.0/16
     # 2001:db8::/48
-{{- range .Values.haproxy.denied_ips | default list }}
-{{ . | indent 4 }}
-{{- end }}
+{{ .Values.haproxy.denied_ips | indent 4 }}
 
   denylist-ua.acl: |-
     # insert here the list of User Agents to deny. Examples:
     # PetalBot
     # Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36
-{{- range .Values.haproxy.denied_uas | default list }}
-{{ . | indent 4 }}
-{{- end }}
+{{ .Values.haproxy.denied_uas | indent 4 }}
 
   error429.http: |-
     HTTP/1.1 429 Too Many Requests
