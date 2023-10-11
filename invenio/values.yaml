@@ -110,10 +110,6 @@ web:
       cpu: 1000m
       memory: 1Gi
   annotations: []
-  containers:
-    run_before_app: ""
-  extra_volumeMounts:
-  extra_volumes:
 
 worker:
   enabled: true
@@ -133,8 +129,6 @@ worker:
     limits:
       cpu: 1000m
       memory: 1Gi
-  containers:
-    run_before_app: ""
   volumes:
     enabled: false
 
@@ -247,4 +241,16 @@ logstash:
     enabled: false
     producer: "invenio"
 
-extra_secrets:
+kerberos:
+  enabled: false
+  secret_name: ""
+  image: ""
+  args: []
+  initArgs: []
+  resources:
+    limits:
+      cpu: 100m
+      memory: 20Mi
+    requests:
+      cpu: 10m
+      memory: 2Mi

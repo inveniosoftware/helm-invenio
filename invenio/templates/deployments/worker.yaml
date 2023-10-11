@@ -14,122 +14,147 @@ spec:
         app: worker
     spec:
       containers:
-      - name: worker
-        image: {{ .Values.worker.image }}
-        command: [
-            "/bin/bash",
-            "-c",
-            "{{- if .Values.worker.containers.run_before_app -}}
-                {{ .Values.worker.containers.run_before_app }} &&
-            {{- end -}}
-             celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
-        ]
-        envFrom:
-          - configMapRef:
-              name: invenio-config
-        env:
-        - name: TZ
-          value: "Europe/Zurich"
-        - name: INVENIO_BROKER_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
-              key: CELERY_BROKER_URL
-        - name: INVENIO_CELERY_BROKER_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
-              key: CELERY_BROKER_URL
-        - name: INVENIO_SQLALCHEMY_DATABASE_URI
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgresql.secret_name }}
-              key: SQLALCHEMY_DB_URI
-        - name: INVENIO_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: invenio-secrets
-              key: INVENIO_SECRET_KEY
-        - name: INVENIO_SECURITY_LOGIN_SALT
-          valueFrom:
-            secretKeyRef:
-              name: invenio-secrets
-              key: INVENIO_SECURITY_LOGIN_SALT
-        - name: INVENIO_CSRF_SECRET_SALT
-          valueFrom:
-            secretKeyRef:
-              name: invenio-secrets
-              key: INVENIO_CSRF_SECRET_SALT
-        {{- if not .Values.search.enabled }}
-        - name: INVENIO_SEARCH_HOSTS
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.search.secret_name }}
-              key: INVENIO_SEARCH_HOSTS
+        - name: worker
+          image: {{ .Values.worker.image }}
+          command: [
+              "/bin/bash",
+              "-c",
+              "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+          ]
+          {{- if .Values.worker.resources }}
+          resources: {{- toYaml .Values.worker.resources | nindent 10 }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: invenio-config
+          env:
+          - name: TZ
+            value: "Europe/Zurich"
+          - name: INVENIO_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rabbitmq.secret_name }}
+                key: CELERY_BROKER_URL
+          - name: INVENIO_CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rabbitmq.secret_name }}
+                key: CELERY_BROKER_URL
+          - name: INVENIO_SQLALCHEMY_DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgresql.secret_name }}
+                key: SQLALCHEMY_DB_URI
+          - name: INVENIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_SECRET_KEY
+          - name: INVENIO_SECURITY_LOGIN_SALT
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_SECURITY_LOGIN_SALT
+          - name: INVENIO_CSRF_SECRET_SALT
+            valueFrom:
+              secretKeyRef:
+                name: invenio-secrets
+                key: INVENIO_CSRF_SECRET_SALT
+          {{- if not .Values.search.enabled }}
+          - name: INVENIO_SEARCH_HOSTS
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.search.secret_name }}
+                key: INVENIO_SEARCH_HOSTS
+          {{- end }}
+          {{- if .Values.invenio.sentry.enabled }}
+          - name: INVENIO_SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.invenio.sentry.secret_name }}
+                key: SENTRY_DSN
+          {{- end }}
+          {{- if .Values.invenio.datacite.enabled }}
+          - name: INVENIO_DATACITE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.invenio.datacite.secret_name }}
+                key: DATACITE_USERNAME
+          - name: INVENIO_DATACITE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.invenio.datacite.secret_name }}
+                key: DATACITE_PASSWORD
+          {{- end }}
+          {{- range .Values.invenio.extra_env_from_secret }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .valueFrom.secretKeyRef.name }}
+                key: {{ .valueFrom.secretKeyRef.key }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+            initialDelaySeconds: 20
+            timeoutSeconds: 30
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - mountPath: /opt/invenio/var/instance/data
+              name: shared-volume
+            {{- end }}
+            {{- if .Values.kerberos.enabled }}
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+            {{- end }}
+        {{- if .Values.kerberos.enabled }}
+        - name: kerberos-credentials
+          image: {{ .Values.kerberos.image }}
+          args: {{ .Values.kerberos.args }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.kerberos.secret_name }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          {{- if .Values.kerberos.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.kerberos.readinessProbe | nindent 10 }}
+          {{- end }}
+          {{- if .Values.kerberos.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.kerberos.livenessProbe | nindent 10 }}
+          {{- end }}
+          volumeMounts:
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
         {{- end }}
-        {{- if .Values.invenio.sentry.enabled }}
-        - name: INVENIO_SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.invenio.sentry.secret_name }}
-              key: SENTRY_DSN
-        {{- end }}
-        {{- if .Values.invenio.datacite.enabled }}
-        - name: INVENIO_DATACITE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.invenio.datacite.secret_name }}
-              key: DATACITE_USERNAME
-        - name: INVENIO_DATACITE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.invenio.datacite.secret_name }}
-              key: DATACITE_PASSWORD
-        {{- end }}
-        {{- range .Values.invenio.extra_env_from_secret }}
-        - name: {{ .name }}
-          valueFrom:
-            secretKeyRef:
-              name: {{ .valueFrom.secretKeyRef.name }}
-              key: {{ .valueFrom.secretKeyRef.key }}
-        {{- end }}
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
-          initialDelaySeconds: 20
-          timeoutSeconds: 30
-        {{- if .Values.persistence.enabled }}
-        volumeMounts:
-        - mountPath: /opt/invenio/var/instance/data
-          name: shared-volume
-        {{- range .Values.worker.extra_volumeMounts }}
-        - name: {{ .name }}
-          mountPath: {{ .mountPath }}
-          subPath: {{ default "" .subPath }}
-        {{- end }}
-        {{- end }}
-        {{- if .Values.worker.resources }}
-        resources: {{- toYaml .Values.worker.resources | nindent 10 }}
-        {{- end }}
-      {{- if or .Values.worker.volumes.enabled .Values.persistence.enabled }}
+
+      {{- if .Values.kerberos.enabled }}
+      initContainers:
+        # Init kerberos credentials
+        - name: init-kerberos-credentials
+          image: {{ .Values.kerberos.image }}
+          args: {{ .Values.kerberos.initArgs }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.kerberos.secret_name }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          volumeMounts:
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+      {{- end }}
+
       volumes:
-      {{- if .Values.persistence.enabled }}
-      - name: shared-volume
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.name }}
-      {{- end }}
-      {{- if .Values.worker.volumes.enabled }}
-      {{- range .Values.worker.extra_volumes }}
-      - name: {{ .name }}
-        configMap:
-          name: {{ .configMap.name }}
-          defaultMode: {{ .configMap.defaultMode }}
-      {{- end }}
-      {{- end }}
-      {{- end }}
+        {{- if .Values.persistence.enabled }}
+        - name: shared-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name }}
+        {{- end }}
+        {{- if .Values.kerberos.enabled }}
+        - name: kerberos-credentials-cache
+          emptyDir: {}
+        {{- end }}
+
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
       - name: {{ .Values.worker.imagePullSecret }}
@@ -167,11 +192,6 @@ spec:
         {{- if .Values.persistence.enabled }}
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
-        {{- end }}
-        {{- range .Values.workerBeat.extra_volumeMounts }}
-        - name: {{ .name }}
-          mountPath: {{ .mountPath }}
-          subPath: {{ default "" .subPath }}
         {{- end }}
         envFrom:
         - configMapRef:
@@ -265,12 +285,6 @@ spec:
       - name: var-run-celery
         emptyDir:
           medium: Memory
-      {{- range .Values.workerBeat.extra_volumes }}
-      - name: {{ .name }}
-        configMap:
-          name: {{ .configMap.name }}
-          defaultMode: {{ .configMap.defaultMode }}
-      {{- end }}
       {{- if .Values.persistence.enabled }}
       - name: shared-volume
         persistentVolumeClaim:

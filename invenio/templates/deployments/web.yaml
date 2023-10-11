@@ -19,13 +19,11 @@ spec:
         command: [
             "/bin/bash",
             "-c",
-            "
-            {{- if .Values.web.containers.run_before_app -}}
-            {{ .Values.web.containers.run_before_app }} &&
-            {{- end -}}
-            cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/ &&
-            uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
+            "uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
         ]
+        {{- if .Values.web.resources }}
+        resources: {{- toYaml .Values.web.resources | nindent 10 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: invenio-config
@@ -116,26 +114,22 @@ spec:
           successThreshold: {{ .Values.web.startupProbe.successThreshold }}
           timeoutSeconds: {{ .Values.web.startupProbe.timeoutSeconds }}
         volumeMounts:
-        - name: uwsgi-config
-          mountPath: '/opt/invenio/src/uwsgi'
-        - name: nginx-invenio-assets
-          mountPath: /opt/nginx-invenio-assets
-        {{- if .Values.persistence.enabled }}
-        - mountPath: /opt/invenio/var/instance/data
-          name: {{ .Values.persistence.name }}
-          subPath: data
-        - mountPath: /opt/invenio/var/instance/profiler
-          name: {{ .Values.persistence.name }}
-          subPath: profiler
-        {{- end }}
-        {{- range .Values.web.extra_volumeMounts }}
-        - name: {{ .name }}
-          mountPath: {{ .mountPath }}
-          subPath: {{ default "" .subPath }}
-        {{- end }}
-        {{- if .Values.web.resources }}
-        resources: {{- toYaml .Values.web.resources | nindent 10 }}
-        {{- end }}
+          - name: uwsgi-config
+            mountPath: '/opt/invenio/src/uwsgi'
+          - name: nginx-invenio-assets
+            mountPath: /opt/nginx-invenio-assets
+          {{- if .Values.persistence.enabled }}
+          - mountPath: /opt/invenio/var/instance/data
+            name: {{ .Values.persistence.name }}
+            subPath: data
+          - mountPath: /opt/invenio/var/instance/profiler
+            name: {{ .Values.persistence.name }}
+            subPath: profiler
+          {{- end }}
+          {{- if .Values.kerberos.enabled }}
+          - name: kerberos-credentials-cache
+            mountPath: /tmp
+          {{- end }}
       - name: nginx
         image: {{ .Values.nginx.image }}
         env:
@@ -167,14 +161,12 @@ spec:
         {{- end }}
       {{- if .Values.logstash.enabled }}
       - name: filebeat
-        image: {{ .Values.logstash.filebeat_image }}  
+        image: {{ .Values.logstash.filebeat_image }}
         args: [
             "-c", "/etc/filebeat.yml",
             "-e",
         ]
-        {{- if .Values.logstash.filebeat_resources }}
         resources: {{- toYaml .Values.logstash.filebeat_resources | nindent 10 }}
-        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/filebeat.yml
@@ -184,6 +176,58 @@ spec:
           mountPath: /var/log/nginx
           readOnly: true
       {{- end }}
+      {{- if .Values.kerberos.enabled }}
+      - name: kerberos-credentials
+        image: {{ .Values.kerberos.image }}
+        args: {{ .Values.kerberos.args }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.kerberos.secret_name }}
+        resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+        {{- if .Values.kerberos.readinessProbe }}
+        readinessProbe: {{- toYaml .Values.kerberos.readinessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.kerberos.livenessProbe }}
+        livenessProbe: {{- toYaml .Values.kerberos.livenessProbe | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+          - name: kerberos-credentials-cache
+            mountPath: /tmp
+      {{- end }}
+
+      initContainers:
+        # copy assets from uwsgi to nginx
+        - name: copy-web-assets
+          image: {{ .Values.web.image }}
+          command: [
+              "/bin/bash",
+              "-c",
+              "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/",
+          ]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 2Mi
+          volumeMounts:
+            - name: nginx-invenio-assets
+              mountPath: /opt/nginx-invenio-assets
+        {{- if .Values.kerberos.enabled }}
+        # Init kerberos credentials
+        - name: init-kerberos-credentials
+          image: {{ .Values.kerberos.image }}
+          args: {{ .Values.kerberos.initArgs }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.kerberos.secret_name }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          volumeMounts:
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+        {{- end }}
+
       volumes:
       {{- if .Values.logstash.enabled }}
       - name: config
@@ -212,11 +256,9 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
       {{- end }}
-      {{- range .Values.web.extra_volumes }}
-      - name: {{ .name }}
-        configMap:
-          name: {{ .configMap.name }}
-          defaultMode: {{ .configMap.defaultMode }}
+      {{- if .Values.kerberos.enabled }}
+      - name: kerberos-credentials-cache
+        emptyDir: {}
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:
