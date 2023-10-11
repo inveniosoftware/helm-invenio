@@ -22,7 +22,7 @@ spec:
               "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
           ]
           {{- if .Values.worker.resources }}
-          resources: {{- toYaml .Values.worker.resources | nindent 10 }}
+          resources: {{- toYaml .Values.worker.resources | nindent 12 }}
           {{- end }}
           envFrom:
             - configMapRef:
@@ -117,12 +117,12 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Values.kerberos.secret_name }}
-          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 12 }}
           {{- if .Values.kerberos.readinessProbe }}
-          readinessProbe: {{- toYaml .Values.kerberos.readinessProbe | nindent 10 }}
+          readinessProbe: {{- toYaml .Values.kerberos.readinessProbe | nindent 12 }}
           {{- end }}
           {{- if .Values.kerberos.livenessProbe }}
-          livenessProbe: {{- toYaml .Values.kerberos.livenessProbe | nindent 10 }}
+          livenessProbe: {{- toYaml .Values.kerberos.livenessProbe | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: kerberos-credentials-cache
@@ -138,7 +138,7 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Values.kerberos.secret_name }}
-          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 12 }}
           volumeMounts:
             - name: kerberos-credentials-cache
               mountPath: /tmp

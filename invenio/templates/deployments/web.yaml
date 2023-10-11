@@ -222,7 +222,7 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Values.kerberos.secret_name }}
-          resources: {{- toYaml .Values.kerberos.resources | nindent 10 }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 12 }}
           volumeMounts:
             - name: kerberos-credentials-cache
               mountPath: /tmp

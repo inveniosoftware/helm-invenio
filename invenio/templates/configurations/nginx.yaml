@@ -172,4 +172,7 @@ data:
           alias {{ .Values.nginx.assets.location }}/robots.txt;
           autoindex off;
         }
+
+{{ .Values.nginx.extra_server_config | indent 8 }}
+
     }

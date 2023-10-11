@@ -80,6 +80,7 @@ nginx:
     limits:
       cpu: 250m
       memory: 500Mi
+  extra_server_config: ""
 
 web:
   image: your/invenio-image
