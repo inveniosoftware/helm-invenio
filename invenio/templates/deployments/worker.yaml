@@ -181,10 +181,7 @@ spec:
         command: [
           "/bin/bash",
           "-c",
-          " {{- if .Values.workerBeat.containers.run_before_app -}}
-                {{ .Values.workerBeat.containers.run_before_app }} &&
-            {{- end -}}
-            celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
+          "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
         volumeMounts:
         - name: var-run-celery

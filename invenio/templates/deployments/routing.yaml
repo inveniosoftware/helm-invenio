@@ -5,6 +5,12 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: invenio
+  {{- if and .Values.main_route .Values.main_route.annotations }}
+  annotations:
+    {{- range .Values.main_route.annotations }}
+    {{ . }}
+    {{- end }}
+  {{- end }}
 spec:
   host: {{ .Values.host }}
   to:

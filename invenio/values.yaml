@@ -140,8 +140,6 @@ workerBeat:
     limits:
       cpu: '2'
       memory: 500Mi
-  containers:
-    run_before_app: ""
 
 persistence:
   enabled: true
