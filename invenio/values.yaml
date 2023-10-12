@@ -55,6 +55,7 @@ haproxy:
       memory: 500Mi
   denied_ips: ""
   denied_uas: ""
+  extra_frontend_public_http_request: ""
   http429_response: "You are being blocked. Please contact us."
   html_backup_website: |-
     <!DOCTYPE html>
@@ -140,7 +141,7 @@ workerBeat:
       cpu: 500m
       memory: 200Mi
     limits:
-      cpu: '2'
+      cpu: "2"
       memory: 500Mi
 
 persistence:
@@ -162,7 +163,7 @@ redis:
     storage_class: ""
   resources:
     limits:
-      cpu: '1'
+      cpu: "1"
       memory: 2Gi
     requests:
       cpu: 500m
@@ -184,7 +185,7 @@ rabbitmq:
     storage_class: ""
   resources:
     limits:
-      cpu: '1'
+      cpu: "1"
       memory: 2Gi
     requests:
       cpu: 500m
