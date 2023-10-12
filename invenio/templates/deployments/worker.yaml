@@ -86,6 +86,15 @@ spec:
                 name: {{ .Values.invenio.datacite.secret_name }}
                 key: DATACITE_PASSWORD
           {{- end }}
+          {{- if .Values.invenio.remote_apps.enabled }}
+          {{- range .Values.invenio.remote_apps.credentials }}
+          - name: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.invenio.remote_apps.secret_name }}
+                key: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+          {{- end }}
+          {{- end }}
           {{- range .Values.invenio.extra_env_from_secret }}
           - name: {{ .name }}
             valueFrom:
