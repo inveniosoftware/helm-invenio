@@ -46,6 +46,8 @@ data:
       http-request deny if is_blocked_ip OR is_blocked_ua
       errorfiles custom_errors
 
+      {{ .Values.haproxy.extra_frontend_public_http_request| indent 6 }}
+
       default_backend apps
       use_backend     static if is_static
 
@@ -94,5 +96,3 @@ data:
     Content-Type: text/html
 
 {{ .Values.haproxy.html_backup_website | indent 4 }}
-
-
