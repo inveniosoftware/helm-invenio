@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: haproxy
 spec:
-  replicas: 1
+  replicas: {{ .Values.haproxy.replicas }}
   selector:
     matchLabels:
       app: haproxy

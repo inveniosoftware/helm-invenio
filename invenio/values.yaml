@@ -43,6 +43,7 @@ invenio:
 haproxy:
   enabled: true
   image: "haproxy:2.8.3"
+  replicas: 2
   maxconn: 100
   maxconn_static: 500
   resources:
