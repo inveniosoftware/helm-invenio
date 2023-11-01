@@ -83,11 +83,14 @@ nginx:
       cpu: 250m
       memory: 500Mi
   extra_server_config: ""
+  denied_ips: ""
+  denied_uas: ""
 
 web:
   image: your/invenio-image
   imagePullSecret: ""
   replicas: 6
+  terminationGracePeriodSeconds: 60
   uwsgi:
     processes: 6
     threads: 4
@@ -97,6 +100,12 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 1
   startupProbe:
     failureThreshold: 3
     initialDelaySeconds: 10

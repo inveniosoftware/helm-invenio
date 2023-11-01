@@ -61,6 +61,8 @@ spec:
 {{- end }}
 {{- end }}
 
+### TODO: add the possibility to have other routes here
+
 {{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") .Values.rabbitmq.enabled }}
 ### RabbitMQ Management
 ---

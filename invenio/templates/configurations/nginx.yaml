@@ -9,6 +9,30 @@ data:
         server 127.0.0.1:5000 max_conns={{ .Values.nginx.max_conns }} fail_timeout=0;
     }
 
+    # increase default max size of `map`
+    map_hash_max_size 10000;
+    map_hash_bucket_size 10000;
+
+    # IPs deny list
+    geo $http_x_forwarded_for $bad_ip {
+      default            allow;
+      # 192.168.1.1      deny;
+      # 192.168.1.0/24   deny;
+      # 192.168.0.0/16   deny;
+      # 2001:db8::/48    deny;
+{{ .Values.nginx.denied_ips | indent 6 }}
+    }
+
+    # User Agents deny list
+    map $http_user_agent $bad_ua {
+      default        allow;
+      # Exact match
+      # "Mozilla/5.0 (Linux; Android)"     deny;
+      # Regex
+      # "~PetalBot"                        deny;
+{{ .Values.nginx.denied_uas | indent 6 }}
+    }
+
     log_format trace '$remote_addr - $time_iso8601 "$request" '
         '$status $body_bytes_sent $request_length "$http_referer" '
         '"$http_user_agent" "$http_x_forwarded_for" rid=$request_id '
@@ -66,6 +90,15 @@ data:
         # Sets the HTTP protocol v1.1 for proxying in order to not use the buffer
         # in case of chunked transfer encoding
         proxy_http_version 1.1;
+
+        # include blocked IPs
+        if ( $bad_ip = "deny" ) {
+          return 403;
+        }
+        # include blocked User Agents
+        if ( $bad_ua = "deny" ) {
+          return 403;
+        }
 
         location /ping {
           access_log off;

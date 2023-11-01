@@ -48,8 +48,8 @@ data:
     socket-send-timeout = 120
 
     # Automatically respawn processes after serving
-    # max-requests = 4000
-    # max-requests-delta = 100
+    max-requests = 1000
+    max-requests-delta = 100
 
     # fix up signal handling
     die-on-term = true

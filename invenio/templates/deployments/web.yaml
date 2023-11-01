@@ -13,6 +13,7 @@ spec:
       labels:
         app: web
     spec:
+      terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
       containers:
       - name: web
         image: {{ .Values.web.image }}
@@ -102,12 +103,23 @@ spec:
               name: {{ .valueFrom.secretKeyRef.name }}
               key: {{ .valueFrom.secretKeyRef.key }}
         {{- end }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - "uwsgi_curl -X HEAD -H 'Host: {{ .Values.host }}' $(hostname):5000 /ping"
+          failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
         startupProbe:
           exec:
             command:
               - /bin/bash
               - -c
-              - "uwsgi_curl $(hostname):5000 /api/ping -H 'Host: {{ .Values.host }}'"
+              - "uwsgi_curl -X HEAD -H 'Host: {{ .Values.host }}' $(hostname):5000 /ping"
           failureThreshold: {{ .Values.web.startupProbe.failureThreshold }}
           initialDelaySeconds: {{ .Values.web.startupProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.web.startupProbe.periodSeconds }}
