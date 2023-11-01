@@ -264,3 +264,69 @@ kerberos:
     requests:
       cpu: 10m
       memory: 2Mi
+
+pgbouncer:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: registry.cern.ch/pgbouncer/pgbouncer
+    tag: 1.19.1
+  # deployment:
+  #   strategy:
+  #     type: RollingUpdate
+  #     rollingUpdate:
+  #       maxUnavailable: 1
+  #   terminationGracePeriodSeconds: 600
+  # nodeSelector:
+  #   node-role.kubernetes.io/infra: ""
+  antiAffinity: "hard"
+  resources:
+    limits:
+      ## PgBouncer is single-threaded, meaning it only uses 1 CPU.
+      cpu: "1"
+    requests:
+      cpu: "1"
+      memory: 40Mi
+  databases:
+    invenio:
+      host: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
+      port: 5432
+  pgbouncer:
+    logfile: /dev/stdout
+    auth_type: scram-sha-256
+    auth_file: /etc/pgbouncer/auth_file
+    ## Console access
+    admin_users: invenio
+    stats_users: invenio
+    ## Pool settings
+    pool_mode: transaction
+    ## Log settings
+    log_connections: 0
+    log_disconnections: 0
+    log_pooler_errors: 1
+    log_stats: 1
+    verbose: 0
+    ignore_startup_parameters: extra_float_digits
+    min_pool_size: 30
+    default_pool_size: 50
+    reserve_pool_size: 10
+    reserve_pool_timeout: 2
+    max_db_connections: 200
+    max_user_connections: 200
+    max_client_conn: 100
+  ## Assuming authentication file is used.
+  extraVolumes:
+    - name: pgbouncer_auth
+      secret:
+        secretName: pgbouncer
+        items:
+          - key: auth_file
+            path: auth_file
+  extraVolumeMounts:
+    - name: pgbouncer_auth
+      mountPath: /etc/pgbouncer/auth_file
+      subPath: auth_file
+      readonly: true
+  ## PgBouncer-exporter configuration
+  pgbouncerExporter:
+    enabled: false

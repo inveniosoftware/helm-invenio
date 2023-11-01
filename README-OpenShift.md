@@ -93,6 +93,18 @@ $ oc create secret generic \
     datacite-secrets
 ```
 
+pgbouncer secrets:
+
+```
+$ cat > pgbouncer_auth_file << EOF
+invenio: xxxverysecretscrampasswordxxx
+EOF
+
+$ oc create secret generic \
+  --from-file=auth_file=pgbouncer_auth_file \
+  pgbouncer
+```
+
 search secrets:
 
 ```console
