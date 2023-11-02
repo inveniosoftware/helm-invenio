@@ -9,7 +9,7 @@ data:
     # looks like not really working
     accept_content = ["json", "msgpack", "yaml"]
     task_serializer = "msgpack"
-    result_serializer = "msgpack
+    result_serializer = "msgpack"
 ---
 apiVersion: v1
 kind: ConfigMap
