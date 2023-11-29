@@ -1,0 +1,10 @@
+{{- range $key, $value := .Values.invenio.file_config_maps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $key }}
+data:
+  {{ $value.fileName }}: |
+    {{- $value.file | nindent 4 }}
+{{- end -}}

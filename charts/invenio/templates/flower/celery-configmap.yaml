@@ -1,0 +1,13 @@
+{{- if .Values.flower.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flower-celery-config
+data:
+  celeryconfig.py: |-
+    # looks like not really working
+    accept_content = ["json", "msgpack", "yaml"]
+    task_serializer = "msgpack"
+    result_serializer = "msgpack"
+{{- end }}

@@ -1,0 +1,22 @@
+{{- if .Values.logstash.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |-
+    filebeat.inputs:
+    - type: log
+      paths:
+        - /var/log/nginx/*access*.log
+      fields:
+        nginx: true
+    - type: log
+      paths:
+        - /var/log/uwsgi/*.log
+      fields:
+        uwsgi: true
+    output.logstash:
+      hosts: ["logstash:5044"]
+{{- end }}
