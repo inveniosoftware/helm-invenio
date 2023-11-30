@@ -13,4 +13,8 @@ keywords:
   - multimedia-repository
 type: application
 version: 0.2.0
-
+dependencies:
+  - name: pgbouncer
+    version: 0.0.2
+    repository: oci://registry.cern.ch/pgbouncer
+    condition: pgbouncer.enabled
