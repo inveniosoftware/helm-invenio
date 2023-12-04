@@ -29,7 +29,7 @@ spec:
                 name: invenio-config
           env:
           - name: TZ
-            value: "Europe/Zurich"
+            value: {{ .Values.global.timezone }}
           - name: INVENIO_BROKER_URL
             valueFrom:
               secretKeyRef:
@@ -204,7 +204,7 @@ spec:
             name: invenio-config
         env:
         - name: TZ
-          value: "Europe/Zurich"
+          value: {{ .Values.global.timezone }}
         - name: INVENIO_BROKER_URL
           valueFrom:
             secretKeyRef:

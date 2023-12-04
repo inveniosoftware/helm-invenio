@@ -29,7 +29,7 @@ spec:
               mountPath: /var/lib/rabbitmq
           env:
             - name: TZ
-              value: "Europe/Zurich"
+              value: {{ .Values.global.timezone }}
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:

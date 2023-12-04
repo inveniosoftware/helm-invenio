@@ -31,7 +31,7 @@ spec:
             - containerPort: 5555
           env:
             - name: TZ
-              value: "Europe/Zurich"
+              value: {{ .Values.global.timezone }}
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:

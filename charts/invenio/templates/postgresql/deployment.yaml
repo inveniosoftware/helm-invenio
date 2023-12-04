@@ -21,7 +21,7 @@ spec:
             - containerPort: 5432
           env:
             - name: TZ
-              value: "Europe/Zurich"
+              value: {{ .Values.global.timezone }}
             - name: POSTGRESQL_USER
               valueFrom:
                 secretKeyRef:
