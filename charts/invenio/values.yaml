@@ -1,3 +1,6 @@
+global:
+  timezone: "Europe/Zurich"
+
 host: yourhost.localhost
 
 ingress:
