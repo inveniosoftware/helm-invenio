@@ -232,7 +232,7 @@ search:
   enabled: false
   existing_secret: false
   secret_name: "search-secrets"
-  invenio_hosts: "[{'host': 'search'}]"
+  invenio_hosts: '[{"host": "search"}]'
   user: "username" # unimplemented
   password: "password" # unimplemented
 
