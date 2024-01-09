@@ -23,7 +23,7 @@ spec:
           image: {{ .Values.redis.image }}
           env:
             - name: TZ
-              value: {{ .Values.global.timezone }}
+              value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
           ports:
             - containerPort: 6379
               name: tcp

@@ -31,7 +31,7 @@ spec:
               memory: 1Gi
           env:
             - name: TZ
-              value: {{ .Values.global.timezone }}
+              value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
             - name: network.host
               value: "0.0.0.0"
             - name: "discovery.type"
