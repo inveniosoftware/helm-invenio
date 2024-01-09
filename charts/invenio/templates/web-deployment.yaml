@@ -30,7 +30,7 @@ spec:
             name: invenio-config
         env:
         - name: TZ
-          value: {{ .Values.global.timezone }}
+          value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
         - name: INVENIO_BROKER_URL
           valueFrom:
             secretKeyRef:
@@ -146,7 +146,7 @@ spec:
         image: {{ .Values.nginx.image }}
         env:
         - name: TZ
-          value: {{ .Values.global.timezone }}
+          value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
         ports:
         - containerPort: 8080
           protocol: TCP
