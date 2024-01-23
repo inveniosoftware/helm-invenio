@@ -24,10 +24,10 @@ spec:
   {{- end }}
   tls:
     - hosts:
-        - "{{ .Values.host }}"
+        - {{ required "Missing .Values.host" .Values.host }}
       secretName: {{ .Values.ingress.sslSecretName }}
   rules:
-    - host: "{{ .Values.host }}"
+    - host: {{ required "Missing .Values.host" .Values.host }}
       http:
         paths:
           - path: /
