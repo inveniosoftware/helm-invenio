@@ -19,6 +19,9 @@ metadata:
       send_timeout 240s;
       client_body_timeout 240s;
 spec:
+  {{- if .Values.ingress.class }}
+  ingressClassName: {{ .Values.ingress.class }}
+  {{- end }}
   tls:
     - hosts:
         - "{{ .Values.host }}"
