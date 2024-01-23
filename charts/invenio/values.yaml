@@ -6,7 +6,7 @@ host: yourhost.localhost
 ingress:
   # these values have no effect on openshift
   enabled: false
-  class: nginx-internal
+  class: ""
   sslSecretName: your-ssl-secret
 
 invenio:
