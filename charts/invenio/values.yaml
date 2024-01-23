@@ -2,6 +2,7 @@ host: yourhost.localhost
 
 ingress:
   # these values have no effect on openshift
+  annotations: {}
   enabled: false
   class: ""
   tlsSecretNameOverride: ""
