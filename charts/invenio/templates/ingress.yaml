@@ -4,20 +4,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: invenio-ingress
+  {{- if .Values.ingress.annotations }}
   annotations:
-    {{- if .Values.ingress.class }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
-    {{- end }}
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      send_timeout 240s;
-      client_body_timeout 240s;
+    {{- .Values.ingress.annotations | toYaml | nindent 4}}
+  {{- end }}
 spec:
   {{- if .Values.ingress.class }}
   ingressClassName: {{ .Values.ingress.class }}
