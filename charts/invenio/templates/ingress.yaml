@@ -25,7 +25,7 @@ spec:
   tls:
     - hosts:
         - {{ required "Missing .Values.host" .Values.host }}
-      secretName: {{ .Values.ingress.sslSecretName }}
+      secretName: {{ include "invenio.tlsSecretName" $ }}
   rules:
     - host: {{ required "Missing .Values.host" .Values.host }}
       http:
