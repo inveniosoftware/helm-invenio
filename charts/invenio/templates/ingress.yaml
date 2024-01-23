@@ -27,9 +27,12 @@ spec:
     - host: "{{ .Values.host }}"
       http:
         paths:
-          - path: ""
+          - path: /
             backend:
-              serviceName: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
-              servicePort: http
+              service:
+                name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
+                port:
+                  name: http
+            pathType: Prefix
 {{- end }}
 {{- end }}
