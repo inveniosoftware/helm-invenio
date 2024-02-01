@@ -13,3 +13,8 @@ keywords:
   - multimedia-repository
 type: application
 version: 0.2.1
+dependencies:
+  - name: redis
+    condition: redis.enabled
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    version: "18.12.0"
