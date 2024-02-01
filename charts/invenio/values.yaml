@@ -165,21 +165,26 @@ persistence:
 
 redis:
   enabled: true
-  image: "redis:7.2.1"
-  host: ""
-  persistence:
-    enabled: true
-    name: "redis-volume"
-    access_mode: ReadWriteMany
-    size: 5G
-    storage_class: ""
-  resources:
-    limits:
-      cpu: "1"
-      memory: 2Gi
-    requests:
-      cpu: 500m
-      memory: 500Mi
+  auth:
+    enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
+  master:
+    disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
+    resources:
+      limits:
+        cpu: "1"
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 500Mi
+  replica:
+    disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
+    resources:
+      limits:
+        cpu: "1"
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 500Mi
 
 rabbitmq:
   enabled: true

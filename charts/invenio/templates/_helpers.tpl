@@ -1,12 +1,13 @@
+############################     Redis Hostname     ############################
 {{/*
-Get the redis host name.
+  This template renders the hostname for the Redis instance used.
 */}}
 {{- define "redis.host_name" -}}
-{{- if .Values.redis.host }}
-    {{- printf "%s" (tpl .Values.redis.host $) -}}
-{{- else -}}
-    {{- `cache` -}}
-{{- end -}}
+  {{- if .Values.redis.enabled }}
+    {{- printf "%s-master" (include "common.names.fullname" .Subcharts.redis) }}
+  {{- else }}
+      {{- required "Missing .Values.redisExternal.hostname" .Values.redisExternal.hostname }}
+  {{- end }}
 {{- end -}}
 
 #######################     Ingress TLS secret name     #######################
