@@ -188,25 +188,17 @@ redis:
 
 rabbitmq:
   enabled: true
-  image: "rabbitmq:3.12.6-management"
-  existing_secret: false
-  secret_name: "mq-secrets"
-  default_password: "mq_password"
-  celery_broker_uri: "amqp://guest:mq_password@mq:5672/"
-  management_host: ""
-  persistence:
-    enabled: true
-    name: "rabbitmq-volume"
-    access_mode: ReadWriteMany
-    size: 10G
-    storage_class: ""
+  auth:
+    password: ""
   resources:
     limits:
       cpu: "1"
       memory: 2Gi
     requests:
-      cpu: 500m
-      memory: 500Mi
+      cpu: "1"
+      memory: 2Gi
+
+rabbitmqExternal: {}
 
 flower:
   enabled: true
