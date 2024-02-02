@@ -36,15 +36,9 @@ spec:
         - name: TZ
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
         - name: INVENIO_BROKER_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
-              key: CELERY_BROKER_URL
+          value: {{ include "invenio.rabbitmq.uri" . }}
         - name: INVENIO_CELERY_BROKER_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.rabbitmq.secret_name }}
-              key: CELERY_BROKER_URL
+          value: {{ include "invenio.rabbitmq.uri" . }}
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           valueFrom:
             secretKeyRef:

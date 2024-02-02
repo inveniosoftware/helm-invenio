@@ -33,12 +33,12 @@ kind: Route
 metadata:
   name: mq-management
 spec:
-  host: {{ .Values.rabbitmq.management_host }}
+  host: {{ required "Missing .Values.rabbitmq.ingress.hostname" .Values.rabbitmq.ingress.hostname }}
   to:
     kind: Service
-    name: mq
+    name: {{ include "common.names.fullname" .Subcharts.rabbitmq }}
   port:
-    targetPort: management-console
+    targetPort: {{ required "Missing .Values.rabbitmq.service.ports.manager" .Values.rabbitmq.service.ports.manager }}
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge

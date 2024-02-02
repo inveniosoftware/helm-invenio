@@ -21,9 +21,9 @@ spec:
               [
                 "celery",
                 "--config=/var/celery/celeryconfig.py",
-                "--broker=amqp://guest:$(RABBITMQ_DEFAULT_PASS)@mq:5672/",
+                {{ printf "--broker=%s" (include "invenio.rabbitmq.uri" .) }},
                 "flower",
-                "--broker_api=http://guest:$(RABBITMQ_DEFAULT_PASS)@mq:15672/api/",
+                {{ printf "--broker_api=%s" (include "invenio.rabbitmq.apiUri" .) }},
                 "--basic_auth=$(FLOWER_BASIC_AUTH_CREDENTIALS)",
                 "--conf=/var/flower/flowerconfig.py"
               ]
@@ -32,11 +32,6 @@ spec:
           env:
             - name: TZ
               value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
-            - name: RABBITMQ_DEFAULT_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.rabbitmq.secret_name }}
-                  key: RABBITMQ_DEFAULT_PASS
             - name: FLOWER_BASIC_AUTH_CREDENTIALS
               valueFrom:
                 secretKeyRef:
