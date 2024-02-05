@@ -226,15 +226,10 @@ postgresql:
   database: "invenio"
   sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
 
-# WARNING: do not use in production!
-# See <https://opensearch.org/docs/latest/opensearch/install/helm/> instead.
-search:
-  enabled: false
-  existing_secret: false
-  secret_name: "search-secrets"
-  invenio_hosts: '[{"host": "search"}]'
-  user: "username" # unimplemented
-  password: "password" # unimplemented
+opensearch:
+  enabled: true
+
+externalOpensearch: {}
 
 logstash:
   enabled: false

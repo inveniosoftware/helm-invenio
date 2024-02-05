@@ -59,13 +59,6 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
-        {{- if not .Values.search.enabled }}
-        - name: INVENIO_SEARCH_HOSTS
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.search.secret_name }}
-              key: INVENIO_SEARCH_HOSTS
-        {{- end }}
         {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}
         {{- end }}
