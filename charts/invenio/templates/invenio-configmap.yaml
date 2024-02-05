@@ -11,7 +11,7 @@ data:
   INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
   INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
-  INVENIO_SEARCH_HOSTS: "{{ .Values.search.invenio_hosts }}"
+  INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
   INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
   INVENIO_SITE_UI_URL: 'https://{{ .Values.host }}'
   INVENIO_SITE_API_URL: 'https://{{ .Values.host }}/api'

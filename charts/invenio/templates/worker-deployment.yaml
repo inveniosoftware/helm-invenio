@@ -54,13 +54,6 @@ spec:
               secretKeyRef:
                 name: invenio-secrets
                 key: INVENIO_CSRF_SECRET_SALT
-          {{- if not .Values.search.enabled }}
-          - name: INVENIO_SEARCH_HOSTS
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.search.secret_name }}
-                key: INVENIO_SEARCH_HOSTS
-          {{- end }}
           {{- if .Values.invenio.sentry.enabled }}
           - name: INVENIO_SENTRY_DSN
             valueFrom:
@@ -223,13 +216,6 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
-        {{- if not .Values.search.enabled }}
-        - name: INVENIO_SEARCH_HOSTS
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.search.secret_name }}
-              key: INVENIO_SEARCH_HOSTS
-        {{- end }}
         {{- if .Values.invenio.sentry.enabled }}
         - name: INVENIO_SENTRY_DSN
           valueFrom:

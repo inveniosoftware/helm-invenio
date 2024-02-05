@@ -118,3 +118,15 @@
   {{- $hostname := (include "invenio.rabbitmq.hostname" .) -}}
   {{- printf "http://%s:%s@%s:%v/api/" $username $password $hostname $port }}
 {{- end -}}
+
+#########################     OpenSearch hostname     #########################
+{{/*
+  This template renders the hostname of the OpenSearch instance.
+*/}}
+{{- define "invenio.opensearch.hostname" -}}
+  {{- if .Values.opensearch.enabled }}
+    {{- include "opensearch.service.name" .Subcharts.opensearch -}}
+  {{- else }}
+    {{- required "Missing .Values.opensearchExternal.hostname" .Values.opensearchExternal.hostname -}}
+  {{- end }}
+{{- end -}}

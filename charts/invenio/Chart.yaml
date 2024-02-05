@@ -14,6 +14,10 @@ keywords:
 type: application
 version: 0.2.1
 dependencies:
+  - name: opensearch
+    condition: opensearch.enabled
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    version: "0.9.1"
   - name: rabbitmq
     condition: rabbitmq.enabled
     repository: "oci://registry-1.docker.io/bitnamicharts"
