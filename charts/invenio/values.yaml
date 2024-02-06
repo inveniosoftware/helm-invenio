@@ -216,15 +216,12 @@ flower:
       cpu: 0.1
 
 postgresql:
-  enabled: false
-  existing_secret: false
-  secret_name: "db-secrets"
-  user: "invenio"
-  password: "db_password"
-  host: "db"
-  port: "5432"
-  database: "invenio"
-  sqlalchemy_db_uri: "postgresql+psycopg2://invenio:db_password@db:5432/invenio"
+  enabled: true
+  auth:
+    username: invenio
+    database: invenio
+
+postgresqlExternal: {}
 
 opensearch:
   enabled: true

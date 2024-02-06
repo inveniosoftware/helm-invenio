@@ -130,3 +130,78 @@
     {{- required "Missing .Values.opensearchExternal.hostname" .Values.opensearchExternal.hostname -}}
   {{- end }}
 {{- end -}}
+
+#########################     PostgreSQL username     #########################
+{{/*
+  This template renders the username used for the PostgreSQL instance.
+*/}}
+{{- define "invenio.postgresql.username" -}}
+  {{- if .Values.postgresql.enabled -}}
+    {{- required "Missing .Values.postgresql.auth.username" .Values.postgresql.auth.username -}}
+    {{/* NOTE: Specifying username explicitly like this is suboptmal. Would be desirable to refactor Invenio so it can take the postgres username as a spearate environment variable which we can populate dynamically from the secret. */}}
+  {{- else -}}
+    {{- required "Missing .Values.postgresqlExternal.username" .Values.postgresqlExternal.username -}}
+  {{- end -}}
+{{- end -}}
+
+#########################     PostgreSQL password     #########################
+{{/*
+  This template renders the password used for the PostgreSQL instance.
+*/}}
+{{- define "invenio.postgresql.password" -}}
+  {{- if .Values.postgresql.enabled -}}
+    {{- required "Missing .Values.postgresql.auth.password" .Values.postgresql.auth.password -}}
+    {{/* NOTE: Specifying password explicitly like this is suboptmal. Would be desirable to refactor Invenio so it can take the postgres password as a spearate environment variable which we can populate dynamically from the secret. */}}
+  {{- else -}}
+    {{- required "Missing .Values.postgresqlExternal.password" .Values.postgresqlExternal.password -}}
+  {{- end -}}
+{{- end -}}
+
+#########################     PostgreSQL hostname     #########################
+{{/*
+  This template renders the hostname used for the PostgreSQL instance.
+*/}}
+{{- define "invenio.postgresql.hostname" -}}
+  {{- if .Values.postgresql.enabled -}}
+    {{- include "postgresql.v1.primary.fullname" .Subcharts.postgresql -}}
+  {{- else -}}
+    {{- required "Missing .Values.postgresqlExternal.hostname" .Values.postgresqlExternal.hostname -}}
+  {{- end -}}
+{{- end -}}
+
+###########################     PostgreSQL port     ###########################
+{{/*
+  This template renders the port number used for the PostgreSQL instance.
+*/}}
+{{- define "invenio.postgresql.port" -}}
+  {{- if .Values.postgresql.enabled -}}
+    {{- required "Missing .Values.postgresql.primary.service.ports.postgresql" .Values.postgresql.primary.service.ports.postgresql -}}
+  {{- else -}}
+    {{- required "Missing .Values.postgresqlExternal.port" .Values.postgresqlExternal.port -}}
+  {{- end -}}
+{{- end -}}
+
+############################     Database name     ############################
+{{/*
+  This template renders the name of the database in PostgreSQL.
+*/}}
+{{- define "invenio.postgresql.databaseName" -}}
+  {{- if .Values.postgresql.enabled -}}
+    {{- required "Missing .Values.postgresql.auth.database" .Values.postgresql.auth.database -}}
+  {{- else -}}
+    {{- required "Missing .Values.postgresqlExternal.databaseName" .Values.postgresqlExternal.databaseName -}}
+  {{- end -}}
+{{- end -}}
+
+#######################     SQLAlchemy database URI     #######################
+{{/*
+  This template renders the SQLAlchemy database URI.
+*/}}
+{{- define "invenio.sqlAlchemyDbUri" -}}
+  {{- $username := include "invenio.postgresql.username" . -}}
+  {{- $password := include "invenio.postgresql.password" . -}}
+  {{- $hostname := include "invenio.postgresql.hostname" . -}}
+  {{- $port := include "invenio.postgresql.port" . -}}
+  {{- $databaseName := include "invenio.postgresql.databaseName" . -}}
+  {{- printf "postgresql+psycopg2://%s:%s@%s:%v/%s" $username $password $hostname $port $databaseName -}}
+{{- end -}}
