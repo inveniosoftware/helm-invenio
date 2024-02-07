@@ -2,7 +2,7 @@
 {{/*
   This template renders the hostname for the Redis instance used.
 */}}
-{{- define "redis.host_name" -}}
+{{- define "invenio.redis.hostname" -}}
   {{- if .Values.redis.enabled }}
     {{- printf "%s-master" (include "common.names.fullname" .Subcharts.redis) }}
   {{- else }}
