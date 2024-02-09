@@ -89,7 +89,7 @@ nginx:
   denied_uas: ""
 
 web:
-  image: your/invenio-image
+  image: "ghcr.io/inveniosoftware/demo-inveniordm/demo-inveniordm"
   imagePullSecret: ""
   replicas: 6
   terminationGracePeriodSeconds: 60
@@ -127,7 +127,7 @@ web:
 
 worker:
   enabled: true
-  image: your/invenio-image
+  image: "ghcr.io/inveniosoftware/demo-inveniordm/demo-inveniordm"
   imagePullSecret: ""
   app: invenio_app.celery
   concurrency: 2
