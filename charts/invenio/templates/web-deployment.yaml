@@ -92,7 +92,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - uwsgi_curl -X HEAD -H 'Host: {{ required "Missing .Values.host" .Values.host }}' $(hostname):5000 /ping
+              - "uwsgi_curl -X HEAD -H 'Host: {{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}' $(hostname):5000 /ping"
           failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
           initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
@@ -103,7 +103,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - uwsgi_curl -X HEAD -H 'Host: {{ required "Missing .Values.host" .Values.host }}' $(hostname):5000 /ping
+              - "uwsgi_curl -X HEAD -H 'Host: {{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}' $(hostname):5000 /ping"
           failureThreshold: {{ .Values.web.startupProbe.failureThreshold }}
           initialDelaySeconds: {{ .Values.web.startupProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.web.startupProbe.periodSeconds }}
