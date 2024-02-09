@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: flower-management
-          image: {{ .Values.flower.image }}
+          image: {{ required "Missing .Values.flower.image" .Values.flower.image }}
           command:
               [
                 "celery",

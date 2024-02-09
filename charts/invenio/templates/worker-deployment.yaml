@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: {{ .Values.worker.image }}
+          image: {{ required "Missing .Values.worker.image" .Values.worker.image }}
           command: [
               "/bin/bash",
               "-c",
@@ -105,7 +105,7 @@ spec:
             {{- end }}
         {{- if .Values.kerberos.enabled }}
         - name: kerberos-credentials
-          image: {{ .Values.kerberos.image }}
+          image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
           args: {{ .Values.kerberos.args }}
           envFrom:
             - secretRef:
@@ -126,7 +126,7 @@ spec:
       initContainers:
         # Init kerberos credentials
         - name: init-kerberos-credentials
-          image: {{ .Values.kerberos.image }}
+          image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
           args: {{ .Values.kerberos.initArgs }}
           envFrom:
             - secretRef:

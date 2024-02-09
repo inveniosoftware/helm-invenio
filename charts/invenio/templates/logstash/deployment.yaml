@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: logstash
-          image: {{ .Values.logstash.logstash_image }}
+          image: {{ required ".Values.logstash.logstash_image" .Values.logstash.logstash_image }}
           command: ["bash"]
           args: ["-c", "logstash-plugin install logstash-filter-json_encode && logstash -f /usr/share/logstash/pipeline/logstash.conf"]
           ports:
