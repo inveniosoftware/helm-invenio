@@ -35,11 +35,7 @@ invenio:
       - name: ""
         consumer_key: ""
         consumer_secret: ""
-  extra_config:
-    INVENIO_COLLECT_STORAGE: "flask_collect.storage.file"
-    INVENIO_DATACITE_ENABLED: "False"
-    INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
-    INVENIO_SEARCH_INDEX_PREFIX: ""
+  extra_config: {}
   extra_env_from_secret:
   file_configs:
 
