@@ -59,7 +59,7 @@ data:
 
     backend apps
       http-check disable-on-404
-      option httpchk OPTIONS /ping HTTP/1.1\nHost:\ {{ .Values.host }}
+      option httpchk OPTIONS /ping HTTP/1.1\nHost:\ {{ required "Missing .Values.host" .Values.host }}
       option http-server-close
 
       server web web:80 check fall 2 inter 5000 maxconn {{ .Values.haproxy.maxconn }}

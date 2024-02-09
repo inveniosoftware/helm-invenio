@@ -11,7 +11,7 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  host: {{ .Values.host }}
+  host: {{ required "Missing .Values.host" .Values.host }}
   to:
     kind: Service
     name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}

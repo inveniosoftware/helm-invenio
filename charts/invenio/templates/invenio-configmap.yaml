@@ -5,16 +5,16 @@ metadata:
   name: invenio-config
 data:
   INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
-  INVENIO_APP_ALLOWED_HOSTS: '["{{ .Values.host }}"]'
+  INVENIO_APP_ALLOWED_HOSTS: '["{{ required "Missing .Values.host" .Values.host }}"]'
   INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
   INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
   INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
   INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
   INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
-  INVENIO_SITE_HOSTNAME: '{{ .Values.host }}'
-  INVENIO_SITE_UI_URL: 'https://{{ .Values.host }}'
-  INVENIO_SITE_API_URL: 'https://{{ .Values.host }}/api'
+  INVENIO_SITE_HOSTNAME: '{{ required "Missing .Values.host" .Values.host }}'
+  INVENIO_SITE_UI_URL: 'https://{{ required "Missing .Values.host" .Values.host }}'
+  INVENIO_SITE_API_URL: 'https://{{ required "Missing .Values.host" .Values.host }}/api'
   {{- range $key, $value := .Values.invenio.extra_config }}
   {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
   {{- end }}
