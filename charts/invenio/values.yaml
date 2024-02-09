@@ -100,7 +100,6 @@ web:
     threads: 4
   autoscaler:
     enabled: false
-    # scale when CPU usage gets to
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
