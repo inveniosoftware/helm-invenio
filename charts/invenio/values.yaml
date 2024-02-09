@@ -11,9 +11,9 @@ ingress:
 
 invenio:
   hostname: ""
-  secret_key: "secret-key"
-  security_login_salt: "security_login_salt"
-  csrf_secret_salt: "csrf_secret_salt"
+  secret_key: ""
+  security_login_salt: ""
+  csrf_secret_salt: ""
   existing_secret: false
   init: false
   default_users:  # Requires invenio.init=true
