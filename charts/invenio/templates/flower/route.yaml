@@ -1,0 +1,17 @@
+{{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") .Values.flower.enabled }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: flower-management
+spec:
+  host: {{ .Values.flower.host }}
+  to:
+    kind: Service
+    name: flower-management
+  port:
+    targetPort: flower-management-ui
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+{{- end }}
