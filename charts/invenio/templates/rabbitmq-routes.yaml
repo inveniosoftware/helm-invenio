@@ -1,0 +1,17 @@
+{{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") .Values.rabbitmq.enabled }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: mq-management
+spec:
+  host: {{ required "Missing .Values.rabbitmq.ingress.hostname" .Values.rabbitmq.ingress.hostname }}
+  to:
+    kind: Service
+    name: {{ include "common.names.fullname" .Subcharts.rabbitmq }}
+  port:
+    targetPort: {{ required "Missing .Values.rabbitmq.service.ports.manager" .Values.rabbitmq.service.ports.manager }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+{{- end }}
