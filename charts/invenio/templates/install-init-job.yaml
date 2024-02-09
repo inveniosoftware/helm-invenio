@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: install-init
-        image: {{ .Values.web.image }}
+        image: {{ required "Missing .Values.web.image" .Values.web.image }}
         command: [
           "/bin/bash",
           "-c",

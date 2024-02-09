@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
       containers:
       - name: web
-        image: {{ .Values.web.image }}
+        image: {{ required "Missing .Values.web.image" .Values.web.image }}
         command: [
             "/bin/bash",
             "-c",
@@ -127,7 +127,7 @@ spec:
             mountPath: /tmp
           {{- end }}
       - name: nginx
-        image: {{ .Values.nginx.image }}
+        image: {{ required "Missing .Values.nginx.image" .Values.nginx.image }}
         env:
         - name: TZ
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
@@ -157,7 +157,7 @@ spec:
         {{- end }}
       {{- if .Values.logstash.enabled }}
       - name: filebeat
-        image: {{ .Values.logstash.filebeat_image }}
+        image: {{ required ".Values.logstash.filebeat_image" .Values.logstash.filebeat_image }}
         args: [
             "-c", "/etc/filebeat.yml",
             "-e",
@@ -174,7 +174,7 @@ spec:
       {{- end }}
       {{- if .Values.kerberos.enabled }}
       - name: kerberos-credentials
-        image: {{ .Values.kerberos.image }}
+        image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
         args: {{ .Values.kerberos.args }}
         envFrom:
           - secretRef:
@@ -194,7 +194,7 @@ spec:
       initContainers:
         # copy assets from uwsgi to nginx
         - name: copy-web-assets
-          image: {{ .Values.web.image }}
+          image: {{ required "Missing .Values.web.image" .Values.web.image }}
           command: [
               "/bin/bash",
               "-c",
@@ -213,7 +213,7 @@ spec:
         {{- if .Values.kerberos.enabled }}
         # Init kerberos credentials
         - name: init-kerberos-credentials
-          image: {{ .Values.kerberos.image }}
+          image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
           args: {{ .Values.kerberos.initArgs }}
           envFrom:
             - secretRef:
