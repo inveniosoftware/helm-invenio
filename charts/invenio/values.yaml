@@ -16,9 +16,8 @@ invenio:
   csrf_secret_salt: "csrf_secret_salt"
   existing_secret: false
   init: false
-  # the variables below requires init=true
-  default_users: # email:password
-  demo_data: false # requires default_users
+  default_users:  # Requires invenio.init=true
+  demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
   sentry:
     enabled: false
     existing_secret: false
