@@ -1,8 +1,6 @@
 global:
   timezone: "Europe/Zurich"
 
-host: yourhost.localhost
-
 ingress:
   annotations: {}
   enabled: false
@@ -10,6 +8,7 @@ ingress:
   tlsSecretNameOverride: ""
 
 invenio:
+  hostname: ""
   secret_key: "secret-key"
   security_login_salt: "security_login_salt"
   csrf_secret_salt: "csrf_secret_salt"
