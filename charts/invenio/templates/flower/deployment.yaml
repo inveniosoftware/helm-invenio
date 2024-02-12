@@ -29,6 +29,11 @@ spec:
               ]
           ports:
             - containerPort: 5555
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: TZ
               value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
@@ -45,6 +50,12 @@ spec:
               mountPath: /var/celery
             - name: flower-config-volume
               mountPath: /var/flower
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: "RuntimeDefault"
       volumes:
         - name: celery-config-volume
           configMap:
