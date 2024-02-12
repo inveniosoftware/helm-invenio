@@ -126,6 +126,11 @@ spec:
           - name: kerberos-credentials-cache
             mountPath: /tmp
           {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
       - name: nginx
         image: {{ .Values.nginx.image }}
         env:
@@ -190,7 +195,11 @@ spec:
           - name: kerberos-credentials-cache
             mountPath: /tmp
       {{- end }}
-
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
       initContainers:
         # copy assets from uwsgi to nginx
         - name: copy-web-assets
@@ -207,6 +216,11 @@ spec:
             requests:
               cpu: '1'
               memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: nginx-invenio-assets
               mountPath: /opt/nginx-invenio-assets
@@ -223,7 +237,12 @@ spec:
             - name: kerberos-credentials-cache
               mountPath: /tmp
         {{- end }}
-
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: "RuntimeDefault"
       volumes:
       {{- if .Values.logstash.enabled }}
       - name: config
