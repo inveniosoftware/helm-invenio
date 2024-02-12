@@ -24,6 +24,11 @@ spec:
           {{- if .Values.worker.resources }}
           resources: {{- toYaml .Values.worker.resources | nindent 12 }}
           {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - configMapRef:
                 name: invenio-config
@@ -136,7 +141,12 @@ spec:
             - name: kerberos-credentials-cache
               mountPath: /tmp
       {{- end }}
-
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: "RuntimeDefault"
       volumes:
         {{- if .Values.persistence.enabled }}
         - name: shared-volume
