@@ -21,6 +21,11 @@ spec:
           "-c",
           "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         volumeMounts:
         - name: var-run-celery
           mountPath: {{ .Values.worker.run_mount_path }}
@@ -100,6 +105,12 @@ spec:
             cpu: '2'
             memory: 500Mi
         {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: "RuntimeDefault"
       volumes:
       - name: var-run-celery
         emptyDir:
