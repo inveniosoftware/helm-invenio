@@ -14,10 +14,10 @@ spec:
   {{- end }}
   tls:
     - hosts:
-        - {{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}
+        - {{ include "invenio.hostname" $ }}
       secretName: {{ include "invenio.tlsSecretName" $ }}
   rules:
-    - host: {{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}
+    - host: {{ include "invenio.hostname" $ }}
       http:
         paths:
           - path: /

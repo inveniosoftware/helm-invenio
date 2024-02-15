@@ -11,7 +11,7 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  host: {{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}
+  host: {{ include "invenio.hostname" $ }}
   to:
     kind: Service
     name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
