@@ -15,10 +15,8 @@ data:
   INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
   INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
   INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
-  INVENIO_COLLECT_STORAGE: "flask_collect.storage.file"
   INVENIO_DATACITE_ENABLED: "False"
   INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
-  INVENIO_SEARCH_INDEX_PREFIX: ""
   {{- range $key, $value := .Values.invenio.extra_config }}
   {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
   {{- end }}
