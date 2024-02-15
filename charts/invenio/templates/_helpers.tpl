@@ -27,7 +27,7 @@
   {{- if .Values.ingress.tlsSecretNameOverride }}
     {{- tpl .Values.ingress.tlsSecretNameOverride $ }}
   {{- else }}
-    {{- required "Missing .Values.invenio.hostname" .Values.invenio.hostname -}}-tls
+    {{- include "invenio.hostname" . -}}-tls
   {{- end }}
 {{- end -}}
 
