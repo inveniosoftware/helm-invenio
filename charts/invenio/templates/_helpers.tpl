@@ -1,3 +1,11 @@
+###########################     Invenio hostname     ###########################
+{{/*
+  This template renders the hostname for Invenio.
+*/}}
+{{- define "invenio.hostname" -}}
+  {{- required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}
+{{- end -}}
+
 ############################     Redis Hostname     ############################
 {{/*
   This template renders the hostname for the Redis instance used.

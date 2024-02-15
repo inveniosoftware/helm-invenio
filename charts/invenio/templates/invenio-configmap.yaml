@@ -5,16 +5,16 @@ metadata:
   name: invenio-config
 data:
   INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
-  INVENIO_APP_ALLOWED_HOSTS: '["{{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}"]'
+  INVENIO_APP_ALLOWED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
   INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
   INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
   INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
   INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
   INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
-  INVENIO_SITE_HOSTNAME: '{{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}'
-  INVENIO_SITE_UI_URL: 'https://{{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}'
-  INVENIO_SITE_API_URL: 'https://{{ required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}/api'
+  INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
+  INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
+  INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
   INVENIO_COLLECT_STORAGE: "flask_collect.storage.file"
   INVENIO_DATACITE_ENABLED: "False"
   INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
