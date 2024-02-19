@@ -37,6 +37,7 @@ invenio:
         consumer_secret: ""
   extra_config: {}
   extra_env_from_secret: {}
+  uwsgi_extra_config: {}
 
 haproxy:
   enabled: true
