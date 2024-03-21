@@ -219,8 +219,6 @@ postgresqlExternal: {}
 
 opensearch:
   enabled: true
-  sysctlImage:
-    enabled: false
 
 externalOpensearch: {}
 
