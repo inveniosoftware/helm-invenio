@@ -17,7 +17,7 @@ dependencies:
   - name: opensearch
     condition: opensearch.enabled
     repository: "oci://registry-1.docker.io/bitnamicharts"
-    version: "0.9.1"
+    version: "1.0.0"
   - name: postgresql
     condition: postgresql.enabled
     repository: "oci://registry-1.docker.io/bitnamicharts"
