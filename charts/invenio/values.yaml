@@ -36,7 +36,12 @@ invenio:
         consumer_key: ""
         consumer_secret: ""
   extra_config: {}
-  extra_env_from_secret: {}
+  extra_env_from_secret: []
+    # - name: NAME_OF_MY_ENV_VAR
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: name-of-my-secret
+    #       key: KEY_IN_MY_SECRET
 
 haproxy:
   enabled: true
