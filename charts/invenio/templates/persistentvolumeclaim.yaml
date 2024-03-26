@@ -8,7 +8,9 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
 spec:
+  {{- if .Values.persistence.storage_class }}
   storageClassName: {{ .Values.persistence.storage_class }}
+  {{- end }}
   accessModes:
   - {{ .Values.persistence.access_mode }}
   resources:
