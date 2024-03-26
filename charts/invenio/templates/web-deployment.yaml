@@ -117,10 +117,8 @@ spec:
           {{- if .Values.persistence.enabled }}
           - mountPath: /opt/invenio/var/instance/data
             name: {{ .Values.persistence.name }}
-            subPath: data
           - mountPath: /opt/invenio/var/instance/profiler
             name: {{ .Values.persistence.name }}
-            subPath: profiler
           {{- end }}
           {{- if .Values.kerberos.enabled }}
           - name: kerberos-credentials-cache
