@@ -159,6 +159,7 @@ persistence:
   enabled: true
   name: "shared-volume"
   access_mode: ReadWriteMany
+  annotations: {}
   size: 10G
   storage_class: ""
 

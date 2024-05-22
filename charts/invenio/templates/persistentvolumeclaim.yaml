@@ -7,6 +7,9 @@ metadata:
     app: web
   annotations:
     helm.sh/resource-policy: keep
+    {{- if .Values.persistence.annotations }}
+    {{- .Values.persistence.annotations | toYaml | nindent 4 }}
+    {{- end }}
 spec:
   {{- if .Values.persistence.storage_class }}
   storageClassName: {{ .Values.persistence.storage_class }}
