@@ -103,6 +103,7 @@ spec:
             {{- if .Values.persistence.enabled }}
             - mountPath: /opt/invenio/var/instance/data
               name: shared-volume
+              subPath: data
             {{- end }}
             {{- if .Values.kerberos.enabled }}
             - name: kerberos-credentials-cache
