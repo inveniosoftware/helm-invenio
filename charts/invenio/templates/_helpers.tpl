@@ -108,9 +108,7 @@
   This template renders the protocol for RabbitMQ.
 */}}
 {{- define "invenio.rabbitmq.protocol" -}}
-  {{- if .Values.rabbitmq.enabled }}
-    {{- include "common.names.fullname" .Subcharts.rabbitmq -}}
-  {{- else }}
+  {{- if .Values.rabbitmq.enabled }}amqp{{- else }}
     {{- required "Missing .Values.rabbitmqExternal.protocol" .Values.rabbitmqExternal.protocol }}
   {{- end }}
 {{- end -}}
