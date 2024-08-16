@@ -124,6 +124,8 @@ web:
       cpu: 1000m
       memory: 1Gi
   annotations: []
+  service:
+    type: NodePort
 
 worker:
   enabled: true
