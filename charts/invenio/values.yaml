@@ -162,6 +162,7 @@ persistence:
   annotations: {}
   size: 10G
   storage_class: ""
+  useExistingClaim: false
 
 redis:
   enabled: true
