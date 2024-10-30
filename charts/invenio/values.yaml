@@ -125,6 +125,14 @@ web:
     limits:
       cpu: 1000m
       memory: 1Gi
+  initContainers:
+    resources:
+      requests:
+        cpu: '1'
+        memory: 100Mi
+      limits:
+        cpu: '1'
+        memory: 100Mi
   annotations: []
 
 worker:
