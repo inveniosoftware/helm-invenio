@@ -214,8 +214,8 @@ spec:
               cpu: '1'
               memory: 100Mi
             requests:
-              cpu: 500m
-              memory: 50Mi
+              cpu: '1'
+              memory: 100Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
