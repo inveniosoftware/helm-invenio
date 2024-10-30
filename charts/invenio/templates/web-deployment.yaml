@@ -209,13 +209,10 @@ spec:
               "-c",
               "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/",
           ]
+         {{- if .Values.web.initContainers.resources }}
           resources:
-            limits:
-              cpu: '1'
-              memory: 100Mi
-            requests:
-              cpu: '1'
-              memory: 100Mi
+            {{- toYaml .Values.web.initContainers.resources | nindent 12 }}
+          {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
