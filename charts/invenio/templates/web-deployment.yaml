@@ -237,12 +237,14 @@ spec:
             - name: kerberos-credentials-cache
               mountPath: /tmp
         {{- end }}
+      {{- if .Values.invenio.podSecurityContext.enabled }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         seccompProfile:
           type: "RuntimeDefault"
+      {{- end }}
       volumes:
       {{- if .Values.logstash.enabled }}
       - name: config

@@ -27,6 +27,8 @@ invenio:
     enabled: false
     existing_secret: false
     secret_name: "datacite-secrets"
+  podSecurityContext:
+    enabled: true
   remote_apps:
     enabled: false
     existing_secret: false

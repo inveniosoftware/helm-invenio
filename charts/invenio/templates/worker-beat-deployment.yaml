@@ -105,12 +105,14 @@ spec:
             cpu: '2'
             memory: 500Mi
         {{- end }}
+      {{- if .Values.invenio.podSecurityContext.enabled }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         seccompProfile:
           type: "RuntimeDefault"
+      {{- end }}
       volumes:
       - name: var-run-celery
         emptyDir:
