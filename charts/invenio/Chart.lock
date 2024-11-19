@@ -1,7 +1,7 @@
 dependencies:
 - name: opensearch
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 1.0.0
+  version: 1.4.0
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 14.0.1
@@ -11,5 +11,5 @@ dependencies:
 - name: redis
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 18.12.0
-digest: sha256:3ac2847b6669249bb61e95d76a85ab74de27ed50ddbd91b7634e428cff148c19
-generated: "2024-03-22T08:00:00.66529083+01:00"
+digest: sha256:bd01f760317887d48ad045e56ef1ba81d07f71cd5c2db40b3f0580142344b64f
+generated: "2024-11-18T16:50:52.064305949+01:00"
