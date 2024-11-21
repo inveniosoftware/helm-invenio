@@ -134,6 +134,8 @@ web:
         cpu: '1'
         memory: 100Mi
   annotations: []
+  service:
+    type: ClusterIP
 
 worker:
   enabled: true
