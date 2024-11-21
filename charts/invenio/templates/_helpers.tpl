@@ -103,6 +103,30 @@
   {{- end }}
 {{- end -}}
 
+##########################     RabbitMQ protocol     ##########################
+{{/*
+  This template renders the protocol for RabbitMQ.
+*/}}
+{{- define "invenio.rabbitmq.protocol" -}}
+  {{- if .Values.rabbitmq.enabled }}
+    {{- "amqp" }}
+  {{- else }}
+    {{- required "Missing .Values.rabbitmqExternal.protocol" .Values.rabbitmqExternal.protocol }}
+  {{- end }}
+{{- end -}}
+
+##########################     RabbitMQ vhost     ##########################
+{{/*
+  This template renders the vhost for RabbitMQ.
+*/}}
+{{- define "invenio.rabbitmq.vhost" -}}
+  {{- if .Values.rabbitmq.enabled }}
+    {{- "" }}
+  {{- else }}
+    {{- required "Missing .Values.rabbitmqExternal.vhost" .Values.rabbitmqExternal.vhost }}
+  {{- end }}
+{{- end -}}
+
 ##########################     Celery broker URI     ##########################
 {{/*
   This template renders the URI for connecting to RabbitMQ.
@@ -112,7 +136,9 @@
   {{- $password := (include "invenio.rabbitmq.password" .) -}}
   {{- $port := (include "invenio.rabbitmq.amqpPort" .) -}}
   {{- $hostname := (include "invenio.rabbitmq.hostname" .) -}}
-  {{- printf "amqp://%s:%s@%s:%v/" $username $password $hostname $port }}
+  {{- $protocol := (include "invenio.rabbitmq.protocol" .) -}}
+  {{- $vhost := (include "invenio.rabbitmq.vhost" .) -}}
+  {{- printf "%s://%s:%s@%s:%v/%s" $protocol $username $password $hostname $port $vhost}}
 {{- end -}}
 
 ###########################     RabbitMQ API URI     ###########################
