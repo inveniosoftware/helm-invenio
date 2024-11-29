@@ -37,6 +37,8 @@ invenio:
       - name: ""
         consumer_key: ""
         consumer_secret: ""
+  ## @param invenio.extra_config Extra environment variables (templated) to be added to all the pods.
+  ##
   extra_config: {}
   extra_env_from_secret: []
     # - name: NAME_OF_MY_ENV_VAR

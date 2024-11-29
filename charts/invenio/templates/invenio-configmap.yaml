@@ -20,5 +20,5 @@ data:
   INVENIO_DATACITE_ENABLED: "False"
   INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
   {{- range $key, $value := .Values.invenio.extra_config }}
-  {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
+  {{ $key }}: {{ tpl $value $ | toYaml | indent 5 | trim }}
   {{- end }}
