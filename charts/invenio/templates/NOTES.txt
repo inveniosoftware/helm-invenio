@@ -1,1 +1,11 @@
 Invenio is ready to rock 🚀
+
+Your release is named {{ .Release.Name }}.
+
+{{- if .Values.invenio.extra_config}}
+
+DEPRECATION WARNING: 
+    `invenio.extra_config` has been renamed to `invenio.extraConfig` and will be
+    removed in a future release.
+
+{{- end }}
