@@ -126,6 +126,13 @@ spec:
           - name: kerberos-credentials-cache
             mountPath: /tmp
           {{- end }}
+          {{- if .Values.invenio.vocabularies }}
+          {{- range $key, $value := .Values.invenio.vocabularies }}
+          - name: vocabularies
+            mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+            subPath: "{{ $key }}"
+            {{- end }}
+          {{- end }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -273,6 +280,11 @@ spec:
       {{- if .Values.kerberos.enabled }}
       - name: kerberos-credentials-cache
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.invenio.vocabularies}}
+      - name: vocabularies
+        configMap:
+          name: "invenio-vocabularies"
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:

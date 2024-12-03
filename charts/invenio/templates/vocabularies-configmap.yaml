@@ -1,0 +1,13 @@
+{{- if .Values.invenio.vocabularies}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invenio-vocabularies
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
+data:
+{{- range $key, $value := .Values.invenio.vocabularies }}
+  {{ $key }}: |
+  {{- $value | nindent 4 }}
+{{- end }}
+{{- end }}
