@@ -35,6 +35,11 @@ spec:
         - mountPath: /opt/invenio/var/instance/data
           name: shared-volume
         {{- end }}
+        {{- range $key, $value := .Values.invenio.vocabularies }}
+        - name: vocabularies
+          mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+          subPath: "{{ $key }}"
+        {{- end }}
         envFrom:
         - configMapRef:
             name: invenio-config
@@ -126,6 +131,11 @@ spec:
       - name: shared-volume
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
+      {{- end }}
+      {{- if .Values.invenio.vocabularies }}
+      - name: vocabularies
+        configMap:
+          name: "invenio-vocabularies"
       {{- end }}
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:

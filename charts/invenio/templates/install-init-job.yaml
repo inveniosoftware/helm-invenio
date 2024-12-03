@@ -57,10 +57,22 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
+        volumeMounts:
+          {{- range $key, $value := .Values.invenio.vocabularies }}
+          - name: vocabularies
+            mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+            subPath: "{{ $key }}"
+          {{- end }}
         {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}
         {{- end }}
       restartPolicy: OnFailure
+      {{- if .Values.invenio.vocabularies }}
+      volumes:
+        - name: vocabularies
+          configMap:
+            name: "invenio-vocabularies"
+      {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:
       - name: {{ .Values.web.imagePullSecret }}
