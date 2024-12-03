@@ -5,6 +5,7 @@ kind: Service
 metadata:
   name: flower-management
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     app: flower-management
 spec:
   ports:

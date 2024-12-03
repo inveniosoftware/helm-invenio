@@ -4,6 +4,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $key }}
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 data:
   {{ $value.fileName }}: |
     {{- $value.file | nindent 4 }}

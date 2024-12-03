@@ -4,6 +4,8 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: flower-management
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   host: {{ .Values.flower.host }}
   to:

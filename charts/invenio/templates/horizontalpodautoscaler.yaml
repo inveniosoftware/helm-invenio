@@ -4,6 +4,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     app: web
     template: invenio-application
   name: web

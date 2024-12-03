@@ -4,7 +4,9 @@ kind: Service
 metadata:
   name: web
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     run: web
+
   {{- if .Values.web.annotations }}
   annotations: {{- toYaml .Values.web.annotations | nindent 4 }}
   {{- end }}

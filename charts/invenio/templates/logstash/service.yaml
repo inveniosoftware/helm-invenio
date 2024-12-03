@@ -4,6 +4,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: logstash
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   selector:
     app: logstash

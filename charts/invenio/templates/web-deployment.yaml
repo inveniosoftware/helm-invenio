@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.web.replicas }}
   selector:
