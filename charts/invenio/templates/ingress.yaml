@@ -8,6 +8,8 @@ metadata:
   annotations:
     {{- .Values.ingress.annotations | toYaml | nindent 4}}
   {{- end }}
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   {{- if .Values.ingress.class }}
   ingressClassName: {{ .Values.ingress.class }}
