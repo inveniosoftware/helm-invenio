@@ -4,6 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ .Values.persistence.name }}
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     app: web
   annotations:
     helm.sh/resource-policy: keep

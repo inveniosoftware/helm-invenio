@@ -4,6 +4,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: flower-celery-config
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 data:
   celeryconfig.py: |-
     # looks like not really working

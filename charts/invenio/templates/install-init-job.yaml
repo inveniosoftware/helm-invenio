@@ -4,6 +4,7 @@ kind: Job
 metadata:
   name: install-init
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     app: install-init
     module: install
   annotations:

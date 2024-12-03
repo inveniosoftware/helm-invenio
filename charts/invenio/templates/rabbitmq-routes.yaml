@@ -4,6 +4,8 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: mq-management
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   host: {{ required "Missing .Values.rabbitmq.ingress.hostname" .Values.rabbitmq.ingress.hostname }}
   to:
