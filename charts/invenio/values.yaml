@@ -49,6 +49,31 @@ invenio:
     #       name: name-of-my-secret
     #       key: KEY_IN_MY_SECRET
 
+  ## @param invenio.vocabularies Vocabularies to be loaded as files under /app_data/vocabularies
+  ## Example
+  ## vocabularies:
+  ##   resource_types.yaml: |
+  ##    - id: publication
+  ##      icon: file alternate
+  ##      props:
+  ##        csl: report
+  ##        datacite_general: Text
+  ##        datacite_type: ""
+  ##        openaire_resourceType: "0017"
+  ##        openaire_type: publication
+  ##        eurepo: info:eu-repo/semantics/other
+  ##        schema.org: https://schema.org/CreativeWork
+  ##        subtype: ""
+  ##        type: publication
+  ##        marc21_type: publication
+  ##        marc21_subtype: ""
+  ##      title:
+  ##        en: Publication
+  ##      tags:
+  ##        - depositable
+  ##        - linkable
+  vocabularies: {}
+
 haproxy:
   enabled: true
   image: "haproxy:2.8.3"
