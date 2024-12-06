@@ -3,6 +3,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-config
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 data:
   invenio.conf: |
     upstream web {

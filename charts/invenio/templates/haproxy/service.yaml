@@ -5,6 +5,7 @@ kind: Service
 metadata:
   name: haproxy
   labels:
+    {{- include "invenio.labels" . | nindent 4 }}
     app: haproxy
 spec:
   ports:

@@ -10,6 +10,8 @@ metadata:
     {{ . }}
     {{- end }}
   {{- end }}
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   host: {{ include "invenio.hostname" $ }}
   to:
