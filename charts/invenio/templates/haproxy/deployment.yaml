@@ -4,6 +4,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: haproxy
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.haproxy.replicas }}
   selector:
