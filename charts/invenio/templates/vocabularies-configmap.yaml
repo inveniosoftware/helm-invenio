@@ -1,0 +1,8 @@
+{{- if .Values.invenio.vocabularies}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invenio-vocabularies
+data:
+{{- .Values.invenio.vocabularies | toYaml | nindent 2 }}
+{{- end }}
