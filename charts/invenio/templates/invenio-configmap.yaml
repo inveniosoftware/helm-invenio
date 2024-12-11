@@ -9,6 +9,7 @@ data:
   INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
   INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
   INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
+  INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
   INVENIO_RATELIMIT_STORAGE_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
   INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
   {{- if not (hasKey .Values.invenio.extra_config "INVENIO_SEARCH_HOSTS") }}
