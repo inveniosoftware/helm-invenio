@@ -143,6 +143,7 @@ data:
 
           uwsgi_buffering off;
           uwsgi_request_buffering off;
+          chunked_transfer_encoding off;
 
           uwsgi_param Host $host;
           uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -167,6 +168,7 @@ data:
 
           uwsgi_buffering off;
           uwsgi_request_buffering off;
+          chunked_transfer_encoding off;
 
           uwsgi_param Host $host;
           uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -192,6 +194,7 @@ data:
 
           uwsgi_buffering off;
           uwsgi_request_buffering off;
+          chunked_transfer_encoding off;
 
           uwsgi_param Host $host;
           uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
