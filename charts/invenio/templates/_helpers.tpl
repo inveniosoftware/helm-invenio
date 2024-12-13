@@ -273,3 +273,29 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- $databaseName := include "invenio.postgresql.databaseName" . -}}
   {{- printf "postgresql+psycopg2://%s:%s@%s:%v/%s" $username $password $hostname $port $databaseName -}}
 {{- end -}}
+
+{{/*
+Get the sentry secret name
+*/}}
+{{- define "invenio.sentrySecretName" -}}
+{{- if .Values.invenio.sentry.existingSecret -}}
+  {{- print (tpl .Values.invenio.sentry.existingSecret .) -}}
+{{- else if  .Values.invenio.sentry.secret_name -}}
+  {{- print .Values.invenio.sentry.secret_name -}}  
+{{- else -}}
+  {{- "sentry-secrets" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Add sentry environmental variables
+*/}}
+{{- define "invenio.config.sentry" -}}
+{{- if .Values.invenio.sentry.enabled -}}
+- name: INVENIO_SENTRY_DSN
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "invenio.sentrySecretName" . }}
+      key: {{ .Values.invenio.sentry.secretKeys.dsnKey }}
+{{- end }}
+{{- end -}}

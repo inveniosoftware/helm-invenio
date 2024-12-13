@@ -19,10 +19,25 @@ invenio:
   default_users: []  # Requires invenio.init=true
   demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
   sentry:
+    ## @param invenio.sentry.enabled Enable Sentry.io integration
+    ##
     enabled: false
-    existing_secret: false
-    secret_name: "sentry-secrets"
+    ## @param invenio.sentry.dns Sentry DSN, required unless existingSecret is provided
+    ##
     dsn: ""
+    ## @param invenio.sentry.secret_name DEPRECATED: invenio.sentry.existingSecret instead
+    ##
+    secret_name: "sentry-secrets"
+    ## @param invenio.sentry.existing_secret DEPRECATED: invenio.sentry.existingSecret instead
+    ##
+    existing_secret: false
+    ## @param invenio.sentry.existingSecret Existing secret name for sentry's dsn
+    ##
+    existingSecret: ""
+    ## @param invenio.sentry.secretKeys.dsnKey Name of key in existing secret to use for dns.
+    ##
+    secretKeys:
+      dsnKey: "SENTRY_DSN"
   datacite:
     enabled: false
     existing_secret: false

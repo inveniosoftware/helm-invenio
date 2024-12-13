@@ -57,13 +57,7 @@ spec:
             secretKeyRef:
               name: invenio-secrets
               key: INVENIO_CSRF_SECRET_SALT
-        {{- if .Values.invenio.sentry.enabled }}
-        - name: INVENIO_SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.invenio.sentry.secret_name }}
-              key: SENTRY_DSN
-        {{- end }}
+        {{- include "invenio.config.sentry" . | nindent 8 }}
         {{- if .Values.invenio.datacite.enabled }}
         - name: INVENIO_DATACITE_USERNAME
           valueFrom:

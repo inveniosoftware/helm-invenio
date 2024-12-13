@@ -9,3 +9,20 @@ DEPRECATION WARNING:
     removed in a future release.
 
 {{- end }}
+
+{{- if .Values.invenio.sentry.existing_secret }}
+
+DEPRECATION WARNING: 
+    `invenio.sentry.existing_secret` has been renamed to `invenio.sentry.existingSecret` 
+    and its type has changed from boolean to string.
+    This key will be removed in a future release.
+
+{{- end }}
+
+{{- if .Values.invenio.sentry.secret_name }}
+
+DEPRECATION WARNING: 
+    `invenio.sentry.secret_name` has been removed in favor of 
+    `invenio.sentry.existingSecret` will be removed in a future release.
+
+{{- end }}
