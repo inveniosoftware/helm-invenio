@@ -47,6 +47,9 @@ spec:
           value: {{ include "invenio.rabbitmq.uri" . }}
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           value: {{ include "invenio.sqlAlchemyDbUri" . }}
+        {{- with .Values.workerBeat.extraEnvVars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         - name: INVENIO_SECRET_KEY
           valueFrom:
             secretKeyRef:
