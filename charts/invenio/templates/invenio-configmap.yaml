@@ -6,25 +6,4 @@ metadata:
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
 data:
-  INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
-  INVENIO_APP_ALLOWED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
-  INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
-  INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
-  INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
-  INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
-  INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
-  INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
-  {{- if not (hasKey .Values.invenio.extra_config "INVENIO_SEARCH_HOSTS") }}
-  INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
-  {{- end }}
-  INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
-  INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
-  INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
-  INVENIO_DATACITE_ENABLED: "False"
-  INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
-  {{- range $key, $value := .Values.invenio.extra_config }}
-  {{ $key }}: {{ $value | toYaml | indent 4 | trim }}
-  {{- end }}
-  {{- range $key, $value := .Values.invenio.extraConfig }}
-  {{ $key }}: {{ tpl $value $ | toYaml | indent 4 | trim }}
-  {{- end }}
+  {{- include "invenio.mergeConfig" . | nindent 2 -}}
