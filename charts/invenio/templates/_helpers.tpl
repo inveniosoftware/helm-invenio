@@ -299,3 +299,36 @@ Add sentry environmental variables
       key: {{ .Values.invenio.sentry.secretKeys.dsnKey }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Invenio basic configuration variables
+*/}}
+{{- define "invenio.configBase" -}}
+INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
+INVENIO_APP_ALLOWED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
+INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
+INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
+INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
+INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
+INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
+INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
+INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
+INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
+INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
+INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
+INVENIO_DATACITE_ENABLED: "False"
+INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
+{{- end -}}
+
+{{/*
+Merge invenio.extraConfig and configBase using mergeOverwrite and rendering templates.
+invenio.ExtraConfig will overwrite the values from configBase in case of duplicates.
+*/}}
+{{- define "invenio.mergeConfig" -}}
+{{- $dst := dict -}}
+{{- $values := list (include "invenio.configBase" .)  (.Values.invenio.extraConfig | toYaml) -}}
+{{- range $values -}}
+{{- $dst = tpl  . $ | fromYaml | mergeOverwrite $dst -}}
+{{- end -}}
+{{- $dst | toYaml -}}
+{{- end -}}

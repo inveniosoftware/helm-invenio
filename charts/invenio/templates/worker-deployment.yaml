@@ -5,6 +5,8 @@ metadata:
   name: worker
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
+  annotations:
+    checksum/invenio-configmap: {{ include (print $.Template.BasePath "/invenio-configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.worker.replicas }}
   selector:
