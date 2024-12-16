@@ -299,3 +299,14 @@ Add sentry environmental variables
       key: {{ .Values.invenio.sentry.secretKeys.dsnKey }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Get the invenio general secret name
+*/}}
+{{- define "invenio.secretName" -}}
+{{- if .Values.invenio.existingSecret -}}
+  {{- print (tpl .Values.invenio.existingSecret .) -}}
+{{- else -}}
+  {{- "invenio-secrets" -}}
+{{- end -}}
+{{- end -}}
