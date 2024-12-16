@@ -33,6 +33,8 @@ spec:
         envFrom:
         - configMapRef:
             name: invenio-config
+         - secretKeyRef:
+            name: {{ include "invenio.secretName" . }}
         env:
         - name: TZ
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}

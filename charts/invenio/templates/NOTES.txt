@@ -26,3 +26,21 @@ DEPRECATION WARNING:
     `invenio.sentry.existingSecret` will be removed in a future release.
 
 {{- end }}
+
+{{- if or .Values.invenio.secret_key .Values.invenio.security_login_salt .Values.invenio.csrf_secret_salt }}
+
+DEPRECATION WARNING:
+    `invenio.secret_key`, `invenio.security_login_salt`, and `invenio.csrf_secret_salt`
+     have been deprecated and will be removed in future releases. Please use
+     `invenio.existingSecret` to set their values or let the chart generate random ones
+     for you.
+
+{{- end }}
+
+{{- if .Values.invenio.existing_secret }}
+
+DEPRECATION WARNING:
+    `invenio.existing_secret` has been removed in favor of
+    `invenio.existingSecret` and it will be removed in a future release.
+
+{{- end }}

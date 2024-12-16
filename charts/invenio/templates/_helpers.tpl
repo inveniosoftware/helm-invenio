@@ -332,3 +332,14 @@ invenio.ExtraConfig will overwrite the values from configBase in case of duplica
 {{- end -}}
 {{- $dst | toYaml -}}
 {{- end -}}
+
+{{/*
+Get the invenio general secret name
+*/}}
+{{- define "invenio.secretName" -}}
+{{- if .Values.invenio.existingSecret -}}
+  {{- tpl .Values.invenio.existingSecret . -}}
+{{- else -}}
+  {{- "invenio-secrets" -}}
+{{- end -}}
+{{- end -}}

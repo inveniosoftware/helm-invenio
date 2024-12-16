@@ -11,10 +11,24 @@ ingress:
 
 invenio:
   hostname: ""
+  ## @param invenio.secret_key DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
+  ##
   secret_key: ""
+  ## @param invenio.security_login_salt DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
+  ##
   security_login_salt: ""
+  ## @param invenio.csrf_secret_salt DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
+  ##
   csrf_secret_salt: ""
+  ## @param invenio.existing_secret DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
+  ##
   existing_secret: false
+
+  ## @param invenio.existingSecret General existing secret name for, at least, secret key and salts
+  ## If not set a new secret will be generated automatically with random values
+  ## ref: https://inveniordm.docs.cern.ch/customize/authentication/#security
+  ##
+  existingSecret: ""
   init: false
   default_users: []  # Requires invenio.init=true
   demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
