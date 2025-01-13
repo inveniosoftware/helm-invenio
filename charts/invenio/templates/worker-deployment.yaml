@@ -48,21 +48,6 @@ spec:
           {{- with .Values.worker.extraEnvVars }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          - name: INVENIO_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                name: invenio-secrets
-                key: INVENIO_SECRET_KEY
-          - name: INVENIO_SECURITY_LOGIN_SALT
-            valueFrom:
-              secretKeyRef:
-                name: invenio-secrets
-                key: INVENIO_SECURITY_LOGIN_SALT
-          - name: INVENIO_CSRF_SECRET_SALT
-            valueFrom:
-              secretKeyRef:
-                name: invenio-secrets
-                key: INVENIO_CSRF_SECRET_SALT
           {{- include "invenio.config.sentry" . | nindent 10 }}
           {{- if .Values.invenio.datacite.enabled }}
           - name: INVENIO_DATACITE_USERNAME
