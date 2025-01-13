@@ -2,18 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worker
+  name: {{ include "invenio.fullname" . }}-worker
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
 spec:
   replicas: {{ .Values.worker.replicas }}
   selector:
     matchLabels:
-      app: worker
+      app.kubernetes.io/component: worker
   template:
     metadata:
       labels:
-        app: worker
+        app.kubernetes.io/component: worker
     spec:
       containers:
         - name: worker
@@ -33,7 +34,7 @@ spec:
                 - ALL
           envFrom:
             - configMapRef:
-                name: invenio-config
+                name: {{ include "invenio.fullname" . }}-config
             - secretKeyRef:
                 name: {{ include "invenio.secretName" . }}
           env:
@@ -154,7 +155,7 @@ spec:
         {{- if .Values.invenio.vocabularies }}
         - name: vocabularies
           configMap:
-            name: "invenio-vocabularies"
+            name: "{{ include "invenio.fullname" . }}-vocabularies"
         {{- end }}
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:

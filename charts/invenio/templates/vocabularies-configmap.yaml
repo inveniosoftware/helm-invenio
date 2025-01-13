@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: invenio-vocabularies
+  name: {{ include "invenio.fullname" $ }}-vocabularies
   labels:
     {{- include "invenio.labels" $ | nindent 4 }}
 data:

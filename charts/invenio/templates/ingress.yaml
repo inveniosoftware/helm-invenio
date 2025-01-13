@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: invenio-ingress
+  name: {{ include "invenio.fullname" . }}
   {{- if .Values.ingress.annotations }}
   annotations:
     {{- .Values.ingress.annotations | toYaml | nindent 4}}

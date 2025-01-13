@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: {{ include "invenio.fullname" . }}-web
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
-    run: web
+    app.kubernetes.io/component: web
 
   {{- if .Values.web.annotations }}
   annotations: {{- toYaml .Values.web.annotations | nindent 4 }}
@@ -16,5 +16,5 @@ spec:
       port: 80
       targetPort: 8080
   selector:
-    app: web
+    app.kubernetes.io/component: web
   type: {{ .Values.web.service.type }}

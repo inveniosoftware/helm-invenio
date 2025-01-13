@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: install-init
+  name: {{ include "invenio.fullname" . }}-install-init
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app: install-init
@@ -32,7 +32,7 @@ spec:
         ]
         envFrom:
         - configMapRef:
-            name: invenio-config
+            name: {{ include "invenio.fullname" . }}-config
          - secretKeyRef:
             name: {{ include "invenio.secretName" . }}
         env:
@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: vocabularies
           configMap:
-            name: "invenio-vocabularies"
+            name: "{{ include "invenio.fullname" . }}-vocabularies"
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:

@@ -6,6 +6,24 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name, the release name will be used as a full name.
+*/}}
+{{- define "invenio.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "invenio.chart" -}}
@@ -283,7 +301,7 @@ Get the sentry secret name
 {{- else if  .Values.invenio.sentry.secret_name -}}
   {{- print .Values.invenio.sentry.secret_name -}}  
 {{- else -}}
-  {{- "sentry-secrets" -}}
+  {{- printf "%s-%s" (include "invenio.fullname" .) "sentry" -}}
 {{- end -}}
 {{- end -}}
 
@@ -340,6 +358,6 @@ Get the invenio general secret name
 {{- if .Values.invenio.existingSecret -}}
   {{- tpl .Values.invenio.existingSecret . -}}
 {{- else -}}
-  {{- "invenio-secrets" -}}
+  {{- include "invenio.fullname" . -}}
 {{- end -}}
 {{- end -}}

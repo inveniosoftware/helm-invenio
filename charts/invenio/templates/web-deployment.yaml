@@ -2,18 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web
+  name: {{ include "invenio.fullname" . }}-web
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web
 spec:
   replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
-      app: web
+      app.kubernetes.io/component: web
   template:
     metadata:
       labels:
-        app: web
+        app.kubernetes.io/component: web
     spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
       containers:
@@ -29,7 +30,7 @@ spec:
         {{- end }}
         envFrom:
         - configMapRef:
-            name: invenio-config
+            name: {{ include "invenio.fullname" . }}-config
         - secretKeyRef:
             name: {{ include "invenio.secretName" . }}
         env:
@@ -243,7 +244,7 @@ spec:
       - name: nginx-config
         configMap:
           defaultMode: 420
-          name: nginx-config
+          name: {{ include "invenio.fullname" . }}-nginx-config
       - name: var-run
         emptyDir: {}
       - name: var-cache-nginx
@@ -253,7 +254,7 @@ spec:
       - name: uwsgi-config
         configMap:
           defaultMode: 420
-          name: uwsgi-config
+          name: {{ include "invenio.fullname" . }}-uwsgi-config
       - name: nginx-invenio-assets
         emptyDir: {}
       {{- if .Values.persistence.enabled }}
@@ -268,7 +269,7 @@ spec:
       {{- if .Values.invenio.vocabularies }}
       - name: vocabularies
         configMap:
-          name: "invenio-vocabularies"
+          name: "{{ include "invenio.fullname" . }}-vocabularies"
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:

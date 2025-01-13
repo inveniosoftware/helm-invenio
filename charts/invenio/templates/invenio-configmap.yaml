@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: invenio-config
+  name: {{ include "invenio.fullname" . }}-config
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
 data:
