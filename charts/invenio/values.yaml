@@ -41,7 +41,7 @@ invenio:
     dsn: ""
     ## @param invenio.sentry.secret_name DEPRECATED: invenio.sentry.existingSecret instead
     ##
-    secret_name: "sentry-secrets"
+    secret_name: ""
     ## @param invenio.sentry.existing_secret DEPRECATED: invenio.sentry.existingSecret instead
     ##
     existing_secret: false
