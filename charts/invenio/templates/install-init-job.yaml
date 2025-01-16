@@ -33,7 +33,7 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ include "invenio.fullname" . }}-config
-         - secretKeyRef:
+         - secretRef:
             name: {{ include "invenio.secretName" . }}
         env:
         - name: TZ
