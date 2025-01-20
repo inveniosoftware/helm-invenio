@@ -25,7 +25,11 @@ spec:
           - path: /
             backend:
               service:
-                name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
+                {{- if .Values.haproxy.enabled }}
+                name: haproxy
+                {{- else }}
+                name: {{ include "invenio.fullname" . }}-web
+                {{- end }}
                 port:
                   name: http
             pathType: Prefix
