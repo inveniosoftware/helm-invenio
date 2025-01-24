@@ -284,6 +284,21 @@ workerBeat:
     limits:
       cpu: "2"
       memory: 500Mi
+  ## @param workerBeat.securityContext securityContext for the worker-beat container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  ## @param workerBeat.podSecurityContext securityContext for the worker-beat pod
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
 
 persistence:
   enabled: true
