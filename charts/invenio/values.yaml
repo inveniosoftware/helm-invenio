@@ -211,6 +211,21 @@ web:
   annotations: []
   service:
     type: ClusterIP
+  ## @param web.podSecurityContext securityContext for the web pod
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## @param web.securityContext securityContext for the web container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
 
 worker:
   enabled: true
