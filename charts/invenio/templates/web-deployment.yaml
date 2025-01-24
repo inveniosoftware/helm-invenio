@@ -172,6 +172,10 @@ spec:
         - name: var-log-nginx
           mountPath: /var/log/nginx
           readOnly: true
+        securityContext:
+          {{- with .Values.logstash.securityContext }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- end }}
       {{- if .Values.kerberos.enabled }}
       - name: kerberos-credentials
@@ -190,12 +194,11 @@ spec:
         volumeMounts:
           - name: kerberos-credentials-cache
             mountPath: /tmp
-      {{- end }}
         securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+          {{- with .Values.kerberos.securityContext }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+      {{- end }}
       initContainers:
         # copy assets from uwsgi to nginx
         - name: copy-web-assets

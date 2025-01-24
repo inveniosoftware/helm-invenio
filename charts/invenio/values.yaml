@@ -351,6 +351,14 @@ logstash:
   cern_monit:
     enabled: false
     producer: "invenio"
+  ## @param logstash.securityContext securityContext for the logstash container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
 
 kerberos:
   enabled: false
@@ -365,3 +373,10 @@ kerberos:
     requests:
       cpu: 10m
       memory: 2Mi
+  ## @param kerberos.securityContext securityContext for the kerberos container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
