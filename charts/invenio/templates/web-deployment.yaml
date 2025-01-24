@@ -119,10 +119,9 @@ spec:
             subPath: "{{ $key }}"
           {{- end }}
         securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+          {{- with .Values.web.securityContext }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
       - name: nginx
         image: {{ required "Missing .Values.nginx.image" .Values.nginx.image }}
         env:
@@ -233,14 +232,10 @@ spec:
             - name: kerberos-credentials-cache
               mountPath: /tmp
         {{- end }}
-      {{- if .Values.invenio.podSecurityContext.enabled }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: "RuntimeDefault"
-      {{- end }}
+        {{- with .Values.web.podSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       volumes:
       {{- if .Values.logstash.enabled }}
       - name: config
