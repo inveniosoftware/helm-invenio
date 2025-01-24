@@ -152,6 +152,10 @@ spec:
         {{- if .Values.nginx.resources }}
         resources: {{- toYaml .Values.nginx.resources | nindent 10 }}
         {{- end }}
+        securityContext:
+          {{- with .Values.nginx.securityContext }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- if .Values.logstash.enabled }}
       - name: filebeat
         image: {{ required ".Values.logstash.filebeat_image" .Values.logstash.filebeat_image }}
