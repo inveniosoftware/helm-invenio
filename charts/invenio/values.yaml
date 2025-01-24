@@ -208,6 +208,13 @@ web:
       limits:
         cpu: '1'
         memory: 100Mi
+    ## @param web.initContainers.securityContext securityContext for the initContainers in the web pod
+    ##
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
   annotations: []
   service:
     type: ClusterIP

@@ -212,10 +212,9 @@ spec:
             {{- toYaml .Values.web.initContainers.resources | nindent 12 }}
           {{- end }}
           securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
+            {{- with .Values.web.initContainers.securityContext }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: nginx-invenio-assets
               mountPath: /opt/nginx-invenio-assets
@@ -231,6 +230,10 @@ spec:
           volumeMounts:
             - name: kerberos-credentials-cache
               mountPath: /tmp
+          securityContext:
+            {{- with .Values.web.initContainers.securityContext }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
         {{- end }}
       securityContext:
         {{- with .Values.web.podSecurityContext }}
