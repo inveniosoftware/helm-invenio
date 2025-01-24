@@ -228,6 +228,21 @@ worker:
       memory: 1Gi
   volumes:
     enabled: false
+  ## @param worker.podSecurityContext securityContext for the worker Pod
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## @param worker.securityContext securityContext for the worker container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.

@@ -28,10 +28,9 @@ spec:
           resources: {{- toYaml .Values.worker.resources | nindent 12 }}
           {{- end }}
           securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
+            {{- with .Values.worker.securityContext }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "invenio.fullname" . }}-config
@@ -134,14 +133,10 @@ spec:
             - name: kerberos-credentials-cache
               mountPath: /tmp
       {{- end }}
-      {{- if .Values.invenio.podSecurityContext.enabled }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: "RuntimeDefault"
-      {{- end }}
+        {{- with .Values.worker.podSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       volumes:
         {{- if .Values.persistence.enabled }}
         - name: shared-volume
