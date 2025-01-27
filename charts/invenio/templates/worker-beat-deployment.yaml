@@ -25,7 +25,7 @@ spec:
           "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
         securityContext:
-          {{- with .Values.workerBeat.podSecurityContext }}
+          {{- with .Values.workerBeat.securityContext }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         volumeMounts:
