@@ -7,7 +7,7 @@ metadata:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker-beat
 spec:
-  replicas: 1
+  replicas: 1 # For data safety, beat must never have more than 1 replica!
   selector:
     matchLabels:
       app.kubernetes.io/component: worker-beat
@@ -123,3 +123,5 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.worker.imagePullSecret }}
       {{- end }}
+  strategy:
+    type: Recreate # For data safety, beat must never have more than 1 replica!
