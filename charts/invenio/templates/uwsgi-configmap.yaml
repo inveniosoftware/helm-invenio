@@ -60,4 +60,3 @@ data:
     {{- range $key, $val := .Values.invenio.uwsgiExtraConfig }}
     {{ $key }} = {{ $val }}
     {{- end }}
-
