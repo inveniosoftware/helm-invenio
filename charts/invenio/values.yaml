@@ -84,6 +84,7 @@ invenio:
     #     secretKeyRef:
     #       name: name-of-my-secret
     #       key: KEY_IN_MY_SECRET
+  uwsgiExtraConfig: {}
 
   ## @param invenio.vocabularies Vocabularies to be loaded as files under /app_data/vocabularies
   ## Example
