@@ -21,7 +21,7 @@ dependencies:
   - name: postgresql
     condition: postgresql.enabled
     repository: "oci://registry-1.docker.io/bitnamicharts"
-    version: "14.0.1"
+    version: "14.3.3"
   - name: rabbitmq
     condition: rabbitmq.enabled
     repository: "oci://registry-1.docker.io/bitnamicharts"
