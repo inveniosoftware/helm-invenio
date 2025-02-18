@@ -17,6 +17,14 @@ spec:
         app.kubernetes.io/component: web
     spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
+      {{- with .Values.web.nodeSelector }}
+      nodeSelector:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      {{- with .Values.web.tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       containers:
       - name: web
         image: {{ required "Missing .Values.web.image" .Values.web.image }}

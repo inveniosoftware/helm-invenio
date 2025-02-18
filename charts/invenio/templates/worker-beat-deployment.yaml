@@ -16,6 +16,14 @@ spec:
       labels:
         app.kubernetes.io/component: worker-beat
     spec:
+      {{- with .Values.workerBeat.nodeSelector }}
+      nodeSelector:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      {{- with .Values.workerBeat.tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       containers:
       - name: worker-beat
         image: {{ required "Missing .Values.worker.image" .Values.worker.image }}
