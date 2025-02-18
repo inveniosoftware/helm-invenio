@@ -228,8 +228,22 @@ web:
       limits:
         cpu: '1'
         memory: 100Mi
+  ## @param web.annotations Add extra annotations to the web pods
+  ##
   annotations: []
+  ## @param web.nodeSelector Node labels for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param web.tolerations Tolerations for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## Invenio web service parameters
+  ##
   service:
+    ## @param service.type web service type
+    ##
     type: ClusterIP
 
 worker:
@@ -255,6 +269,17 @@ worker:
       memory: 1Gi
   volumes:
     enabled: false
+  ## @param worker.annotations Add extra annotations to the worker pods
+  ##
+  annotations: []
+  ## @param worker.nodeSelector Node labels for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param worker.tolerations Tolerations for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.
@@ -267,6 +292,17 @@ workerBeat:
     limits:
       cpu: "2"
       memory: 500Mi
+  ## @param workerBeat.annotations Add extra annotations to the workerBeat pods
+  ##
+  annotations: []
+  ## @param workerBeat.nodeSelector Node labels for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param workerBeat.tolerations Tolerations for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 persistence:
   enabled: true

@@ -18,6 +18,14 @@ spec:
       labels:
         app.kubernetes.io/component: worker
     spec:
+      {{- with .Values.worker.nodeSelector }}
+      nodeSelector: 
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      {{- with .Values.worker.tolerations }}
+      tolerations: 
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       containers:
         - name: worker
           image: {{ include "invenio.image" . }}
