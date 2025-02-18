@@ -223,8 +223,22 @@ web:
       capabilities:
         drop:
           - ALL
+  ## @param web.annotations Add extra annotations to the web pods
+  ##
   annotations: []
+  ## @param web.nodeSelector Node labels for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param web.tolerations Tolerations for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## Invenio web service parameters
+  ##
   service:
+    ## @param service.type web service type
+    ##
     type: ClusterIP
   ## @param web.podSecurityContext securityContext for the web pod
   ##
@@ -294,6 +308,14 @@ worker:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param worker.nodeSelector Node labels for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param worker.tolerations Tolerations for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.
@@ -328,6 +350,14 @@ workerBeat:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param workerBeat.nodeSelector Node labels for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param workerBeat.tolerations Tolerations for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 persistence:
   enabled: true
