@@ -13,6 +13,9 @@ keywords:
   - multimedia-repository
 type: application
 version: 0.5.3
+maintainers:
+  - name: CERN
+    email: info@inveniosoftware.org
 dependencies:
   - name: opensearch
     condition: opensearch.enabled
