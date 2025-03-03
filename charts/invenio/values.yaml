@@ -361,6 +361,8 @@ redis:
         cpu: 500m
         memory: 500Mi
 
+## RabbitMQ chart configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
 rabbitmq:
   enabled: true
   auth:
@@ -373,7 +375,28 @@ rabbitmq:
       cpu: "1"
       memory: 2Gi
 
-rabbitmqExternal: {}
+## External RabbitMQ configuration
+## All of these values are only used when rabbitmq.enabled is set to false
+## @param rabbitmqExternal.username RabbitMQ user
+## @param rabbitmqExternal.password Password
+## @param rabbitmqExternal.amqpPort 
+## @param rabbitmqExternal.managementPort
+## @param rabbitmqExternal.hostname 
+## @param rabbitmqExternal.protocol 
+## @param rabbitmqExternal.vhost 
+## @param rabbitmqExternal.existingSecret Name of an existing secret resource containing the credentials
+## @param rabbitmqExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
+##
+rabbitmqExternal:
+  username: invenio
+  password: ""
+  amqpPort: 5671
+  managementPort: 15672
+  hostname: ""
+  protocol: ""
+  vhost: ""
+  existingSecret: ""
+  existingSecretPasswordKey: "amqp-password"
 
 flower:
   enabled: true

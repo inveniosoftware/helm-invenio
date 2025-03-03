@@ -45,10 +45,7 @@ spec:
           env:
           - name: TZ
             value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
-          - name: INVENIO_BROKER_URL
-            value: {{ include "invenio.rabbitmq.uri" . }}
-          - name: INVENIO_CELERY_BROKER_URL
-            value: {{ include "invenio.rabbitmq.uri" . }}
+          {{- include "invenio.config.queue" . | nindent 10 }}
           {{- include "invenio.config.database" . | nindent 10 }}
           {{- with .Values.worker.extraEnvVars }}
           {{- toYaml . | nindent 10 }}
