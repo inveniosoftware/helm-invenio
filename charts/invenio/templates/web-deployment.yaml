@@ -40,8 +40,7 @@ spec:
           value: {{ include "invenio.rabbitmq.uri" . }}
         - name: INVENIO_CELERY_BROKER_URL
           value: {{ include "invenio.rabbitmq.uri" . }}
-        - name: INVENIO_SQLALCHEMY_DATABASE_URI
-          value: {{ include "invenio.sqlAlchemyDbUri" . }}
+        {{- include "invenio.config.database" . | nindent 8 }}
         {{- with .Values.web.extraEnvVars }}
         {{-  toYaml . | nindent 8 }}
         {{- end }}
