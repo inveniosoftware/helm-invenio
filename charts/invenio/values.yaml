@@ -60,8 +60,29 @@ invenio:
     secretKeys:
       dsnKey: "SENTRY_DSN"
   datacite:
+    ## @param invenio.datacite.enabled Enable DataCite provider
+    ##
     enabled: false
+    ## @param invenio.datacite.username Datacite username
+    ##
+    username: ""
+    ## @param invenio.datacite.password Datacite password
+    ##
+    password: ""
+    ## @param invenio.datacite.existingSecret Existing secret name for datacite username and password
+    ##
+    existingSecret: ""
+    ## @param invenio.datacite.secretKeys.usernameKey Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.
+    ## @param invenio.datacite.secretKeys.passwordKey Name of key in existing secret to use for password. Only used when `invenio.datacite.existingSecret` is set.
+    ##
+    secretKeys:
+      usernameKey: "DATACITE_USERNAME"
+      passwordKey: "DATACITE_PASSWORD"
+    ## @param invenio.datacite.existing_secret DEPRECATED: use invenio.datacite.existingSecret instead
+    ##
     existing_secret: false
+    ## @param invenio.datacite.secret_name DEPRECATED: use invenio.datacite.existingSecret instead
+    ##
     secret_name: "datacite-secrets"
   podSecurityContext:
     enabled: true

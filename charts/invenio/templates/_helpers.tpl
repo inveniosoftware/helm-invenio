@@ -334,7 +334,7 @@ INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
-INVENIO_DATACITE_ENABLED: "False"
+INVENIO_DATACITE_ENABLED: {{ternary "True" "False" .Values.invenio.datacite.enabled | quote }}
 INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
 {{- end -}}
 
@@ -360,4 +360,35 @@ Get the invenio general secret name
 {{- else -}}
   {{- include "invenio.fullname" . -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Get the sentry secret name
+*/}}
+{{- define "invenio.dataciteSecretName" -}}
+{{- if .Values.invenio.datacite.existingSecret -}}
+  {{- print (tpl .Values.invenio.datacite.existingSecret .) -}}
+{{- else if  .Values.invenio.datacite.secret_name -}}
+  {{- print .Values.invenio.datacite.secret_name -}}
+{{- else -}}
+  {{- printf "%s-%s" (include "invenio.fullname" .) "datacite" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Add datacite environmental variables
+*/}}
+{{- define "invenio.config.datacite" -}}
+{{- if .Values.invenio.datacite.enabled }}
+- name: INVENIO_DATACITE_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "invenio.dataciteSecretName" . }}
+      key: {{ .Values.invenio.datacite.secretKeys.usernameKey }}
+- name: INVENIO_DATACITE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "invenio.dataciteSecretName" . }}
+      key: {{ .Values.invenio.datacite.secretKeys.passwordKey }}
+{{- end }}
 {{- end -}}
