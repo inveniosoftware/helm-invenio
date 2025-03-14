@@ -44,6 +44,15 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.flower.secret_name }}
                   key: FLOWER_BASIC_AUTH_CREDENTIALS
+          {{- if (or .Values.invenio.extraEnvFrom .Values.flower.extraEnvFrom) }}
+          envFrom:
+            {{- with .Values.invenio.extraEnvFrom }}
+            {{- . | toYaml | nindent 12 }}
+            {{- end }}
+            {{- with .Values.flower.extraEnvFrom }}
+            {{- . | toYaml | nindent 12 }}
+            {{- end }}
+          {{- end }}
           {{- if .Values.flower.resources }}
           resources: {{- toYaml .Values.flower.resources | nindent 12 }}
           {{- end }}
