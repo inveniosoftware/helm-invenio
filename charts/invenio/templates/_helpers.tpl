@@ -323,7 +323,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 - name: INVENIO_DB_HOST
   value: {{ include "invenio.postgresql.hostname" . }}
 - name: INVENIO_DB_PORT
-  value: {{ include "invenio.postgresql.port" . }}
+  value: {{ include "invenio.postgresql.port" . | quote }}
 - name: INVENIO_DB_NAME
   value: {{ include "invenio.postgresql.database" . }}
 - name: INVENIO_DB_PROTOCOL
