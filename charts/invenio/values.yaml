@@ -85,6 +85,13 @@ invenio:
     #       name: name-of-my-secret
     #       key: KEY_IN_MY_SECRET
   uwsgiExtraConfig: {}
+  ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
 
   ## @param invenio.vocabularies Vocabularies to be loaded as files under /app_data/vocabularies
   ## Example
@@ -234,6 +241,13 @@ web:
     capabilities:
       drop:
         - ALL
+  ## @param web.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the web container
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
 
 worker:
   enabled: true
@@ -273,6 +287,13 @@ worker:
     capabilities:
       drop:
         - ALL
+  ## @param worker.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker container
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.
@@ -300,6 +321,13 @@ workerBeat:
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
+  ## @param workerBeat.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
 
 persistence:
   enabled: true
@@ -361,6 +389,13 @@ flower:
     limits:
       memory: 250Mi
       cpu: 0.1
+  ## @param flower.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the flower container
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
 
 postgresql:
   enabled: true

@@ -45,6 +45,12 @@ spec:
             name: {{ include "invenio.fullname" . }}-config
         - secretRef:
             name: {{ include "invenio.secretName" . }}
+        {{- with .Values.invenio.extraEnvFrom }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
+        {{- with .Values.workerBeat.extraEnvFrom }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
         env:
         - name: TZ
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
