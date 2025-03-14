@@ -23,9 +23,9 @@ spec:
               [
                 "celery",
                 "--config=/var/celery/celeryconfig.py",
-                {{ printf "--broker=%s" (include "invenio.rabbitmq.uri" .) }},
+                "--broker=$(INVENIO_CELERY_BROKER_URL)",
                 "flower",
-                {{ printf "--broker_api=%s" (include "invenio.rabbitmq.apiUri" .) }},
+                "--broker_api=$(RABBITMQ_API_URI)",
                 "--basic_auth=$(FLOWER_BASIC_AUTH_CREDENTIALS)",
                 "--conf=/var/flower/flowerconfig.py"
               ]
@@ -44,6 +44,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.flower.secret_name }}
                   key: FLOWER_BASIC_AUTH_CREDENTIALS
+            {{- include "invenio.config.queue" . | nindent 12 }}
           {{- if (or .Values.invenio.extraEnvFrom .Values.flower.extraEnvFrom) }}
           envFrom:
             {{- with .Values.invenio.extraEnvFrom }}

@@ -222,7 +222,10 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   value: {{ $uri}}
 - name: INVENIO_CELERY_BROKER_URL
   value: {{ $uri}}
+- name: RABBITMQ_API_URI
+  value: "http://$(INVENIO_AMQP_BROKER_USER):$(INVENIO_AMQP_BROKER_PASSWORD)@$(INVENIO_AMQP_BROKER_HOST):$(INVENIO_AMQP_BROKER_PORT)/api/"
 {{- end -}}
+
 #########################     OpenSearch hostname     #########################
 {{/*
   This template renders the hostname of the OpenSearch instance.
