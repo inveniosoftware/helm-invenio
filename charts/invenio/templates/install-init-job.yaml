@@ -33,7 +33,7 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ include "invenio.fullname" . }}-config
-         - secretRef:
+        - secretRef:
             name: {{ include "invenio.secretName" . }}
         env:
         - name: TZ
@@ -44,6 +44,13 @@ spec:
           value: {{ include "invenio.rabbitmq.uri" . }}
         - name: INVENIO_SQLALCHEMY_DATABASE_URI
           value: {{ include "invenio.sqlAlchemyDbUri" . }}
+        {{- range .Values.invenio.extraEnvFromSecret }}
+        - name: {{ tpl .name $ }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ tpl .valueFrom.secretKeyRef.name $ }}
+              key: {{ tpl .valueFrom.secretKeyRef.key $ }}
+        {{- end }}
         volumeMounts:
           {{- range $key, $value := .Values.invenio.vocabularies }}
           - name: vocabularies

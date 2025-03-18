@@ -83,6 +83,13 @@ spec:
                 name: {{ .valueFrom.secretKeyRef.name }}
                 key: {{ .valueFrom.secretKeyRef.key }}
           {{- end }}
+          {{- range .Values.invenio.extraEnvFromSecret }}
+          - name: {{ tpl .name $ }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ tpl .valueFrom.secretKeyRef.name $ }}
+                key: {{ tpl .valueFrom.secretKeyRef.key $ }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
