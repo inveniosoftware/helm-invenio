@@ -302,7 +302,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- if .Values.postgresql.enabled -}}
     {{- required "Missing .Values.postgresql.primary.service.ports.postgresql" (tpl (toString .Values.postgresql.primary.service.ports.postgresql) .) -}}
   {{- else -}}
-    {{- required "Missing .Values.postgresqlExternal.port" (tpl .Values.postgresqlExternal.port .) -}}
+    {{- required "Missing .Values.postgresqlExternal.port" (tpl (toString .Values.postgresqlExternal.port) .) -}}
   {{- end -}}
 {{- end -}}
 
