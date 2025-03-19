@@ -146,7 +146,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- if .Values.rabbitmq.enabled }}
     {{- required "Missing .Values.rabbitmq.service.ports.amqp" .Values.rabbitmq.service.ports.amqp | quote -}}
   {{- else }}
-    {{- required "Missing .Values.rabbitmqExternal.amqpPort" (tpl .Values.rabbitmqExternal.amqpPort .) | quote -}}
+    {{- required "Missing .Values.rabbitmqExternal.amqpPort" (tpl (toString .Values.rabbitmqExternal.amqpPort) .) | quote -}}
   {{- end }}
 {{- end -}}
 
