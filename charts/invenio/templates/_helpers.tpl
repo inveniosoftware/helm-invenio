@@ -296,13 +296,13 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-  This template renders the port number used for the PostgreSQL instance.
+  This template renders the port number used for the PostgreSQL instance (as a string).
 */}}
-{{- define "invenio.postgresql.port" -}}
+{{- define "invenio.postgresql.port_string" -}}
   {{- if .Values.postgresql.enabled -}}
-    {{- required "Missing .Values.postgresql.primary.service.ports.postgresql" (tpl (toString .Values.postgresql.primary.service.ports.postgresql) .) -}}
+    {{- required "Missing .Values.postgresql.primary.service.ports.postgresql" (tpl (toString .Values.postgresql.primary.service.ports.postgresql) .) | quote -}}
   {{- else -}}
-    {{- required "Missing .Values.postgresqlExternal.port" (tpl (toString .Values.postgresqlExternal.port) .) -}}
+    {{- required "Missing .Values.postgresqlExternal.port" (tpl (toString .Values.postgresqlExternal.port) .) | quote -}}
   {{- end -}}
 {{- end -}}
 
@@ -326,7 +326,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 - name: INVENIO_DB_HOST
   value: {{ include "invenio.postgresql.hostname" . }}
 - name: INVENIO_DB_PORT
-  value: {{ include "invenio.postgresql.port" . | quote }}
+  value: {{ include "invenio.postgresql.port_string" . }}
 - name: INVENIO_DB_NAME
   value: {{ include "invenio.postgresql.database" . }}
 - name: INVENIO_DB_PROTOCOL
