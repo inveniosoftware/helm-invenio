@@ -195,7 +195,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-  RabbitMQ connection env section. 
+  RabbitMQ connection env section.
 */}}
 {{- define "invenio.config.queue" -}}
 {{- $uri := "$(INVENIO_AMQP_BROKER_PROTOCOL)://$(INVENIO_AMQP_BROKER_USER):$(INVENIO_AMQP_BROKER_PASSWORD)@$(INVENIO_AMQP_BROKER_HOST):$(INVENIO_AMQP_BROKER_PORT)/$(INVENIO_AMQP_BROKER_VHOST)" -}}
@@ -318,7 +318,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-  Define database connection env section. 
+  Define database connection env section.
 */}}
 {{- define "invenio.config.database" -}}
 - name: INVENIO_DB_USER
@@ -351,7 +351,7 @@ Get the sentry secret name
 {{- if .Values.invenio.sentry.existingSecret -}}
   {{- print (tpl .Values.invenio.sentry.existingSecret .) -}}
 {{- else if  .Values.invenio.sentry.secret_name -}}
-  {{- print .Values.invenio.sentry.secret_name -}}  
+  {{- print .Values.invenio.sentry.secret_name -}}
 {{- else -}}
   {{- printf "%s-%s" (include "invenio.fullname" .) "sentry" -}}
 {{- end -}}
