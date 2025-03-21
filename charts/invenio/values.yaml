@@ -426,6 +426,14 @@ flower:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param flower.nodeSelector Node labels for flower pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param flower.tolerations Tolerations for flower pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 postgresql:
   enabled: true
