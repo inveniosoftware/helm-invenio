@@ -390,7 +390,7 @@ rabbitmq:
 rabbitmqExternal:
   username: invenio
   password: ""
-  amqpPort: 5671
+  amqpPort: 5672
   managementPort: 15672
   hostname: ""
   protocol: ""
