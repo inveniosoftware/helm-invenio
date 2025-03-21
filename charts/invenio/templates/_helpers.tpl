@@ -142,7 +142,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
   This template renders the AMQP port number for RabbitMQ.
 */}}
-{{- define "invenio.rabbitmq.amqpPort" -}}
+{{- define "invenio.rabbitmq.amqpPortString" -}}
   {{- if .Values.rabbitmq.enabled }}
     {{- required "Missing .Values.rabbitmq.service.ports.amqp" .Values.rabbitmq.service.ports.amqp | quote -}}
   {{- else }}
@@ -153,7 +153,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
   This template renders the management port number for RabbitMQ.
 */}}
-{{- define "invenio.rabbitmq.managementPort" -}}
+{{- define "invenio.rabbitmq.managementPortString" -}}
   {{- if .Values.rabbitmq.enabled }}
     {{- required "Missing .Values.rabbitmq.service.ports.manager" .Values.rabbitmq.service.ports.manager | quote -}}
   {{- else }}
@@ -204,7 +204,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 - name: INVENIO_AMQP_BROKER_HOST
   value: {{ include "invenio.rabbitmq.hostname" . }}
 - name: INVENIO_AMQP_BROKER_PORT
-  value: {{ include "invenio.rabbitmq.amqpPort" . }}
+  value: {{ include "invenio.rabbitmq.amqpPortString" . }}
 - name: INVENIO_AMQP_BROKER_VHOST
   value: {{ include "invenio.rabbitmq.vhost" . }}
 - name: INVENIO_AMQP_BROKER_PROTOCOL
