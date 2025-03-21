@@ -69,6 +69,14 @@ spec:
         seccompProfile:
           type: "RuntimeDefault"
       {{- end }}
+      {{- with .Values.flower.nodeSelector }}
+      nodeSelector:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      {{- with .Values.flower.tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       volumes:
         - name: celery-config-volume
           configMap:
