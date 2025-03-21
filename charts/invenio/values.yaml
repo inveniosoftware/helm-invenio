@@ -387,16 +387,16 @@ rabbitmq:
 ## @param rabbitmqExternal.existingSecret Name of an existing secret resource containing the credentials
 ## @param rabbitmqExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
 ##
-rabbitmqExternal:
-  username: invenio
-  password: ""
-  amqpPort: 5672
-  managementPort: 15672
-  hostname: ""
-  protocol: ""
-  vhost: ""
-  existingSecret: ""
-  existingSecretPasswordKey: "amqp-password"
+rabbitmqExternal: {}
+  # username: invenio
+  # password: ""
+  # amqpPort: 5672
+  # managementPort: 15672
+  # hostname: ""
+  # protocol: ""
+  # vhost: ""
+  # existingSecret: ""
+  # existingSecretPasswordKey: "amqp-password"
 
 flower:
   enabled: true
@@ -446,14 +446,14 @@ postgresql:
 ## @param postgresqlExternal.existingSecret Name of an existing secret resource containing the database credentials
 ## @param postgresqlExternal.existingSecretPasswordKey Name of an existing secret key containing the database credentials
 ##
-postgresqlExternal:
-  hostname: ""
-  port: 5432
-  username: invenio
-  password: ""
-  database: invenio
-  existingSecret: ""
-  existingSecretPasswordKey: "password"
+postgresqlExternal: {}
+  # hostname: ""
+  # port: 5432
+  # username: invenio
+  # password: ""
+  # database: invenio
+  # existingSecret: ""
+  # existingSecretPasswordKey: "password"
 
 opensearch:
   enabled: true
