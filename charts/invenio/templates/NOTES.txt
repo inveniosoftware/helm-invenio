@@ -4,7 +4,7 @@ Your release is named {{ .Release.Name }}.
 
 {{- if .Values.invenio.extra_config}}
 
-DEPRECATION WARNING: 
+DEPRECATION WARNING:
     `invenio.extra_config` has been renamed to `invenio.extraConfig` and will be
     removed in a future release.
 
@@ -12,8 +12,8 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.sentry.existing_secret }}
 
-DEPRECATION WARNING: 
-    `invenio.sentry.existing_secret` has been renamed to `invenio.sentry.existingSecret` 
+DEPRECATION WARNING:
+    `invenio.sentry.existing_secret` has been renamed to `invenio.sentry.existingSecret`
     and its type has changed from boolean to string.
     This key will be removed in a future release.
 
@@ -21,8 +21,8 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.sentry.secret_name }}
 
-DEPRECATION WARNING: 
-    `invenio.sentry.secret_name` has been removed in favor of 
+DEPRECATION WARNING:
+    `invenio.sentry.secret_name` has been removed in favor of
     `invenio.sentry.existingSecret` will be removed in a future release.
 
 {{- end }}
@@ -42,5 +42,21 @@ DEPRECATION WARNING:
 DEPRECATION WARNING:
     `invenio.existing_secret` has been removed in favor of
     `invenio.existingSecret` and it will be removed in a future release.
+
+{{- end }}
+
+{{- if or .Values.web.image .Values.worker.image  }}
+
+DEPRECATION WARNING:
+    `<service>.image` has been removed in favor of `image` and it will be
+    removed in a future release.
+
+{{- end }}
+
+{{- if or .Values.web.imagePullSecret .Values.worker.imagePullSecret }}
+
+DEPRECATION WARNING:
+    `<service>.imagePullSecret` has been removed in favor of
+    `image.pullSecrets` and it will be removed in a future release.
 
 {{- end }}
