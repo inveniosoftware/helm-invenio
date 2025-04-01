@@ -44,3 +44,11 @@ DEPRECATION WARNING:
     `invenio.existingSecret` and it will be removed in a future release.
 
 {{- end }}
+
+{{- if .Values.invenio.extra_env_from_secret }}
+
+DEPRECATION WARNING:
+    `invenio.extra_env_from_secret` has been removed in favor of
+    `invenio.extraEnvFromSecret` and it will be removed in a future release.
+
+{{- end }}
