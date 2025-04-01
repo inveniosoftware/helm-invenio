@@ -27,7 +27,8 @@ spec:
       {{- end }}
       containers:
       - name: web
-        image: {{ required "Missing .Values.web.image" .Values.web.image }}
+        image: {{ default .Values.web.image (include "invenio.image" .) }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command: [
             "/bin/bash",
             "-c",
@@ -199,7 +200,8 @@ spec:
       initContainers:
         # copy assets from uwsgi to nginx
         - name: copy-web-assets
-          image: {{ required "Missing .Values.web.image" .Values.web.image }}
+          image: {{ default .Values.web.image (include "invenio.image" .) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           command: [
               "/bin/bash",
               "-c",
@@ -274,4 +276,8 @@ spec:
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:
         - name: {{ .Values.web.imagePullSecret }}
+      {{- end }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
