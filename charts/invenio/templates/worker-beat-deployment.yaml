@@ -26,7 +26,8 @@ spec:
       {{- end }}
       containers:
       - name: worker-beat
-        image: {{ required "Missing .Values.worker.image" .Values.worker.image }}
+        image: {{ default .Values.worker.image (include "invenio.image" .) }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command: [
           "/bin/bash",
           "-c",
@@ -109,6 +110,10 @@ spec:
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
       - name: {{ .Values.worker.imagePullSecret }}
+      {{- end }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
   strategy:
     type: Recreate # For data safety, beat must never have more than 1 replica!

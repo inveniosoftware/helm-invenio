@@ -116,3 +116,19 @@ DEPRECATION WARNING:
     Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead.
 
 {{- end }}
+
+{{- if or .Values.web.image .Values.worker.image  }}
+
+DEPRECATION WARNING:
+    `<service>.image` has been removed in favor of `image` and it will be
+    removed in a future release.
+
+{{- end }}
+
+{{- if or .Values.web.imagePullSecret .Values.worker.imagePullSecret }}
+
+DEPRECATION WARNING:
+    `<service>.imagePullSecret` has been removed in favor of
+    `image.pullSecrets` and it will be removed in a future release.
+
+{{- end }}

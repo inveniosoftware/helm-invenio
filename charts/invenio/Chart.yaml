@@ -1,6 +1,6 @@
 apiVersion: v2
 name: invenio
-appVersion: v12.0.0-beta.1.3
+appVersion: v12.0.10
 description: Turn-key research data management platform.
 home: https://inveniosoftware.org/
 icon: https://inveniosoftware.org/static/img/logo-invenio-white.svg

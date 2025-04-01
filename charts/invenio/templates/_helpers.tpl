@@ -50,6 +50,23 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{/*
+Return the proper Invenio image name
+*/}}
+{{- define "invenio.image" -}}
+{{- $registryName :=  required "Missing .Values.image.registry" .Values.image.registry -}}
+{{- $repositoryName :=  required "Missing .Values.image.repository" .Values.image.repository -}}
+{{- $separator := ":" -}}
+{{- $termination := .Values.image.tag | default .Chart.AppVersion | toString -}}
+
+{{- if .Values.image.digest }}
+  {{- $separator = "@" -}}
+  {{- $termination = .Values.image.digest | toString -}}
+{{- end -}}
+
+{{- printf "%s/%s%s%s" $registryName $repositoryName $separator $termination -}}
+{{- end -}}
+
 ###########################     Invenio hostname     ###########################
 {{/*
   This template renders the hostname for Invenio.
