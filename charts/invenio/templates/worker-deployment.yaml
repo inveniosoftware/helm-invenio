@@ -63,18 +63,7 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- include "invenio.config.sentry" . | nindent 10 }}
-          {{- if .Values.invenio.datacite.enabled }}
-          - name: INVENIO_DATACITE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.invenio.datacite.secret_name }}
-                key: DATACITE_USERNAME
-          - name: INVENIO_DATACITE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.invenio.datacite.secret_name }}
-                key: DATACITE_PASSWORD
-          {{- end }}
+          {{- include "invenio.config.datacite" . | nindent 10 }}
           {{- if .Values.invenio.remote_apps.enabled }}
           {{- range .Values.invenio.remote_apps.credentials }}
           - name: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
