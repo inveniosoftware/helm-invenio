@@ -334,7 +334,7 @@ INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
-INVENIO_DATACITE_ENABLED: {{ternary "True" "False" .Values.invenio.datacite.enabled | quote }}
+INVENIO_DATACITE_ENABLED: {{ ternary "True" "False" .Values.invenio.datacite.enabled | quote }}
 INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
 {{- end -}}
 
