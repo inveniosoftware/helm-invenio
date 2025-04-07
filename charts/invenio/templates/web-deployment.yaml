@@ -73,7 +73,7 @@ spec:
               name: {{ .valueFrom.secretKeyRef.name }}
               key: {{ .valueFrom.secretKeyRef.key }}
         {{- end }}
-        livenessProbe: {{- .Values.web.livenessProbe | toYaml | nindent 10 }}
+        livenessProbe: {{- tpl (.Values.web.livenessProbe | toYaml) $ | nindent 10 }}
         readinessProbe: {{- tpl (.Values.web.readinessProbe | toYaml) $ | nindent 10 }}
         startupProbe: {{- tpl (.Values.web.startupProbe | toYaml) $ | nindent 10 }}
         volumeMounts:

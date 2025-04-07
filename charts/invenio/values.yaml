@@ -234,7 +234,7 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 5
-  ## @param web.livenessProbe `livenessProbe` for the web container
+  ## @param web.livenessProbe templated `livenessProbe` for the web container
   ##
   livenessProbe: {}
   assets:
