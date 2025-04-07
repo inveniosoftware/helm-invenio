@@ -64,6 +64,9 @@ spec:
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
         {{- include "invenio.config.queue" . | nindent 8 }}
         {{- include "invenio.config.database" . | nindent 8}}
+        {{- with .Values.invenio.extraEnvVars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- with .Values.workerBeat.extraEnvVars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
