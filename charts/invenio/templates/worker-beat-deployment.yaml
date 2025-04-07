@@ -80,14 +80,9 @@ spec:
               name: {{ .valueFrom.secretKeyRef.name }}
               key: {{ .valueFrom.secretKeyRef.key }}
         {{- end }}
-        livenessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "celery -A {{ .Values.worker.app }} inspect ping"
-          initialDelaySeconds: 20
-          timeoutSeconds: 30
+        livenessProbe: {{- tpl (.Values.workerBeat.livenessProbe | toYaml) $ | nindent 10 }}
+        readinessProbe: {{- tpl (.Values.workerBeat.readinessProbe | toYaml) $ | nindent 10 }}
+        startupProbe: {{- tpl (.Values.workerBeat.startupProbe | toYaml) $ | nindent 10 }}
         resources: {{- toYaml .Values.workerBeat.resources | nindent 10 }}
       securityContext:
         {{- with .Values.workerBeat.podSecurityContext }}
