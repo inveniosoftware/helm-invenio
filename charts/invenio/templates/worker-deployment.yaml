@@ -32,9 +32,7 @@ spec:
               "-c",
               "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
           ]
-          {{- if .Values.worker.resources }}
           resources: {{- toYaml .Values.worker.resources | nindent 12 }}
-          {{- end }}
           securityContext:
             {{- with .Values.worker.securityContext }}
             {{- toYaml . | nindent 12 }}
