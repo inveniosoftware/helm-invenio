@@ -75,28 +75,9 @@ spec:
               name: {{ .valueFrom.secretKeyRef.name }}
               key: {{ .valueFrom.secretKeyRef.key }}
         {{- end }}
-        readinessProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "uwsgi_curl -X HEAD -H 'Host: {{ include "invenio.hostname" $ }}' $(hostname):5000 /ping"
-          failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
-          initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
-          successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
-          timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
-        startupProbe:
-          exec:
-            command:
-              - /bin/bash
-              - -c
-              - "uwsgi_curl -X HEAD -H 'Host: {{ include "invenio.hostname" $ }}' $(hostname):5000 /ping"
-          failureThreshold: {{ .Values.web.startupProbe.failureThreshold }}
-          initialDelaySeconds: {{ .Values.web.startupProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.web.startupProbe.periodSeconds }}
-          successThreshold: {{ .Values.web.startupProbe.successThreshold }}
-          timeoutSeconds: {{ .Values.web.startupProbe.timeoutSeconds }}
+        livenessProbe: {{- tpl (.Values.web.livenessProbe | toYaml) $ | nindent 10 }}
+        readinessProbe: {{- tpl (.Values.web.readinessProbe | toYaml) $ | nindent 10 }}
+        startupProbe: {{- tpl (.Values.web.startupProbe | toYaml) $ | nindent 10 }}
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'
