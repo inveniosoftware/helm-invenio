@@ -95,6 +95,7 @@ spec:
           periodSeconds: {{ .Values.web.startupProbe.periodSeconds }}
           successThreshold: {{ .Values.web.startupProbe.successThreshold }}
           timeoutSeconds: {{ .Values.web.startupProbe.timeoutSeconds }}
+        livenessProbe: {{- .Values.web.livenessProbe | toYaml | nindent 10 }}
         volumeMounts:
           - name: uwsgi-config
             mountPath: '/opt/invenio/src/uwsgi'

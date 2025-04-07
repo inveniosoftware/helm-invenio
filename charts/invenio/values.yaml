@@ -220,6 +220,9 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 5
+  ## @param web.livenessProbe `livenessProbe` for the web container
+  ##
+  livenessProbe: {}
   assets:
     location: /opt/invenio/var/instance/static
   resources:
