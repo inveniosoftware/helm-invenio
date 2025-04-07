@@ -415,6 +415,22 @@ worker:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+  ## @param worker.livenessProbe templated `livenessProbe` for the worker container
+  ##
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+    initialDelaySeconds: 20
+    timeoutSeconds: 30
+  ## @param worker.readinessProbe templated `readinessProbe` for the worker container
+  ##
+  readinessProbe: {}
+  ## @param worker.startupProbe templated `startupProbe` for the worker container
+  ##
+  startupProbe: {}
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.

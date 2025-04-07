@@ -78,14 +78,9 @@ spec:
                 name: {{ .valueFrom.secretKeyRef.name }}
                 key: {{ .valueFrom.secretKeyRef.key }}
           {{- end }}
-          livenessProbe:
-            exec:
-              command:
-                - /bin/bash
-                - -c
-                - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
-            initialDelaySeconds: 20
-            timeoutSeconds: 30
+          livenessProbe: {{- tpl (.Values.worker.livenessProbe | toYaml) $ | nindent 12 }}
+          readinessProbe: {{- tpl (.Values.worker.readinessProbe | toYaml) $ | nindent 12 }}
+          startupProbe: {{- tpl (.Values.worker.startupProbe | toYaml) $ | nindent 12 }}
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - mountPath: /opt/invenio/var/instance/data
