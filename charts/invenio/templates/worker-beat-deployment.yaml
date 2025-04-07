@@ -84,17 +84,7 @@ spec:
               - "celery -A {{ .Values.worker.app }} inspect ping"
           initialDelaySeconds: 20
           timeoutSeconds: 30
-        {{- if .Values.worker.resources }}
         resources: {{- toYaml .Values.workerBeat.resources | nindent 10 }}
-        {{- else }}
-        resources:
-          requests:
-            cpu: 500m
-            memory: 200Mi
-          limits:
-            cpu: '2'
-            memory: 500Mi
-        {{- end }}
       securityContext:
         {{- with .Values.workerBeat.podSecurityContext }}
         {{- toYaml . | nindent 8 }}
