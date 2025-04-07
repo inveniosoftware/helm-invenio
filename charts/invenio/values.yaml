@@ -590,20 +590,27 @@ logstash:
       drop:
         - ALL
 
-
 kerberos:
   enabled: false
   secret_name: ""
   image: ""
   args: []
   initArgs: []
-  resources:
-    limits:
-      cpu: 100m
-      memory: 20Mi
-    requests:
-      cpu: 10m
-      memory: 2Mi
+  ## @param kerberos.resources `resources` for the kerberos-credentials
+  ## container and init-kerberos-credentials initContainer
+  ##
+  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
+  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
+  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
+  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 2Mi
   ## @param kerberos.securityContext securityContext for the kerberos container
   ##
   securityContext:
