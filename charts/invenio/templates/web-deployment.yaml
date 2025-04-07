@@ -33,9 +33,7 @@ spec:
             "-c",
             "uwsgi --ini /opt/invenio/src/uwsgi/uwsgi.ini",
         ]
-        {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}
-        {{- end }}
         envFrom:
         - configMapRef:
             name: {{ include "invenio.fullname" . }}-config
