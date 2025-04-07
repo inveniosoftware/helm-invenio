@@ -437,22 +437,8 @@ redis:
     enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
   master:
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
-    resources:
-      limits:
-        cpu: "1"
-        memory: 2Gi
-      requests:
-        cpu: 500m
-        memory: 500Mi
   replica:
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
-    resources:
-      limits:
-        cpu: "1"
-        memory: 2Gi
-      requests:
-        cpu: 500m
-        memory: 500Mi
 
 ## RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
@@ -460,13 +446,6 @@ rabbitmq:
   enabled: true
   auth:
     password: ""
-  resources:
-    limits:
-      cpu: "1"
-      memory: 2Gi
-    requests:
-      cpu: "1"
-      memory: 2Gi
 
 ## External RabbitMQ configuration
 ## All of these values are only used when rabbitmq.enabled is set to false
