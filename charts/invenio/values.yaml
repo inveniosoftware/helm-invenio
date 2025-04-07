@@ -208,7 +208,7 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
-  ## @param web.readinessProbe `readinessProbe` for the web container
+  ## @param web.readinessProbe templated `readinessProbe` for the web container
   ##
   readinessProbe:
     exec:
@@ -221,7 +221,7 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 1
-  ## @param web.startupProbe `startupProbe` for the web container
+  ## @param web.startupProbe templated `startupProbe` for the web container
   ##
   startupProbe:
     exec:
