@@ -202,10 +202,7 @@ spec:
               "-c",
               "cp -R {{ .Values.web.assets.location }}/. /opt/nginx-invenio-assets/",
           ]
-         {{- if .Values.web.initContainers.resources }}
-          resources:
-            {{- toYaml .Values.web.initContainers.resources | nindent 12 }}
-          {{- end }}
+          resources: {{- toYaml .Values.web.initContainers.resources | nindent 12 }}
           securityContext:
             {{- with .Values.web.initContainers.securityContext }}
             {{- toYaml . | nindent 12 }}
