@@ -480,6 +480,22 @@ workerBeat:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+  ## @param workerBeat.livenessProbe templated `livenessProbe` for the worker-beat container
+  ##
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "celery -A {{ .Values.worker.app }} inspect ping"
+    initialDelaySeconds: 20
+    timeoutSeconds: 30
+  ## @param workerBeat.readinessProbe templated `readinessProbe` for the worker-beat container
+  ##
+  readinessProbe: {}
+  ## @param workerBeat.startupProbe templated `startupProbe` for the worker-beat container
+  ##
+  startupProbe: {}
 
 persistence:
   enabled: true
