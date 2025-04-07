@@ -31,6 +31,9 @@ spec:
               ]
           ports:
             - containerPort: 5555
+          livenessProbe: {{- tpl (.Values.flower.livenessProbe | toYaml) $ | nindent 12 }}
+          readinessProbe: {{- tpl (.Values.flower.readinessProbe | toYaml) $ | nindent 12 }}
+          startupProbe: {{- tpl (.Values.flower.startupProbe | toYaml) $ | nindent 12 }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
