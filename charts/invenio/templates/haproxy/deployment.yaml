@@ -38,9 +38,7 @@ spec:
             - name: haproxy-config
               mountPath: /usr/local/etc/haproxy/backup-website.http
               subPath: backup-website.http
-          {{- if .Values.haproxy.resources }}
           resources: {{- toYaml .Values.haproxy.resources | nindent 12 }}
-          {{- end }}
       volumes:
         - name: haproxy-config
           configMap:
