@@ -38,12 +38,8 @@ spec:
         env:
         - name: TZ
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
-        - name: INVENIO_BROKER_URL
-          value: {{ include "invenio.rabbitmq.uri" . }}
-        - name: INVENIO_CELERY_BROKER_URL
-          value: {{ include "invenio.rabbitmq.uri" . }}
-        - name: INVENIO_SQLALCHEMY_DATABASE_URI
-          value: {{ include "invenio.sqlAlchemyDbUri" . }}
+        {{- include "invenio.config.queue" . | nindent 8 }}
+        {{- include "invenio.config.database" . | nindent 8 }}
         volumeMounts:
           {{- range $key, $value := .Values.invenio.vocabularies }}
           - name: vocabularies
