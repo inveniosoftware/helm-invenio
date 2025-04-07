@@ -147,9 +147,7 @@ spec:
             port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 1
-        {{- if .Values.nginx.resources }}
         resources: {{- toYaml .Values.nginx.resources | nindent 10 }}
-        {{- end }}
         securityContext:
           {{- with .Values.nginx.securityContext }}
           {{- toYaml . | nindent 10 }}
