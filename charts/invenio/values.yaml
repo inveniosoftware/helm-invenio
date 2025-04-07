@@ -208,18 +208,35 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
+  ## @param web.readinessProbe templated `readinessProbe` for the web container
+  ##
   readinessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }} $(hostname):5000' /ping"
     failureThreshold: 3
     initialDelaySeconds: 5
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 1
+  ## @param web.startupProbe templated `startupProbe` for the web container
+  ##
   startupProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }}' $(hostname):5000 /ping"
     failureThreshold: 3
     initialDelaySeconds: 10
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 5
+  ## @param web.livenessProbe templated `livenessProbe` for the web container
+  ##
+  livenessProbe: {}
   assets:
     location: /opt/invenio/var/instance/static
   resources:
@@ -337,6 +354,22 @@ worker:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+  ## @param worker.livenessProbe templated `livenessProbe` for the worker container
+  ##
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
+    initialDelaySeconds: 20
+    timeoutSeconds: 30
+  ## @param worker.readinessProbe templated `readinessProbe` for the worker container
+  ##
+  readinessProbe: {}
+  ## @param worker.startupProbe templated `startupProbe` for the worker container
+  ##
+  startupProbe: {}
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.
@@ -379,6 +412,22 @@ workerBeat:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+  ## @param workerBeat.livenessProbe templated `livenessProbe` for the worker-beat container
+  ##
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "celery -A {{ .Values.worker.app }} inspect ping"
+    initialDelaySeconds: 20
+    timeoutSeconds: 30
+  ## @param workerBeat.readinessProbe templated `readinessProbe` for the worker-beat container
+  ##
+  readinessProbe: {}
+  ## @param workerBeat.startupProbe templated `startupProbe` for the worker-beat container
+  ##
+  startupProbe: {}
 
 persistence:
   enabled: true
@@ -478,6 +527,15 @@ flower:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+  ## @param flower.livenessProbe templated `livenessProbe` for the flower-management container
+  ##
+  livenessProbe: {}
+  ## @param flower.readinessProbe templated `readinessProbe` for the flower-management container
+  ##
+  readinessProbe: {}
+  ## @param flower.startupProbe templated `startupProbe` for the flower-management container
+  ##
+  startupProbe: {}
 
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
