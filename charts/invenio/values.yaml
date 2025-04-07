@@ -248,18 +248,35 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
+  ## @param web.readinessProbe templated `readinessProbe` for the web container
+  ##
   readinessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }} $(hostname):5000' /ping"
     failureThreshold: 3
     initialDelaySeconds: 5
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 1
+  ## @param web.startupProbe templated `startupProbe` for the web container
+  ##
   startupProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }}' $(hostname):5000 /ping"
     failureThreshold: 3
     initialDelaySeconds: 10
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 5
+  ## @param web.livenessProbe templated `livenessProbe` for the web container
+  ##
+  livenessProbe: {}
   assets:
     location: /opt/invenio/var/instance/static
   ## @param web.resources `resources` for the web container
