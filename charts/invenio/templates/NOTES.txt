@@ -61,3 +61,50 @@ DEPRECATION WARNING:
     `invenio.datacite.existingSecret` will be removed in a future release.
 
 {{- end }}
+
+{{/*
+BEGIN: Warning on unset resources.
+*/}}
+
+{{- $fieldsToCheckForResources := list
+"flower"
+"haproxy"
+"kerberos.initContainers"
+"kerberos"
+"nginx"
+"web.initContainers"
+"web"
+"worker"
+"workerBeat"
+-}}
+
+{{- $fieldsWithResourcesUnset := list -}}
+
+{{- range $fieldsToCheckForResources -}}
+    {{- $path := splitList "." . -}}
+    {{- $values := $.Values -}}
+    {{- range $path -}}
+        {{- $values = index $values . -}}
+    {{- end -}}
+    {{- if not $values.resources -}}
+        {{ $fieldsWithResourcesUnset = append $fieldsWithResourcesUnset . -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $fieldsWithResourcesUnset }}
+
+💡 MISSING RESOURCES: It seems like `resources` is unset for one or more containers. We strongly recommend that you set them. The `resources` field is unset in the following places:
+
+{{- "\n" -}}
+{{ range . }}
+.Values.{{ . }}
+{{- end }}
+
+You can read more about resource management in Kubernetes here:
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+{{- end }}
+
+{{/*
+END: Warning on unset resources.
+*/}}
