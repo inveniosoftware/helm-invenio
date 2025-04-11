@@ -99,12 +99,11 @@ invenio:
   ## @param invenio.extraConfig Extra environment variables (templated) to be added to all the pods.
   ##
   extraConfig: {}
+  ## @param invenio.extra_env_from_secret DEPRECATED: Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead.
   extra_env_from_secret: []
-    # - name: NAME_OF_MY_ENV_VAR
-    #   valueFrom:
-    #     secretKeyRef:
-    #       name: name-of-my-secret
-    #       key: KEY_IN_MY_SECRET
+  ## @param invenio.extraEnvVars Extra environment variables to be added to all the pods.
+  ##
+  extraEnvVars: []
   uwsgiExtraConfig: {}
   ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers
   ##
@@ -214,7 +213,7 @@ web:
   uwsgi:
     processes: 6
     threads: 4
-  ## @param web.extraEnvVars Extra environment variables (templated) to be added to the pods.
+  ## @param web.extraEnvVars Extra environment variables to be added to the pods.
   ##
   extraEnvVars: []
   autoscaler:
@@ -323,7 +322,7 @@ worker:
   run_mount_path: /var/run/celery
   celery_pidfile: /var/run/celery/celerybeat.pid
   celery_schedule: /var/run/celery/celery-schedule
-  ## @param worker.extraEnvVars Extra environment variables (templated) to be added to the pods.
+  ## @param worker.extraEnvVars Extra environment variables to be added to the pods.
   ##
   extraEnvVars: []
   ## @param worker.resources `resources` for the worker container
@@ -374,7 +373,7 @@ worker:
   tolerations: []
 
 workerBeat:
-  ## @param workerBeat.extraEnvVars Extra environment variables (templated) to be added to the pods.
+  ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
   ##
   extraEnvVars: []
   ## @param workerBeat.resources `resources` for the worker-beat container

@@ -4,7 +4,7 @@ Your release is named {{ .Release.Name }}.
 
 {{- if .Values.invenio.extra_config}}
 
-DEPRECATION WARNING: 
+DEPRECATION WARNING:
     `invenio.extra_config` has been renamed to `invenio.extraConfig` and will be
     removed in a future release.
 
@@ -12,8 +12,8 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.sentry.existing_secret }}
 
-DEPRECATION WARNING: 
-    `invenio.sentry.existing_secret` has been renamed to `invenio.sentry.existingSecret` 
+DEPRECATION WARNING:
+    `invenio.sentry.existing_secret` has been renamed to `invenio.sentry.existingSecret`
     and its type has changed from boolean to string.
     This key will be removed in a future release.
 
@@ -21,8 +21,8 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.sentry.secret_name }}
 
-DEPRECATION WARNING: 
-    `invenio.sentry.secret_name` has been removed in favor of 
+DEPRECATION WARNING:
+    `invenio.sentry.secret_name` has been removed in favor of
     `invenio.sentry.existingSecret` will be removed in a future release.
 
 {{- end }}
@@ -47,7 +47,7 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.datacite.existing_secret }}
 
-DEPRECATION WARNING: 
+DEPRECATION WARNING:
     `invenio.datacite.existing_secret` has been renamed to `invenio.datacite.existingSecret`
     and its type has changed from boolean to string.
     This key will be removed in a future release.
@@ -56,7 +56,7 @@ DEPRECATION WARNING:
 
 {{- if .Values.invenio.datacite.secret_name }}
 
-DEPRECATION WARNING: 
+DEPRECATION WARNING:
     `invenio.datacite.secret_name` has been renamed in favor of
     `invenio.datacite.existingSecret` will be removed in a future release.
 
@@ -108,3 +108,11 @@ https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 {{/*
 END: Warning on unset resources.
 */}}
+
+{{- if .Values.invenio.extra_env_from_secret }}
+
+DEPRECATION WARNING:
+    `invenio.extra_env_from_secret` will be removed in future a release.
+    Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead.
+
+{{- end }}
