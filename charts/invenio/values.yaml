@@ -276,7 +276,7 @@ web:
     timeoutSeconds: 5
   ## @param web.livenessProbe templated `livenessProbe` for the web container
   ##
-  livenessProbe: {}
+  livenessProbe: null
   assets:
     location: /opt/invenio/var/instance/static
   ## @param web.resources `resources` for the web container
@@ -427,10 +427,10 @@ worker:
     timeoutSeconds: 30
   ## @param worker.readinessProbe templated `readinessProbe` for the worker container
   ##
-  readinessProbe: {}
+  readinessProbe: null
   ## @param worker.startupProbe templated `startupProbe` for the worker container
   ##
-  startupProbe: {}
+  startupProbe: null
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
@@ -492,10 +492,10 @@ workerBeat:
     timeoutSeconds: 30
   ## @param workerBeat.readinessProbe templated `readinessProbe` for the worker-beat container
   ##
-  readinessProbe: {}
+  readinessProbe: null
   ## @param workerBeat.startupProbe templated `startupProbe` for the worker-beat container
   ##
-  startupProbe: {}
+  startupProbe: null
 
 persistence:
   enabled: true
@@ -583,13 +583,13 @@ flower:
   tolerations: []
   ## @param flower.livenessProbe templated `livenessProbe` for the flower-management container
   ##
-  livenessProbe: {}
+  livenessProbe: null
   ## @param flower.readinessProbe templated `readinessProbe` for the flower-management container
   ##
-  readinessProbe: {}
+  readinessProbe: null
   ## @param flower.startupProbe templated `startupProbe` for the flower-management container
   ##
-  startupProbe: {}
+  startupProbe: null
 
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
