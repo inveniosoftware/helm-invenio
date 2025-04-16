@@ -19,9 +19,9 @@ fullnameOverride: ""
 ## @param image.pullPolicy Invenio image pull policy
 ## @param image.pullSecrets Invenio image pull secrets
 image:
-  registry: ghrc.io
-  repository: inveniosoftware/demo-inveniordm
-  tag: demo-inveniordm:12.0.10
+  registry: ghcr.io/inveniosoftware
+  repository: demo-inveniordm/demo-inveniordm
+  tag: ""  # Defaults to .Chart.appVersion
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
