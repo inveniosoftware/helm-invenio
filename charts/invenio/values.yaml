@@ -255,7 +255,7 @@ web:
       command:
         - /bin/bash
         - -c
-        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }} $(hostname):5000' /ping"
+        - "uwsgi_curl -X HEAD -H 'Host: {{ include \"invenio.hostname\" $ }}' $(hostname):5000 /ping"
     failureThreshold: 3
     initialDelaySeconds: 5
     periodSeconds: 5
