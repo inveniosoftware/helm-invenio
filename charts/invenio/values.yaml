@@ -98,7 +98,7 @@ invenio:
     password: ""
     ## @param invenio.datacite.existingSecret Existing secret name for datacite username and password
     ##
-    existingSecret: ""
+    existingSecret: "datacite-secrets"
     ## @param invenio.datacite.secretKeys.usernameKey Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.
     ## @param invenio.datacite.secretKeys.passwordKey Name of key in existing secret to use for password. Only used when `invenio.datacite.existingSecret` is set.
     ##
@@ -110,7 +110,7 @@ invenio:
     existing_secret: false
     ## @param invenio.datacite.secret_name DEPRECATED: use invenio.datacite.existingSecret instead
     ##
-    secret_name: "datacite-secrets"
+    secret_name: ""
   podSecurityContext:
     enabled: true
   remote_apps:
