@@ -69,10 +69,8 @@ BEGIN: Warning on unset resources.
 {{- $fieldsToCheckForResources := list
 "flower"
 "haproxy"
-"kerberos.initContainers"
 "kerberos"
 "nginx"
-"web.initContainers"
 "web"
 "worker"
 "workerBeat"
@@ -86,8 +84,13 @@ BEGIN: Warning on unset resources.
     {{- range $path -}}
         {{- $values = index $values . -}}
     {{- end -}}
-    {{- if not $values.resources -}}
-        {{ $fieldsWithResourcesUnset = append $fieldsWithResourcesUnset . -}}
+    {{- if or (not (hasKey $values "enabled")) $values.enabled -}}
+        {{- if not $values.resources -}}
+            {{ $fieldsWithResourcesUnset = append $fieldsWithResourcesUnset . -}}
+        {{- end -}}
+        {{- if (and $values.initContainers (not $values.initContainers.resources)) -}}
+            {{ $fieldsWithResourcesUnset = append $fieldsWithResourcesUnset (print . ".initContainers") -}}
+        {{- end -}}
     {{- end -}}
 {{- end -}}
 
