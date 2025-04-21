@@ -459,5 +459,17 @@ Add datacite environmental variables
     secretKeyRef:
       name: {{ include "invenio.dataciteSecretName" . }}
       key: {{ .Values.invenio.datacite.secretKeys.passwordKey }}
+- name: INVENIO_DATACITE_PREFIX
+  value: {{ required "Missing .Values.invenio.datacite.prefix" .Values.invenio.datacite.prefix | quote }}
+- name: INVENIO_DATACITE_TEST_MODE
+  value: {{ required "Missing .Values.invenio.values.datacite.testMode" .Values.invenio.datacite.testMode | quote }}
+{{- with .Values.invenio.datacite.format }}
+- name: INVENIO_DATACITE_FORMAT
+  value: {{ . }}
+{{- end}}
+{{- with .Values.invenio.datacite.dataCenterSymbol }}
+- name: INVENIO_DATACITE_DATACENTER_SYMBOL
+  value: {{ . }}
+{{- end}}
 {{- end }}
 {{- end -}}
