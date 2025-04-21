@@ -88,6 +88,9 @@ invenio:
     ##
     secretKeys:
       dsnKey: "SENTRY_DSN"
+
+  ## Invenio DataCite configuration
+  ## ref: https://inveniordm.docs.cern.ch/customize/dois
   datacite:
     ## @param invenio.datacite.enabled Enable DataCite provider
     ##
@@ -98,7 +101,7 @@ invenio:
     ## @param invenio.datacite.password Datacite password
     ##
     password: ""
-    ## @param invenio.datacite.existingSecret Existing secret name for datacite username and password
+    ## @param invenio.datacite.existingSecret Existing secret name for datacite username and password.
     ##
     existingSecret: "datacite-secrets"
     ## @param invenio.datacite.secretKeys.usernameKey Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.
@@ -107,6 +110,21 @@ invenio:
     secretKeys:
       usernameKey: "DATACITE_USERNAME"
       passwordKey: "DATACITE_PASSWORD"
+    ## @param invenio.datacite.prefix DataCite DOI prefix, it will translate into DATACITE_PREFIX.
+    ##
+    prefix: ""
+    ## @param invenio.datacite.testMode DataCite test mode enabled, it will trasnlate into DATACITE_TEST_MODE.
+    ## This has to be a string value, Invenio will evaluate this as a python expression and transform it into a boolean.
+    ## Example:
+    ## testMode: "False"
+    ##
+    testMode: ""
+    ## @param invenio.datacite.format A string used for formatting the DOI, it will translate into DATACITE_FORMAT.
+    ##
+    format: ""
+    ## @param invenio.datacite.dataCenterSymbol DataCite data center symbol, it will translate into DATACITE_DATACENTER_SYMBOL.
+    ##
+    dataCenterSymbol: ""
     ## @param invenio.datacite.existing_secret DEPRECATED: use invenio.datacite.existingSecret instead
     ##
     existing_secret: false
