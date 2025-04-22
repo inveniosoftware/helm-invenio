@@ -72,7 +72,7 @@ Return the proper Invenio image name
   This template renders the hostname for Invenio.
 */}}
 {{- define "invenio.hostname" -}}
-  {{- required "Missing .Values.invenio.hostname" .Values.invenio.hostname }}
+  {{- tpl (required "Missing .Values.invenio.hostname" .Values.invenio.hostname) . }}
 {{- end -}}
 
 ############################     Redis Hostname     ############################
