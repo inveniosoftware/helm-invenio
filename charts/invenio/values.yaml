@@ -298,9 +298,9 @@ web:
       capabilities:
         drop:
           - ALL
-  ## @param web.annotations Add extra annotations to the web pods
+  ## @param web.annotations Add extra annotations to the web service
   ##
-  annotations: []
+  annotations: {}
   ## @param web.nodeSelector Node labels for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
