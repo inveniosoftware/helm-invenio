@@ -298,7 +298,7 @@ web:
       capabilities:
         drop:
           - ALL
-  ## @param web.annotations Add extra annotations to the web service
+  ## @param web.annotations Add extra (templated) annotations to the web service
   ##
   annotations: {}
   ## @param web.nodeSelector Node labels for web pods assignment
