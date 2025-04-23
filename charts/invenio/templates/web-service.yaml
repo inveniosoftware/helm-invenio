@@ -7,8 +7,8 @@ metadata:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: web
 
-  {{- if .Values.web.annotations }}
-  annotations: {{- toYaml .Values.web.annotations | nindent 4 }}
+  {{- with .Values.web.annotations }}
+  annotations: {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 spec:
   ports:
