@@ -16,7 +16,7 @@ spec:
   host: {{ include "invenio.hostname" $ }}
   to:
     kind: Service
-    name: {{ if .Values.haproxy.enabled }}haproxy{{ else }}web{{ end }}
+    name: web
   port:
     targetPort: http
   tls:
