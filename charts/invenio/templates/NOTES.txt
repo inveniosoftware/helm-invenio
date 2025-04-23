@@ -68,7 +68,6 @@ BEGIN: Warning on unset resources.
 
 {{- $fieldsToCheckForResources := list
 "flower"
-"haproxy"
 "kerberos"
 "nginx"
 "web"

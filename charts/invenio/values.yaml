@@ -185,39 +185,6 @@ invenio:
   ##        - linkable
   vocabularies: {}
 
-haproxy:
-  enabled: true
-  image: "haproxy:2.8.3"
-  replicas: 2
-  maxconn: 100
-  maxconn_static: 500
-  ## @param haproxy.resources `resources` for the haproxy container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
-  resources: {}
-    # requests:
-    #   cpu: 250m
-    #   memory: 500Mi
-    # limits:
-    #   cpu: 250m
-    #   memory: 500Mi
-  denied_ips: ""
-  denied_uas: ""
-  extra_frontend_public_http_request: ""
-  http429_response: "You are being blocked. Please contact us."
-  html_backup_website: |-
-    <!DOCTYPE html>
-    <html>
-      <body>
-          <h1>503 Service Unavailable</h1>
-          <p>Under maintenance!</p>
-      </body>
-    </html>
-
 nginx:
   image: "nginx:1.24.0"
   max_conns: 100
