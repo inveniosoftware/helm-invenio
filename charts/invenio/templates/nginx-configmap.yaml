@@ -237,5 +237,6 @@ data:
         }
 
 {{ .Values.nginx.extra_server_config | indent 8 }}
+{{ tpl .Values.nginx.extraServerConfig $ | indent 8 }}
 
     }

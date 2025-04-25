@@ -134,3 +134,11 @@ DEPRECATION WARNING:
     `image.pullSecrets` and it will be removed in a future release.
 
 {{- end }}
+
+{{- if .Values.nginx.extra_server_config }}
+
+DEPRECATION WARNING:
+    `nginx.extra_server_config` has been renamed and will be removed in a future release.
+    Please use  `nginx.extraEnvFrom` instead.
+
+{{- end }}

@@ -208,7 +208,12 @@ nginx:
     # limits:
     #   cpu: 250m
     #   memory: 500Mi
+  ## @param nginx.extra_server_config DEPRECATED: Use nginx.extraServerConfig instead.
+  ##
   extra_server_config: ""
+  ## @param nginx.extraServerConfig Extra configuration to be added to nginx.conf under the server section (templated).
+  ##
+  extraServerConfig: ""
   denied_ips: ""
   denied_uas: ""
   ## @param nginx.securityContext securityContext for the nginx container
