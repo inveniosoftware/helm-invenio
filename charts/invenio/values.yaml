@@ -152,7 +152,7 @@ invenio:
   ##
   extraEnvVars: []
   uwsgiExtraConfig: {}
-  ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers
+  ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers (templated).
   ##
   extraEnvFrom: []
     # - secretRef:
@@ -334,7 +334,7 @@ web:
     capabilities:
       drop:
         - ALL
-  ## @param web.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the web container
+  ## @param web.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the web container (templated).
   ##
   extraEnvFrom: []
     # - secretRef:
@@ -387,7 +387,7 @@ worker:
     capabilities:
       drop:
         - ALL
-  ## @param worker.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker container
+  ## @param worker.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker container (templated).
   ##
   extraEnvFrom: []
     # - secretRef:
@@ -452,7 +452,7 @@ workerBeat:
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @param workerBeat.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container
+  ## @param workerBeat.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container (templated).
   ##
   extraEnvFrom: []
     # - secretRef:
@@ -553,7 +553,7 @@ flower:
     # limits:
     #   memory: 250Mi
     #   cpu: 0.1
-  ## @param flower.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the flower container
+  ## @param flower.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated).
   ##
   extraEnvFrom: []
     # - secretRef:
