@@ -41,10 +41,10 @@ spec:
         - secretRef:
             name: {{ include "invenio.secretName" . }}
         {{- with .Values.invenio.extraEnvFrom }}
-        {{- . | toYaml | nindent 8 }}
+        {{- tpl (. | toYaml) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.web.extraEnvFrom }}
-        {{- . | toYaml | nindent 8 }}
+        {{- tpl (. | toYaml) $ | nindent 8 }}
         {{- end }}
         env:
         - name: TZ
