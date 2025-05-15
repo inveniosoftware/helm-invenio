@@ -28,16 +28,15 @@ change.
 
 - Host
 - The web/worker docker images. If you need credentials you can see how to set
-  them up in [Kubernetes](README-Kubernetes/#docker-credentials).
+  them up in [Kubernetes](README-Kubernetes/#docker-credentials). They will default to `ghcr.io/inveniosoftware/demo-inveniordm/demo-inveniordm`.
 
 ``` yaml
 host: yourhost.localhost
 
-web:
-  image: your/invenio-image
-
-worker:
-  image: your/invenio-image
+image:
+  registry: image-registry.net
+  repository: your-invenio-repo
+  tag: vX.Y.Z
 ```
 
 ## Secret management
