@@ -16,7 +16,7 @@ spec:
   host: {{ include "invenio.hostname" $ }}
   to:
     kind: Service
-    name: web
+    name: {{ include "invenio.fullname" . }}-web
   port:
     targetPort: http
   tls:
