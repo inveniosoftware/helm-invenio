@@ -347,6 +347,14 @@ web:
     # - configMapRef:
     #     name: bar
 
+  ## @param web.extraVolumeMounts Extra volumeMounts for the `VolumeMounts` field in web container.
+  ##
+  extraVolumeMounts: []
+
+  ## @param web.extraVolumes Extra volumes for the `volumes` field in web container.
+  ##
+  extraVolumes: []
+
 worker:
   enabled: true
   image: ""  # DEPRECATED: Use `.Values.image` instead!
