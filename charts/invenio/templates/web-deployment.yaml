@@ -30,6 +30,9 @@ spec:
     metadata:
       annotations:
         app.kubernetes.io/component: web
+        checksum/invenio-config: {{ include (print $.Template.BasePath "/invenio-configmap.yaml") . | sha256sum }}
+        checksum/nginx-configmap: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
+        checksum/uwsgi-configmap: {{ include (print $.Template.BasePath "/uwsgi-configmap.yaml") . | sha256sum }}
         {{- with .Values.web.podAnnotations }}
           {{- tpl (toYaml .) | nindent 8 }}
         {{- end }}
@@ -38,11 +41,6 @@ spec:
           {{- tpl (toYaml .) | nindent 8 }}
         {{- end }}
         app.kubernetes.io/component: web
-      annotations:
-        app.kubernetes.io/component: web
-        {{- with .Values.web.podAnnotations }}
-          {{- tpl (toYaml .) | nindent 8 }}
-        {{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
       {{- with .Values.web.nodeSelector }}
