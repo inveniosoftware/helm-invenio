@@ -347,11 +347,11 @@ web:
     # - configMapRef:
     #     name: bar
 
-  ## @param web.extraVolumeMounts Extra volumeMounts for the `VolumeMounts` field in web container.
+  ## @param web.extraVolumeMounts Extra volumeMounts for the web container.
   ##
   extraVolumeMounts: []
 
-  ## @param web.extraVolumes Extra volumes for the `volumes` field in web container.
+  ## @param web.extraVolumes Extra volumes for the web Pod.
   ##
   extraVolumes: []
 
