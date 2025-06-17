@@ -1,0 +1,145 @@
+global:
+  timezone: "Europe/Zurich"
+
+invenio:
+  hostname: ""
+
+  ## @param invenio.existingSecret General existing secret name for, at least, secret key and salts
+  ## If not set a new secret will be generated automatically with random values
+  ## ref: https://inveniordm.docs.cern.ch/customize/authentication/#security
+  ##
+  existingSecret: ""
+  init: false
+  default_users: [ ]  # Requires invenio.init=true
+  demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
+  sentry:
+    ## @param invenio.sentry.enabled Enable Sentry.io integration
+    ##
+    enabled: false
+
+  ## Invenio DataCite configuration
+  ## ref: https://inveniordm.docs.cern.ch/customize/dois
+  datacite:
+    ## @param invenio.datacite.enabled Enable DataCite provider
+    ##
+    enabled: false
+
+  podSecurityContext:
+    enabled: true
+  remote_apps:
+    enabled: false
+
+web:
+  replicas: 1
+
+  ## @param web.podSecurityContext securityContext for the web pod
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## @param web.securityContext securityContext for the web container
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+worker:
+  enabled: true
+  concurrency: 2
+  log_level: INFO
+  replicas: 1
+  run_mount_path: /var/run/celery
+  celery_pidfile: /var/run/celery/celerybeat.pid
+  celery_schedule: /var/run/celery/celery-schedule
+
+  volumes:
+    enabled: false
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+workerBeat:
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+
+persistence:
+  enabled: false
+
+redis:
+  enabled: true
+  replica:
+    replicaCount: 1
+
+rabbitmq:
+  enabled: true
+  auth:
+    password: ""
+
+flower:
+  enabled: false
+
+postgresql:
+  enabled: true
+  auth:
+    username: invenio
+    password: ""
+    database: invenio
+    existingSecret: ""
+
+opensearch:
+  enabled: true
+  sysctlImage:
+    enabled: false
+  # Without this setting we get `W0509 16:39:53.407318  621258 warnings.go:70] would violate PodSecurity "baseline:latest": privileged (container "sysctl" must not set securityContext.privileged=true`
+  # https://github.com/elastic/helm-charts/issues/689
+  extraConfig:
+    node:
+      store:
+        allow_mmap: false
+  master:
+    replicaCount: 1
+  ingest:
+    replicaCount: 1
+  data:
+    replicaCount: 1
+  coordinating:
+    replicaCount: 1
+
+logstash:
+  enabled: false
+
+
+minio:
+  enabled: true
+  auth:
+    rootPassword: ""
+    rootUser: "invenio"
+  provisioning:
+    enabled: true
+    buckets:
+      - name: invenio
+        policy: public
+        purge: false

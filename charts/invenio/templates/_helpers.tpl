@@ -388,6 +388,71 @@ Add sentry environmental variables
 {{- end -}}
 
 {{/*
+Add minio (s3) environmental variables
+*/}}
+{{- define "invenio.config.minio" -}}
+{{- if .Values.invenio.sentry.enabled -}}
+- name: INVENIO_S3_ENDPOINT_URL
+  value:  {{ include "invenio.minio.endpoint" }}
+- name: INVENIO_S3_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "invenio.minio.secretName"}}
+      key: {{ include "invenio.minio.accessKeyKey" }}
+- name: INVENIO_S3_SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name:  {{ include "invenio.minio.secretName"}}
+      key: {{ include "invenio.minio.accessKeyIdKey"}}
+{{- end }}
+{{- end -}}
+
+
+{{/*
+  This template renders the name of the endpoint for minio.
+*/}}
+{{- define "invenio.minio.endpoint" -}}
+  {{- if .Values.minio.enabled  -}}
+    {{ printf "%s-minio.%s.svc.cluster.local" .Release.Name .Release.Namespace }}:9000"
+  {{- else -}}
+    {{- required "Missing .Values.minioExternal.endpointUrl" (tpl .Values.minioExternal.endpointUrl .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+  This template renders the name of the minio secret that has the credentials.
+*/}}
+{{- define "invenio.minio.secretName" -}}
+  {{- if .Values.minio.enabled  -}}
+    rootUser
+  {{- else -}}
+    {{- required "Missing .Values.minioExternal.existingSecret" (tpl .Values.minioExternal.existingSecret .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+  This template renders the key of the minio secret that has the credentials for secretAccessKey.
+*/}}
+{{- define "invenio.minio.accessKeyKey" -}}
+  {{- if .Values.minio.enabled  -}}
+    "{{ printf "%s-minio-credentials" .Release.Name }}"
+  {{- else -}}
+    {{- required "Missing .Values.minioExternal.existingSecret" (tpl .Values.minioExternal.existingSecretAccessKeyIdKey .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+  This template renders the key of the minio secret that has the credentials for AccessKeyId.
+*/}}
+{{- define "invenio.minio.accessKeyIdKey" -}}
+  {{- if .Values.minio.enabled  -}}
+    rootPassword
+  {{- else -}}
+    {{- required "Missing .Values.minioExternal.existingSecretAccessKeyIdKey" (tpl .Values.minioExternal.existingSecretAccessKeyIdKey .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Invenio basic configuration variables
 */}}
 {{- define "invenio.configBase" -}}
@@ -406,6 +471,7 @@ INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
 INVENIO_DATACITE_ENABLED: {{ ternary "True" "False" .Values.invenio.datacite.enabled | quote }}
 INVENIO_LOGGING_CONSOLE_LEVEL: "WARNING"
+INVENIO_FILES_REST_STORAGE_FACTORY: 'invenio_s3.s3fs_storage_factory'
 {{- end -}}
 
 {{/*
