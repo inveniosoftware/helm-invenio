@@ -68,6 +68,12 @@ invenio:
   init: false
   default_users: []  # Requires invenio.init=true
   demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
+
+  s3FileStorage:
+    ## @param invenio.s3FileStorage.enabled Enable s3FileStorage integration
+    ##
+    enabled: true
+
   sentry:
     ## @param invenio.sentry.enabled Enable Sentry.io integration
     ##
@@ -498,7 +504,7 @@ workerBeat:
   startupProbe: null
 
 persistence:
-  enabled: true
+  enabled: false
   name: "shared-volume"
   access_mode: ReadWriteMany
   annotations: {}
@@ -514,6 +520,40 @@ redis:
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
   replica:
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
+
+## Minio chart configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml
+minio:
+  enabled: true
+  auth:
+    rootPassword: ""
+    rootUser: invenio
+  provisioning:
+    enabled: true
+    buckets:
+      - name: invenio
+        policy: public
+        purge: false
+
+
+## External Minio (or S3) configuration
+## https://inveniordm.docs.cern.ch/customize/s3/
+## All of these values are only used when minio.enabled is set to false
+## @param minioExternal.accessKeyId
+## @param minioExternal.secretAccessKey
+## @param minioExternal.endpointUrl
+## @param minioExternal.regionName
+## @param minioExternal.existingSecret Name of an existing secret resource containing the credentials
+## @param minioExternal.existingSecretAccessKeyIdKey Name of an existing secret key containing the accessKeyId
+## @param minioExternal.existingSecretSecretAccessKeyKey Name of an existing secret key containing the secretAccessKey
+##
+minioExternal: {}
+#   accessKeyId: "for testing use existing secret"
+#   secretAccessKey: "for testing use existing secret"
+#   endpointUrl: "endpoint"
+#   existingSecret: "secretName"
+#   existingSecretAccessKeyIdKey: accessKeyId
+#   existingSecretSecretAccessKeyKey: secretAccessKey
 
 ## RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
