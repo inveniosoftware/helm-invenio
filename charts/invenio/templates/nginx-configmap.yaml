@@ -186,8 +186,8 @@ data:
         ## API files
         # Another location is defined in order to allow large file uploads in the files
         # API without exposing the other parts of the application to receive huge
-        # request bodies.
-        location ~ /api/records/.+/draft/files/.+/content {
+        # request bodies. This includes part content uploads of multipart file uploads.
+        location ~ /api/records/.+/draft/files/.+/content(/[0-9]+)?/?$ {
           gzip off;
           uwsgi_pass web;
           include uwsgi_params;
