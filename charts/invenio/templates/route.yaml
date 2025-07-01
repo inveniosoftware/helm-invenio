@@ -4,11 +4,9 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: invenio
-  {{- if and .Values.main_route .Values.main_route.annotations }}
+  {{- if and .Values.route .Values.route.annotations }}
   annotations:
-    {{- range .Values.main_route.annotations }}
-    {{ . }}
-    {{- end }}
+    {{- .Values.route.annotations | toYaml | nindent 4 }}
   {{- end }}
   labels:
     {{- include "invenio.labels" . | nindent 4 }}

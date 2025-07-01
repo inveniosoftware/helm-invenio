@@ -43,6 +43,11 @@ ingress:
   class: ""
   tlsSecretNameOverride: ""
 
+## Openshift Route object
+## @param route.annotations Annotations to be added to the Route
+route:
+  annotations: {}
+
 invenio:
   ## @param invenio.hostname Invenio hostname (templated) used in configuration varibales like APP_ALLOWED_HOSTS, SITE_HOSTNAME or SITE_URL
   ##
