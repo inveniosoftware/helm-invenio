@@ -7,10 +7,25 @@ metadata:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker-beat
 spec:
+  {{- with .Values.workerBeat.deploymentSpec.minReadySeconds }}
+  minReadySeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.workerBeat.deploymentSpec.paused }}
+  paused: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.workerBeat.deploymentSpec.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
   replicas: 1 # For data safety, beat must never have more than 1 replica!
+  {{- with .Values.workerBeat.deploymentSpec.revisionHistoryLimit }}
+  revisionHistoryLimit: {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: worker-beat
+  {{- with .Values.workerBeat.deploymentSpec.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

@@ -7,10 +7,25 @@ metadata:
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
 spec:
+  {{- with .Values.flower.deploymentSpec.minReadySeconds }}
+  minReadySeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.flower.deploymentSpec.paused }}
+  paused: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.flower.deploymentSpec.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
   replicas: 1
+  {{- with .Values.flower.deploymentSpec.revisionHistoryLimit }}
+  revisionHistoryLimit: {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: flower-management
+  {{- with .Values.flower.deploymentSpec.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
