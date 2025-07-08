@@ -360,6 +360,25 @@ web:
   ##
   extraVolumes: []
 
+  ## @param web.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ##
+  deploymentSpec:
+    ## @param web.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+    ##
+    minReadySeconds: null
+    ## @param web.deploymentSpec.paused See API spec for `Deployment.spec.paused
+    ##
+    paused: null
+    ## @param web.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+    ##
+    progressDeadlineSeconds: null
+    ## @param web.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+    ##
+    revisionHistoryLimit: null
+    ## @param web.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
+    ##
+    strategy: null
+
 worker:
   enabled: true
   image: ""  # DEPRECATED: Use `.Values.image` instead!
@@ -437,6 +456,25 @@ worker:
   ##
   startupProbe: null
 
+  ## @param worker.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ##
+  deploymentSpec:
+    ## @param worker.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+    ##
+    minReadySeconds: null
+    ## @param worker.deploymentSpec.paused See API spec for `Deployment.spec.paused
+    ##
+    paused: null
+    ## @param worker.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+    ##
+    progressDeadlineSeconds: null
+    ## @param worker.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+    ##
+    revisionHistoryLimit: null
+    ## @param worker.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
+    ##
+    strategy: null
+
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
   ##
@@ -501,6 +539,25 @@ workerBeat:
   ## @param workerBeat.startupProbe templated `startupProbe` for the worker-beat container
   ##
   startupProbe: null
+
+  ## @param workerBeat.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ##
+  deploymentSpec:
+    ## @param workerBeat.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+    ##
+    minReadySeconds: null
+    ## @param workerBeat.deploymentSpec.paused See API spec for `Deployment.spec.paused
+    ##
+    paused: null
+    ## @param workerBeat.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+    ##
+    progressDeadlineSeconds: null
+    ## @param workerBeat.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+    ##
+    revisionHistoryLimit: null
+    ## @param workerBeat.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
+    ##
+    strategy: null
 
 persistence:
   enabled: true
@@ -595,6 +652,24 @@ flower:
   ## @param flower.startupProbe templated `startupProbe` for the flower-management container
   ##
   startupProbe: null
+  ## @param flower.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ##
+  deploymentSpec:
+    ## @param flower.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+    ##
+    minReadySeconds: null
+    ## @param flower.deploymentSpec.paused See API spec for `Deployment.spec.paused
+    ##
+    paused: null
+    ## @param flower.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+    ##
+    progressDeadlineSeconds: null
+    ## @param flower.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+    ##
+    revisionHistoryLimit: null
+    ## @param flower.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
+    ##
+    strategy: null
 
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml

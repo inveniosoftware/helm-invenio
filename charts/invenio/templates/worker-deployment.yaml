@@ -7,10 +7,25 @@ metadata:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
 spec:
+  {{- with .Values.worker.deploymentSpec.minReadySeconds }}
+  minReadySeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.worker.deploymentSpec.paused }}
+  paused: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.worker.deploymentSpec.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
   replicas: {{ .Values.worker.replicas }}
+  {{- with .Values.worker.deploymentSpec.revisionHistoryLimit }}
+  revisionHistoryLimit: {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: worker
+  {{- with .Values.worker.deploymentSpec.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
