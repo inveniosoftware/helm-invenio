@@ -73,14 +73,10 @@ spec:
               mountPath: /var/celery
             - name: flower-config-volume
               mountPath: /var/flower
-      {{- if .Values.invenio.podSecurityContext.enabled }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: "RuntimeDefault"
-      {{- end }}
+        {{- with .Values.flower.securityContext }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.flower.nodeSelector }}
       nodeSelector:
         {{- tpl (toYaml .) $ | nindent 8 -}}
