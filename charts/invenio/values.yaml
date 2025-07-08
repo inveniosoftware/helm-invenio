@@ -136,8 +136,6 @@ invenio:
     ## @param invenio.datacite.secret_name DEPRECATED: use invenio.datacite.existingSecret instead
     ##
     secret_name: ""
-  podSecurityContext:
-    enabled: true
   remote_apps:
     enabled: false
     existing_secret: false
@@ -779,6 +777,14 @@ flower:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param flower.podSecurityContext securityContext for the flower pod
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
   ## @param flower.nodeSelector Node labels for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
