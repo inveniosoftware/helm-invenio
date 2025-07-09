@@ -6,6 +6,11 @@ This repository contains the helm chart to deploy an Invenio instance.
 This configuration should be adapted and hardened depending on your infrastructure and
 constraints.
 
+:note: This chart works out of the box with the latest released version of Invenio RDM.
+For older versions there might be extra configuration settings needed. Check
+[Version specific configurations](#version-specific-configurations) section for more
+information on supported versions and their specific configuration.
+
 ## Pre-requisites
 
 - Helm 3.8.0+
@@ -14,6 +19,24 @@ constraints.
 ## Installing the Chart
 
 ## Configuration and installation details
+
+## Version specific configurations
+
+### v12
+
+#### nginx extra configuration to serve `robots.txt`
+
+v13 added a templated `robots.txt` file to served all the dynamically generated sitemap
+index files. To add back `robots.txt` static file serving include this in your values file:
+
+```yaml
+nginx:
+  extraServerConfig: |
+    location /robots.txt {
+      alias {{ .Values.nginx.assets.location }}/robots.txt;
+      autoindex off;
+    }
+```
 
 ## Parameters
 
