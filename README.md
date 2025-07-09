@@ -2,14 +2,16 @@
 
 This repository contains the helm chart to deploy an Invenio instance.
 
-:warning: Please note that this configuration is not meant to be used in production.
-This configuration should be adapted and hardened depending on your infrastructure and
-constraints.
+> [!WARNING]
+> Please note that this configuration is not meant to be used in production.
+> This configuration should be adapted and hardened depending on your infrastructure and
+> constraints.
 
-:note: This chart works out of the box with the latest released version of Invenio RDM.
-For older versions there might be extra configuration settings needed. Check
-[Version specific configurations](#version-specific-configurations) section for more
-information on supported versions and their specific configuration.
+> [!NOTE]
+> This chart works out of the box with the latest released version of Invenio RDM.
+> For older versions there might be extra configuration settings needed. Check
+> [Version specific configurations](#version-specific-configurations) section for more
+> information on supported versions and their specific configuration.
 
 ## Pre-requisites
 
