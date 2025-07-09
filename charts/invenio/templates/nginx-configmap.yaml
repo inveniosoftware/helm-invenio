@@ -230,12 +230,6 @@ data:
           add_header X-Content-Type-Options nosniff;
         }
 
-        # Robots.txt file is served by nginx.
-        location /robots.txt {
-          alias {{ .Values.nginx.assets.location }}/robots.txt;
-          autoindex off;
-        }
-
 {{ .Values.nginx.extra_server_config | indent 8 }}
 {{ tpl .Values.nginx.extraServerConfig $ | indent 8 }}
 
