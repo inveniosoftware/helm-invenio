@@ -31,7 +31,9 @@ helm repo update
 > constraints.
 
 ```yaml
+# my-values.yaml
 invenio:
+  init: true
   hostname: "my-site.local"
 
 # Slim down for testing
@@ -65,17 +67,38 @@ rabbitmq:
     password: should-use-secrets
 
 ```
+
+```sh
+helm install invenio invenio/invenio -f my-values.yaml
+
+```
 ### Cleanup
 
-After uninstalling the chart there are a couple of resources that stay behind.
+After uninstalling the chart there are a couple of resources that have to be delete manually.
 ```sh
 helm uninstall invenio
+kubectl delete pvc shared-volume
 kubectl delete secret flower-secrets
 kubectl delete secret invenio
 ```
 After deleting the `invenio` secret you won't be able to access any of the encrypted data, it contains keys and salts used during encryption.
 
 ## Configuration and installation details
+
+### Resource requests and limits
+
+This chart allow setting resource requests and limits for all containers inside the chart deployment. These are inside the resources value (check parameter table). Setting requests is essential for production workloads and these should be adapted to your specific use case.
+
+To make this process easier, the chart contains sensible defaults as comments. However, in production workloads using this values directly is discouraged as it may not fully adapt to your specific needs. Find more information on container resource management in the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
+
+### Ingress
+
+TODO
+
+### Data storage
+
+TODO: https://github.com/inveniosoftware/helm-invenio/pull/204 ?
+
 
 ### Terminal Deployment for Interactive Shell Access
 
