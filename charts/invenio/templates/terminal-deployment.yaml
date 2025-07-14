@@ -1,0 +1,169 @@
+{{- if .Values.terminal.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "invenio.fullname" . }}-terminal
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
+    app.kubernetes.io/component: terminal
+spec:
+  {{- with .Values.terminal.deploymentSpec.minReadySeconds }}
+  minReadySeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.terminal.deploymentSpec.paused }}
+  paused: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.terminal.deploymentSpec.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  replicas: {{ .Values.terminal.replicas }}
+  {{- with .Values.terminal.deploymentSpec.revisionHistoryLimit }}
+  revisionHistoryLimit: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: terminal
+  {{- with .Values.terminal.deploymentSpec.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: terminal
+    spec:
+      {{- with .Values.terminal.nodeSelector }}
+      nodeSelector:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      {{- with .Values.terminal.tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
+      containers:
+        - name: terminal
+          image: {{ include "invenio.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          command: ['sleep']
+          args: ['infinity']
+          stdin: true
+          tty: true
+          resources: {{- toYaml .Values.terminal.resources | nindent 12 }}
+          securityContext:
+            {{- with .Values.terminal.securityContext }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "invenio.fullname" . }}-config
+            - secretRef:
+                name: {{ include "invenio.secretName" . }}
+            {{- with .Values.invenio.extraEnvFrom }}
+            {{- tpl (. | toYaml) $ | nindent 12 }}
+            {{- end }}
+            {{- with .Values.terminal.extraEnvFrom }}
+            {{- tpl (. | toYaml) $ | nindent 12 }}
+            {{- end }}
+          env:
+          - name: TZ
+            value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
+          {{- include "invenio.config.queue" . | nindent 10 }}
+          {{- include "invenio.config.database" . | nindent 10 }}
+          {{- with .Values.invenio.extraEnvVars }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.terminal.extraEnvVars }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- include "invenio.config.sentry" . | nindent 10 }}
+          {{- include "invenio.config.datacite" . | nindent 10 }}
+          {{- if .Values.invenio.remote_apps.enabled }}
+          {{- range .Values.invenio.remote_apps.credentials }}
+          - name: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.invenio.remote_apps.secret_name }}
+                key: {{ default (printf "INVENIO_%s_APP_CREDENTIALS" .name) }}
+          {{- end }}
+          {{- end }}
+          {{- range .Values.invenio.extra_env_from_secret }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .valueFrom.secretKeyRef.name }}
+                key: {{ .valueFrom.secretKeyRef.key }}
+          {{- end }}
+          livenessProbe: {{- tpl (.Values.terminal.livenessProbe | toYaml) $ | nindent 12 }}
+          readinessProbe: {{- tpl (.Values.terminal.readinessProbe | toYaml) $ | nindent 12 }}
+          startupProbe: {{- tpl (.Values.terminal.startupProbe | toYaml) $ | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - mountPath: /opt/invenio/var/instance/data
+              name: shared-volume
+              subPath: data
+            {{- end }}
+            {{- if .Values.kerberos.enabled }}
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+            {{- end }}
+            {{- range $key, $value := .Values.invenio.vocabularies }}
+            - name: vocabularies
+              mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+              subPath: "{{ $key }}"
+            {{- end }}
+        {{- if .Values.kerberos.enabled }}
+        - name: kerberos-credentials
+          image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
+          args: {{ .Values.kerberos.args }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.kerberos.secret_name }}
+          resources: {{- toYaml .Values.kerberos.resources | nindent 12 }}
+          {{- if .Values.kerberos.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.kerberos.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.kerberos.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.kerberos.livenessProbe | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+        {{- end }}
+      {{- if .Values.kerberos.enabled }}
+      initContainers:
+        # Init kerberos credentials
+        - name: init-kerberos-credentials
+          image: {{ required "Missing .Values.kerberos.image" .Values.kerberos.image }}
+          args: {{ .Values.kerberos.initArgs }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.kerberos.secret_name }}
+          resources: {{- toYaml .Values.kerberos.initContainers.resources | nindent 12 }}
+          volumeMounts:
+            - name: kerberos-credentials-cache
+              mountPath: /tmp
+      {{- end }}
+      securityContext:
+        {{- with .Values.terminal.podSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      volumes:
+        {{- if .Values.persistence.enabled }}
+        - name: shared-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name }}
+        {{- end }}
+        {{- if .Values.kerberos.enabled }}
+        - name: kerberos-credentials-cache
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.invenio.vocabularies }}
+        - name: vocabularies
+          configMap:
+            name: "{{ include "invenio.fullname" . }}-vocabularies"
+        {{- end }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

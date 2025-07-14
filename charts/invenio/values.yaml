@@ -559,6 +559,132 @@ workerBeat:
     ##
     strategy: null
 
+## @section Terminal
+## Pods for runnning maintenance tasks.
+terminal:
+  ## @param terminal.enabled Enable the terminal deployment.
+  ##
+  enabled: false
+  ## @param terminal.replicas Number of replicas. Start with 0 to avoid resource usage
+  ##
+  replicas: 0
+  ## @param terminal.extraEnvVars Extra environment variables to be added to the pods.
+  ##
+  extraEnvVars: []
+  ## @param terminal.resources `resources` for the terminal container
+  ##
+  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
+  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
+  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
+  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
+  ##
+  resources: {}
+    # requests:
+    #   cpu: 500m
+    #   memory: 500Mi
+    # limits:
+    #   cpu: 1000m
+    #   memory: 1Gi
+  initContainers:
+    ## @param terminal.initContainers.resources `resources` for the copy-terminal-assets initContainer
+    ##
+    ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
+    ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
+    ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
+    ## Therefore, we think it's better that users get to set the resources explicitly for each container.
+    ##
+    resources: {}
+      # requests:
+      #   cpu: '1'
+      #   memory: 100Mi
+      # limits:
+      #   cpu: '1'
+      #   memory: 100Mi
+    ## @extra terminal.initContainers.securityContext securityContext for the initContainers in the terminal pod
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    ## @param terminal.initContainers.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation
+    ## @param terminal.initContainers.securityContext.capabilities.drop list of capabilities to be dropped
+    ##
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+  ## @param terminal.nodeSelector Node labels for terminal pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param terminal.tolerations Tolerations for terminal pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## @param terminal.livenessProbe templated `livenessProbe` for the terminal container
+  ##
+  livenessProbe: null
+  ## @param terminal.readinessProbe templated `readinessProbe` for the terminal container
+  ##
+  readinessProbe: null
+  ## @param terminal.startupProbe templated `startupProbe` for the terminal container
+  ##
+  startupProbe: null
+  ## @extra terminal.podSecurityContext securityContext for the terminal pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param terminal.podSecurityContext.runAsNonRoot TODO:
+  ## @param terminal.podSecurityContext.runAsUser TODO:
+  ## @param terminal.podSecurityContext.runAsGroup TODO:
+  ## @param terminal.podSecurityContext.seccompProfile.type TODO:
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## @extra terminal.securityContext securityContext for the terminal container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param terminal.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  ## @param terminal.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the terminal container (templated).
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
+
+  ## @param terminal.extraVolumeMounts Extra volumeMounts for the terminal container.
+  ##
+  extraVolumeMounts: []
+
+  ## @param terminal.extraVolumes Extra volumes for the terminal Pod.
+  ##
+  extraVolumes: []
+
+  ## @extra terminal.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ##
+  deploymentSpec:
+    ## @param terminal.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+    ##
+    minReadySeconds: null
+    ## @param terminal.deploymentSpec.paused See API spec for `Deployment.spec.paused
+    ##
+    paused: null
+    ## @param terminal.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+    ##
+    progressDeadlineSeconds: null
+    ## @param terminal.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+    ##
+    revisionHistoryLimit: null
+    ## @param terminal.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
+    ##
+    strategy: null
+
 persistence:
   enabled: true
   name: "shared-volume"
