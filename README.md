@@ -1,11 +1,8 @@
 # Invenio Helm Chart
 
-This repository contains the helm chart to deploy an Invenio instance.
-
-> [!WARNING]
-> Please note that this configuration is not meant to be used in production.
-> This configuration should be adapted and hardened depending on your infrastructure and
-> constraints.
+This chart bootstraps an [Invenio RMD](https://inveniordm.docs.cern.ch/) deployment on a
+[Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package
+manager.
 
 > [!NOTE]
 > This chart works out of the box with the latest released version of Invenio RDM.
@@ -19,6 +16,64 @@ This repository contains the helm chart to deploy an Invenio instance.
 - Kubernetes 1.23+
 
 ## Installing the Chart
+
+To install the chart first you need to add the repository:
+```sh
+helm repo add invenio https://inveniosoftware.github.io/helm-invenio
+helm repo update
+```
+
+### Basic/minimal configuration
+
+> [!WARNING]
+> Please note that this configuration is not meant to be used in production.
+> This configuration should be adapted and hardened depending on your infrastructure and
+> constraints.
+
+```yaml
+invenio:
+  hostname: "my-site.local"
+
+# Slim down for testing
+web:
+  replicas: 1
+
+worker:
+  replicas: 1
+
+redis:
+  replica:
+    replicaCount: 1
+
+opensearch:
+  master:
+    replicaCount: 1
+  ingest:
+    enabled: false
+  data:
+    replicaCount: 1
+  coordinating:
+    replicaCount: 0
+
+postgresql:
+  auth:
+    password: should-use-secrets
+
+rabbitmq:
+  enabled: true
+  auth:
+    password: should-use-secrets
+
+```
+### Cleanup
+
+After uninstalling the chart there are a couple of resources that stay behind.
+```sh
+helm uninstall invenio
+kubectl delete secret flower-secrets
+kubectl delete secret invenio
+```
+After deleting the `invenio` secret you won't be able to access any of the encrypted data, it contains keys and salts used during encryption.
 
 ## Configuration and installation details
 

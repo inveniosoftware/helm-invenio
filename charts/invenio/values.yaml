@@ -1037,7 +1037,7 @@ flower:
 ## @param postgresql.auth.username Name for a custom user to create
 ## @param postgresql.auth.password Password for the custom user to create
 ## @param postgresql.auth.database Name for a custom database to create
-## @param postgresql.auth.existingSecret Name os the existing secret to get the password from.
+## @param postgresql.auth.existingSecret Name of the existing secret to get the password from.
 ##
 postgresql:
   enabled: true
