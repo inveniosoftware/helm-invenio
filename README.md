@@ -77,6 +77,51 @@ After deleting the `invenio` secret you won't be able to access any of the encry
 
 ## Configuration and installation details
 
+### Terminal Deployment for Interactive Shell Access
+
+This chart includes an optional `terminal` pod deployment, allowing you to interact with your Invenio application through a Kubernetes-managed terminal to run maintenance tasks. This terminal can be scaled up and down as needed to save on resources.
+
+#### Enabling the Terminal Pod
+
+To enable the terminal pod, add the following configuration in your values.yaml or during installation via `--set`:
+
+```yaml
+console:
+  enabled: true
+```
+
+This configuration creates a deployment with 0 replicas to avoid unnecessary resource usage. You can scale the pod up manually when you need it.
+
+#### Using the Terminal Pod
+
+> [!NOTE]
+> For ease of use, the `console.sh` script has been included. This script automates the process of scaling the terminal pod and attaching to it.
+
+1. Install or upgrade helm chart
+
+After modifying your values.yaml, install or upgrade the Helm release:
+```sh
+helm upgrade --install my-invenio ./helm-invenio --set console.enabled=true --set console.replicas=0
+```
+2. Scale Up the terminal pod
+
+To start the terminal pod, scale it up with the following command:
+```sh
+kubectl scale deployment -n <namespace> -l app.kubernetes.io/component=terminal --replicas=1
+```
+3. Attach to the terminal
+
+After the pod is running, you can attach to it using kubectl exec. The default shell is bash, but you can specify a custom shell or command by passing the --shell flag when running the script (explained below).
+```sh
+kubectl exec -n <namespace> -it <pod-name> -- bash
+```
+
+4. Slate down the terminal pod
+
+```sh
+kubectl scale deployment -n <namespace> -l app.kubernetes.io/component=terminal --replicas=0
+```
+
 ## Version specific configurations
 
 ### v12
