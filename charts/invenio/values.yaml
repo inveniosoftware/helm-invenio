@@ -315,6 +315,12 @@ web:
   ## @param web.annotations Add extra (templated) annotations to the web service
   ##
   annotations: {}
+  ## @param web.podLabels Add extra labels to the Invenio webs pods
+  ##
+  podLabels: {}
+  ## @param web.podAnnotations Add extra annotations to the Invenio web pods
+  ##
+  podAnnotations: {}
   ## @param web.nodeSelector Node labels for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -431,6 +437,12 @@ worker:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param worker.podLabels Add extra labels to the Invenio workers pods
+  ##
+  podLabels: {}
+  ## @param worker.podAnnotations Add extra annotations to the Invenio worker pods
+  ##
+  podAnnotations: {}
   ## @param worker.nodeSelector Node labels for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -515,6 +527,12 @@ workerBeat:
     #     name: foo
     # - configMapRef:
     #     name: bar
+  ## @param workerBeat.podLabels Add extra labels to the Invenio workerBeat pods
+  ##
+  podLabels: {}
+  ## @param workerBeat.podAnnotations Add extra annotations to the Invenio workerBeat pods
+  ##
+  podAnnotations: {}
   ## @param workerBeat.nodeSelector Node labels for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
