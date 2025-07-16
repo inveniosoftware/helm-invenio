@@ -28,8 +28,21 @@ spec:
   {{- end }}
   template:
     metadata:
-      labels:
+      annotations:
         app.kubernetes.io/component: web
+        {{- with .Values.web.podAnnotations }}
+          {{- tpl (toYaml .) | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- with .Values.web.podLabels }}
+          {{- tpl (toYaml .) | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/component: web
+      annotations:
+        app.kubernetes.io/component: web
+        {{- with .Values.web.podAnnotations }}
+          {{- tpl (toYaml .) | nindent 8 }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
       {{- with .Values.web.nodeSelector }}

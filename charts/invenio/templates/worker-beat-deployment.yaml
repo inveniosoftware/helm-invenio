@@ -28,7 +28,15 @@ spec:
   {{- end }}
   template:
     metadata:
+      annotations:
+        {{- with .Values.workerBeat.podAnnotations }}
+          {{- tpl (toYaml .) | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/component: worker-beat
       labels:
+        {{- with .Values.workerBeat.podLabels }}
+          {{- tpl (toYaml .) | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/component: worker-beat
     spec:
       {{- with .Values.workerBeat.nodeSelector }}
