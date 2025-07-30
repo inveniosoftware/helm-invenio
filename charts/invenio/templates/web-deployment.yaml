@@ -34,11 +34,11 @@ spec:
         checksum/nginx-configmap: {{ include (print $.Template.BasePath "/nginx-configmap.yaml") . | sha256sum }}
         checksum/uwsgi-configmap: {{ include (print $.Template.BasePath "/uwsgi-configmap.yaml") . | sha256sum }}
         {{- with .Values.web.podAnnotations }}
-          {{- tpl (toYaml .) | nindent 8 }}
+          {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
       labels:
         {{- with .Values.web.podLabels }}
-          {{- tpl (toYaml .) | nindent 8 }}
+          {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         app.kubernetes.io/component: web
     spec:
