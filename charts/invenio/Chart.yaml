@@ -12,7 +12,7 @@ keywords:
   - multimedia-library
   - multimedia-repository
 type: application
-version: 0.7.0
+version: 0.8.0
 maintainers:
   - name: CERN
     email: info@inveniosoftware.org
