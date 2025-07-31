@@ -30,13 +30,13 @@ spec:
     metadata:
       annotations:
         {{- with .Values.workerBeat.podAnnotations }}
-          {{- tpl (toYaml .) | nindent 8 }}
+          {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         app.kubernetes.io/component: worker-beat
         checksum/invenio-config: {{ include (print $.Template.BasePath "/invenio-configmap.yaml") . | sha256sum }}
       labels:
         {{- with .Values.workerBeat.podLabels }}
-          {{- tpl (toYaml .) | nindent 8 }}
+          {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         app.kubernetes.io/component: worker-beat
     spec:
