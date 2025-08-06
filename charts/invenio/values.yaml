@@ -1,6 +1,10 @@
 ---
 
+## @section Global parameters
+## Please, note that this will override the parameters, including dependencies, configured to use the global value
+##
 global:
+  ## @param global.timezone Timezone
   timezone: "Europe/Zurich"
 
 ## @param nameOverride String to partially override common.names.name
@@ -10,18 +14,20 @@ nameOverride: ""
 ##
 fullnameOverride: ""
 
+## @section Invenio common parameters
+
 ## Invenio image version
 ## ref: https://github.com/inveniosoftware/demo-inveniordm/pkgs/container/demo-inveniordm%2Fdemo-inveniordm
 ## @param image.registry Invenio image registry
 ## @param image.repository Invenio image repository
-## @skip image.tag Invenio image tag (immutable tags are recommended)
+## @param image.tag Invenio image tag (immutable tags are recommended). Defaults to .Chart.appVersion
 ## @param image.digest Invenio image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
 ## @param image.pullPolicy Invenio image pull policy
 ## @param image.pullSecrets Invenio image pull secrets
 image:
   registry: ghcr.io/inveniosoftware
   repository: demo-inveniordm/demo-inveniordm
-  tag: ""  # Defaults to .Chart.appVersion
+  tag: ""
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -37,10 +43,29 @@ image:
   ##
   pullSecrets: []
 
+## Invenio ingress parameters
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
 ingress:
-  annotations: {}
+  ## @param ingress.enabled Enable ingress record generation for Invenio.
+  ##
   enabled: false
+  ## @param ingress.class IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+  ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+  ##
   class: ""
+  ## @param ingress.annotations Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+  ## Use this parameter to set the required annotations for cert-manager, see
+  ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+  ## e.g:
+  ## annotations:
+  ##   kubernetes.io/ingress.class: nginx
+  ##   cert-manager.io/cluster-issuer: cluster-issuer-name
+  ##
+  annotations: {}
+  ## @param ingress.tlsSecretNameOverride Custom TLS secret name.
+  ##
   tlsSecretNameOverride: ""
 
 ## Openshift Route object
@@ -70,14 +95,22 @@ invenio:
   ## ref: https://inveniordm.docs.cern.ch/customize/authentication/#security
   ##
   existingSecret: ""
+
+  ## @param invenio.init
+  ##
   init: false
-  default_users: []  # Requires invenio.init=true
-  demo_data: false  # Setting invenio.demo_data=true requires also setting default_users!
+  ## @param invenio.default_users
+  ## Requires invenio.init=true
+  default_users: []
+  ## @param invenio.demo_data
+  ## Setting invenio.demo_data=true requires also setting default_users!
+  demo_data: false
+
   sentry:
     ## @param invenio.sentry.enabled Enable Sentry.io integration
     ##
     enabled: false
-    ## @param invenio.sentry.dns Sentry DSN, required unless existingSecret is provided
+    ## @param invenio.sentry.dsn Sentry DSN, required unless existingSecret is provided
     ##
     dsn: ""
     ## @param invenio.sentry.secret_name DEPRECATED: invenio.sentry.existingSecret instead
@@ -137,13 +170,21 @@ invenio:
     ##
     secret_name: ""
   remote_apps:
+    ## @param invenio.remote_apps.enabled TODO:
+    ##
     enabled: false
+    ## @param invenio.remote_apps.existing_secret TODO:
+    ##
     existing_secret: false
+    ## @param invenio.remote_apps.secret_name TODO:
+    ##
     secret_name: "remote-apps-secrets"
-    credentials:
-      - name: ""
-        consumer_key: ""
-        consumer_secret: ""
+    ## @param invenio.remote_apps.credentials TODO:
+    ##
+    credentials: {}
+      # - name: ""
+      #   consumer_key: ""
+      #   consumer_secret: ""
   ## @param invenio.extra_config DEPRECATED: invenio.extraConfig instead
   extra_config: {}
   ## @param invenio.extraConfig Extra environment variables (templated) to be added to all the pods.
@@ -154,6 +195,8 @@ invenio:
   ## @param invenio.extraEnvVars Extra environment variables to be added to all the pods.
   ##
   extraEnvVars: []
+  ## @param invenio.uwsgiExtraConfig Extra configuration variables (key: value) to be added to the uWSGI configuration file.
+  ##
   uwsgiExtraConfig: {}
   ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers (templated).
   ##
@@ -188,13 +231,25 @@ invenio:
   ##        - linkable
   vocabularies: {}
 
+## @section nginx configuration
+##
 nginx:
+  ## @param nginx.image TODO:
+  ##
   image: "nginx:1.24.0"
+  ## @param nginx.max_conns TODO:
+  ##
   max_conns: 100
+  ## @param nginx.assets.location TODO:
+  ##
   assets:
     location: /opt/invenio/var/instance/static
+  ## @param nginx.records.client_max_body_size TODO:
+  ##
   records:
     client_max_body_size: 100m
+  ## @param nginx.files.client_max_body_size TODO:
+  ##
   files:
     client_max_body_size: 50G
   ## @param nginx.resources `resources` for the nginx container
@@ -217,33 +272,68 @@ nginx:
   ## @param nginx.extraServerConfig Extra configuration to be added to nginx.conf under the server section (templated).
   ##
   extraServerConfig: ""
+  ## @param nginx.denied_ips TODO:
+  ##
   denied_ips: ""
+  ## @param nginx.denied_uas TODO:
+  ##
   denied_uas: ""
-  ## @param nginx.securityContext securityContext for the nginx container
+  ## @extra nginx.securityContext SecurityContext for the nginx container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param nginx.securityContext.allowPrivilegeEscalation Set container's Security Context allowPrivilegeEscalation
+  ## @param nginx.securityContext.capabilities.drop List of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-
+## @section Web
+##
 web:
-  image: ""  # DEPRECATED: Use `.Values.image` instead!
-  imagePullSecret: ""  # DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
+  ## @param web.image DEPRECATED: Use `.Values.image` instead!
+  ##
+  image: ""
+  ## @param web.imagePullSecret DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
+  imagePullSecret: ""
+  ## @param web.replicas Number of web replicas to deploy
+  ##
   replicas: 6
+  ## @param web.terminationGracePeriodSeconds Seconds Redmine pod needs to terminate gracefully
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+  ##
   terminationGracePeriodSeconds: 60
   uwsgi:
+    ## @param web.uwsgi.processes Number of uWSGI processes to run within each pod.
+    ##
     processes: 6
+    ## @param web.uwsgi.threads Number of uWSGI threads to run within each process.
+    ##
     threads: 4
   ## @param web.extraEnvVars Extra environment variables to be added to the pods.
   ##
   extraEnvVars: []
   autoscaler:
+    ## @param web.autoscaler.enabled Enable HPA
+    ##
     enabled: false
+    ## @param web.autoscaler.scaler_cpu_utilization Target CPU utilization percentage
+    ##
     scaler_cpu_utilization: 65
+    ## @param web.autoscaler.max_web_replicas Maximum number of replicas
+    ##
     max_web_replicas: 10
+    ## @param web.autoscaler.min_web_replicas Minimum number of replicas
+    ##
     min_web_replicas: 2
-  ## @param web.readinessProbe templated `readinessProbe` for the web container
+  ## @extra web.readinessProbe templated `readinessProbe` for the web container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ## @param web.readinessProbe.exec.command TODO:
+  ## @param web.readinessProbe.failureThreshold TODO:
+  ## @param web.readinessProbe.initialDelaySeconds TODO:
+  ## @param web.readinessProbe.periodSeconds TODO:
+  ## @param web.readinessProbe.successThreshold TODO:
+  ## @param web.readinessProbe.timeoutSeconds TODO:
   ##
   readinessProbe:
     exec:
@@ -256,7 +346,14 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 1
-  ## @param web.startupProbe templated `startupProbe` for the web container
+  ## @extra web.startupProbe Templated `startupProbe` for the web container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ## @param web.startupProbe.exec.command TODO:
+  ## @param web.startupProbe.failureThreshold TODO:
+  ## @param web.startupProbe.initialDelaySeconds TODO:
+  ## @param web.startupProbe.periodSeconds TODO:
+  ## @param web.startupProbe.successThreshold TODO:
+  ## @param web.startupProbe.timeoutSeconds TODO:
   ##
   startupProbe:
     exec:
@@ -272,6 +369,8 @@ web:
   ## @param web.livenessProbe templated `livenessProbe` for the web container
   ##
   livenessProbe: null
+  ## @param web.assets.location Location of the static assets
+  ##
   assets:
     location: /opt/invenio/var/instance/static
   ## @param web.resources `resources` for the web container
@@ -303,7 +402,10 @@ web:
       # limits:
       #   cpu: '1'
       #   memory: 100Mi
-    ## @param web.initContainers.securityContext securityContext for the initContainers in the web pod
+    ## @extra web.initContainers.securityContext securityContext for the initContainers in the web pod
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    ## @param web.initContainers.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation
+    ## @param web.initContainers.securityContext.capabilities.drop list of capabilities to be dropped
     ##
     securityContext:
       allowPrivilegeEscalation: false
@@ -330,10 +432,15 @@ web:
   ## Invenio web service parameters
   ##
   service:
-    ## @param service.type web service type
+    ## @param web.service.type Web service type
     ##
     type: ClusterIP
-  ## @param web.podSecurityContext securityContext for the web pod
+  ## @extra web.podSecurityContext securityContext for the web pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param web.podSecurityContext.runAsNonRoot TODO:
+  ## @param web.podSecurityContext.runAsUser TODO:
+  ## @param web.podSecurityContext.runAsGroup TODO:
+  ## @param web.podSecurityContext.seccompProfile.type TODO:
   ##
   podSecurityContext:
     runAsNonRoot: true
@@ -341,7 +448,10 @@ web:
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @param web.securityContext securityContext for the web container
+  ## @extra web.securityContext securityContext for the web container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param web.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param web.securityContext.capabilities.drop list of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
@@ -364,7 +474,7 @@ web:
   ##
   extraVolumes: []
 
-  ## @param web.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra web.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
   ##
   deploymentSpec:
     ## @param web.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -383,16 +493,35 @@ web:
     ##
     strategy: null
 
+## @Section Worker (Celery) configuration
+##
 worker:
-  enabled: true
-  image: ""  # DEPRECATED: Use `.Values.image` instead!
-  imagePullSecret: ""  # DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
+  ## @param worker.image DEPRECATED: Use `.Values.image` instead!
+  ##
+  image: ""
+  ## @param worker.imagePullSecret DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
+  ##
+  imagePullSecret: ""
+  ## @param worker.app Name of the celery app to run.
+  ##
   app: invenio_app.celery
+  ## @param worker.concurrency Number of concurrent tasks to run per worker.
+  ##
   concurrency: 2
+  ## @param worker.log_level Celery app lof level.
+  ##
   log_level: INFO
+  ## @param worker.replicas Number of web replicas to deploy.
+  ##
   replicas: 2
+  ## @param worker.run_mount_path
+  ##
   run_mount_path: /var/run/celery
+  ## @param worker.celery_pidfile
+  ##
   celery_pidfile: /var/run/celery/celerybeat.pid
+  ## @param worker.celery_schedule
+  ##
   celery_schedule: /var/run/celery/celery-schedule
   ## @param worker.extraEnvVars Extra environment variables to be added to the pods.
   ##
@@ -411,9 +540,12 @@ worker:
     # limits:
     #   cpu: 1000m
     #   memory: 1Gi
-  volumes:
-    enabled: false
-  ## @param worker.podSecurityContext securityContext for the worker Pod
+  ## @extra worker.podSecurityContext securityContext for the worker Pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param worker.podSecurityContext.runAsNonRoot TODO:
+  ## @param worker.podSecurityContext.runAsUser TODO:
+  ## @param worker.podSecurityContext.runAsGroup TODO:
+  ## @param worker.podSecurityContext.seccompProfile.type TODO:
   ##
   podSecurityContext:
     runAsNonRoot: true
@@ -421,7 +553,10 @@ worker:
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @param worker.securityContext securityContext for the worker container
+  ## @extra worker.securityContext securityContext for the worker container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param worker.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param worker.securityContext.capabilities.drop list of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
@@ -449,7 +584,11 @@ worker:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
-  ## @param worker.livenessProbe templated `livenessProbe` for the worker container
+  ## @extra worker.livenessProbe templated `livenessProbe` for the worker container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ## @param worker.livenessProbe.exec.command TODO:
+  ## @param worker.livenessProbe.initialDelaySeconds TODO:
+  ## @param worker.livenessProbe.timeoutSeconds TODO:
   ##
   livenessProbe:
     exec:
@@ -466,7 +605,7 @@ worker:
   ##
   startupProbe: null
 
-  ## @param worker.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra worker.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
   ##
   deploymentSpec:
     ## @param worker.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -503,14 +642,22 @@ workerBeat:
     # requests:
     #   cpu: 500m
     #   memory: 200Mi
-  ## @param workerBeat.securityContext securityContext for the worker-beat container
+  ## @extra workerBeat.securityContext securityContext for the worker-beat container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param workerBeat.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param workerBeat.securityContext.capabilities.drop list of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @param workerBeat.podSecurityContext securityContext for the worker-beat pod
+  ## @extra workerBeat.podSecurityContext securityContext for the worker-beat pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param workerBeat.podSecurityContext.runAsNonRoot TODO:
+  ## @param workerBeat.podSecurityContext.runAsUser TODO:
+  ## @param workerBeat.podSecurityContext.runAsGroup TODO:
+  ## @param workerBeat.podSecurityContext.seccompProfile.type TODO:
   ##
   podSecurityContext:
     runAsNonRoot: true
@@ -539,7 +686,11 @@ workerBeat:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
-  ## @param workerBeat.livenessProbe templated `livenessProbe` for the worker-beat container
+  ## @extra workerBeat.livenessProbe templated `livenessProbe` for the worker-beat container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ## @param workerBeat.livenessProbe.exec.command TODO:
+  ## @param workerBeat.livenessProbe.initialDelaySeconds TODO:
+  ## @param workerBeat.livenessProbe.timeoutSeconds TODO:
   ##
   livenessProbe:
     exec:
@@ -556,7 +707,7 @@ workerBeat:
   ##
   startupProbe: null
 
-  ## @param workerBeat.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra workerBeat.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
   ##
   deploymentSpec:
     ## @param workerBeat.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -701,42 +852,82 @@ terminal:
     ##
     strategy: null
 
+## @Section Persistence
+##
 persistence:
+  ## @param persistence.enabled Enable persistence volume claim
+  ##
   enabled: true
+  ## @param persistence.name Name of the PVC
+  ##
   name: "shared-volume"
+  ## @param persistence.access_mode Persistent Volume Access Modes
+  ##
   access_mode: ReadWriteMany
+  ## @param persistence.annotations Additional Persistent Volume Claim annotations
+  ##
   annotations: {}
+  ## @param persistence.size Size of the volume
+  ##
   size: 10G
+  ## @param persistence.storage_class Storage class of backing PVC
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
   storage_class: ""
+  ## @param persistence.useExistingClaim Use an existing PVC to use for persistence.
+  ##
   useExistingClaim: false
 
+## @section Redis configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
+  ## @param redis.enabled Enable redis helm chart
+  ##
   enabled: true
   auth:
+    ## @param redis.auth.enabled Enable password authentication
+    ##
     enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
   master:
+    ## @param redis.master.disableCommands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
   replica:
+    ## @param redis.replica.disableCommands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
 
-## RabbitMQ chart configuration
+
+## @param redisExternal External redis configuration
+## All of these values are only used when redis.enabled is set to false
+## @extra redisExternal.hostname
+redisExternal: {}
+  # hostname: ""
+
+## @section RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
+##
 rabbitmq:
+  ## @param rabbitmq.enabled Enable RabbitMQ helm chart
+  ##
   enabled: true
+  ## @param rabbitmq.auth.password
   auth:
     password: ""
 
-## External RabbitMQ configuration
+## @param rabbitmqExternal External RabbitMQ configuration
 ## All of these values are only used when rabbitmq.enabled is set to false
-## @param rabbitmqExternal.username RabbitMQ user
-## @param rabbitmqExternal.password Password
-## @param rabbitmqExternal.amqpPort
-## @param rabbitmqExternal.managementPort
-## @param rabbitmqExternal.hostname
-## @param rabbitmqExternal.protocol
-## @param rabbitmqExternal.vhost
-## @param rabbitmqExternal.existingSecret Name of an existing secret resource containing the credentials
-## @param rabbitmqExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
+## @extra rabbitmqExternal.username RabbitMQ user
+## @extra rabbitmqExternal.password Password
+## @extra rabbitmqExternal.amqpPort
+## @extra rabbitmqExternal.managementPort
+## @extra rabbitmqExternal.hostname
+## @extra rabbitmqExternal.protocol
+## @extra rabbitmqExternal.vhost
+## @extra rabbitmqExternal.existingSecret Name of an existing secret resource containing the credentials
+## @extra rabbitmqExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
 ##
 rabbitmqExternal: {}
   # username: invenio
@@ -749,12 +940,26 @@ rabbitmqExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "amqp-password"
 
+## @section Flower configuration
+##
 flower:
+  ## @param flower.enabled Enable Flower.
+  ##
   enabled: true
+  ## @param flower.image
+  ##
   image: "mher/flower:2.0"
+  ## @param flower.secret_name
+  ##
   secret_name: "flower-secrets"
+  ## @param flower.default_username
+  ##
   default_username: "flower"
+  ## @param flower.default_password
+  ##
   default_password: "flower_password"
+  ## @param flower.host
+  ##
   host: ""
   ## @param flower.resources `resources` for the flower-management container
   ##
@@ -777,7 +982,12 @@ flower:
     #     name: foo
     # - configMapRef:
     #     name: bar
-  ## @param flower.podSecurityContext securityContext for the flower pod
+  ## @extra flower.podSecurityContext securityContext for the flower pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param flower.podSecurityContext.runAsNonRoot TODO:
+  ## @param flower.podSecurityContext.runAsUser TODO:
+  ## @param flower.podSecurityContext.runAsGroup TODO:
+  ## @param flower.podSecurityContext.seccompProfile.type TODO:
   ##
   podSecurityContext:
     runAsNonRoot: true
@@ -802,7 +1012,7 @@ flower:
   ## @param flower.startupProbe templated `startupProbe` for the flower-management container
   ##
   startupProbe: null
-  ## @param flower.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra flower.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
   ##
   deploymentSpec:
     ## @param flower.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -821,13 +1031,13 @@ flower:
     ##
     strategy: null
 
-## PostgreSQL chart configuration
+## @section PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 ## @param postgresql.enabled Switch to enable or disable the PostgreSQL helm chart
-## @param postgresql.auth.enablePostgresUser Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user
 ## @param postgresql.auth.username Name for a custom user to create
 ## @param postgresql.auth.password Password for the custom user to create
 ## @param postgresql.auth.database Name for a custom database to create
+## @param postgresql.auth.existingSecret Name os the existing secret to get the password from.
 ##
 postgresql:
   enabled: true
@@ -837,15 +1047,15 @@ postgresql:
     database: invenio
     existingSecret: ""
 
-## External PostgreSQL configuration
+## @param postgresqlExternal External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
-## @param postgresqlExternal.host Database host
-## @param postgresqlExternal.port Database port number
-## @param postgresqlExternal.user Non-root username for Invenio
-## @param postgresqlExternal.password Password for the non-root username for Invenio
-## @param postgresqlExternal.database Invenio instance database name
-## @param postgresqlExternal.existingSecret Name of an existing secret resource containing the database credentials
-## @param postgresqlExternal.existingSecretPasswordKey Name of an existing secret key containing the database credentials
+## @extra postgresqlExternal.host Database host
+## @extra postgresqlExternal.port Database port number
+## @extra postgresqlExternal.user Non-root username for Invenio
+## @extra postgresqlExternal.password Password for the non-root username for Invenio
+## @extra postgresqlExternal.database Invenio instance database name
+## @extra postgresqlExternal.existingSecret Name of an existing secret resource containing the database credentials
+## @extra postgresqlExternal.existingSecretPasswordKey Name of an existing secret key containing the database credentials
 ##
 postgresqlExternal: {}
   # hostname: ""
@@ -856,26 +1066,48 @@ postgresqlExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "password"
 
+## @section Opensearch chart configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
+## @param opensearch.enabled Switch to enable or disable the Opensearch helm chart
 opensearch:
   enabled: true
 
+## @param externalOpensearch External Opensearch configuration
+## All of these values are only used when opensearch.enabled is set to false
 externalOpensearch: {}
 
+## @secion Logstash configuration
+## TODO: review content and possibly remove
+##
 logstash:
+  ## @param logstash.enabled
+  ##
   enabled: false
+  ## @param logstash.filebeat_image
+  ##
   filebeat_image: "docker.elastic.co/beats/filebeat-oss:8.10.2"
+  ## @skip logstash.filebeat_resources TODO: not documentis this, it should be refactor like the other resouces sections
+  ##
   filebeat_resources:
     limits:
       memory: 200Mi
     requests:
       cpu: 100m
       memory: 100Mi
+  ## @param logstash.logstash_image
   logstash_image: "docker.elastic.co/logstash/logstash-oss:8.10.2"
+  ## @param logstash.environment
+  ##
   environment: "qa"
+  ## @skip logstash.cern_monit
+  ### TODO: probably remove this an allow to add extra configuration
   cern_monit:
     enabled: false
     producer: "invenio"
-  ## @param logstash.securityContext securityContext for the logstash container
+  ## @extra logstash.securityContext securityContext for the logstash container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param logstash.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param logstash.securityContext.capabilities.drop list of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
@@ -884,10 +1116,20 @@ logstash:
         - ALL
 
 kerberos:
+  ## @param kerberos.enabled
+  ##
   enabled: false
+  ## @param kerberos.secret_name
+  ##
   secret_name: ""
+  ## @param kerberos.image
+  ##
   image: ""
+  ## @param kerberos.args
+  ##
   args: []
+  ## @param kerberos.initArgs
+  ##
   initArgs: []
   ## @param kerberos.resources `resources` for the kerberos-credentials container
   ##
@@ -903,7 +1145,10 @@ kerberos:
     # requests:
     #   cpu: 10m
     #   memory: 2Mi
-  ## @param kerberos.securityContext securityContext for the kerberos container
+  ## @extra kerberos.securityContext securityContext for the kerberos container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param kerberos.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param kerberos.securityContext.capabilities.drop list of capabilities to be dropped
   ##
   securityContext:
     allowPrivilegeEscalation: false
