@@ -119,6 +119,14 @@ DEPRECATION WARNING:
 
 {{- end }}
 
+{{- if .Values.web.annotations }}
+
+DEPRECATION WARNING:
+    `web.annotations` has been removed in favor of `web.service.annotations` and it will be
+    removed in a future release.
+
+{{- end }}
+
 {{- if or .Values.web.image .Values.worker.image  }}
 
 DEPRECATION WARNING:

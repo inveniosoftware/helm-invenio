@@ -474,3 +474,15 @@ Add datacite environmental variables
 {{- end}}
 {{- end }}
 {{- end -}}
+
+{{/*
+Web service annotations
+*/}}
+{{- define "invenio.web.service.annotations" -}}
+{{- with .Values.web.annotations }}
+{{ tpl (toYaml .) $ }}
+{{- end }}
+{{- with .Values.web.service.annotations }}
+{{ tpl (toYaml .) $ }}
+{{- end }}
+{{- end -}}

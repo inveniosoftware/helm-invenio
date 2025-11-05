@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
+  {{- with include "invenio.web.service.annotations" $ }}
+  annotations:
+    {{- . | nindent 4 }}
+  {{- end }}
   name: {{ include "invenio.fullname" . }}-web
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: web
-
-  {{- with .Values.web.annotations }}
-  annotations: {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
 spec:
   ports:
     - name: 'http'
