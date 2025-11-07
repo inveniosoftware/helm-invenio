@@ -412,7 +412,7 @@ web:
       capabilities:
         drop:
           - ALL
-  ## @param web.annotations Add extra (templated) annotations to the web service
+  ## @param web.annotations DEPRECATED: Use `.Values.web.service.annotations` instead!
   ##
   annotations: {}
   ## @param web.podLabels Add extra labels to the Invenio webs pods
@@ -432,6 +432,9 @@ web:
   ## Invenio web service parameters
   ##
   service:
+    ## @param web.service.annotations Add extra (templated) annotations to the web service
+    ##
+    annotations: {}
     ## @param web.service.type Web service type
     ##
     type: ClusterIP
