@@ -2,10 +2,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- with .Values.web.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   name: {{ include "invenio.fullname" . }}-web
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: web
+    {{- with .Values.web.deploymentLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- with .Values.web.deploymentSpec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}
