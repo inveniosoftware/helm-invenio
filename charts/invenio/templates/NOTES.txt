@@ -122,7 +122,7 @@ DEPRECATION WARNING:
 {{- if .Values.web.annotations }}
 
 DEPRECATION WARNING:
-    `web.annotations` has been removed in favor of `web.service.annotations` and it will be
+    `web.annotations` has been deprecated in favor of `web.service.annotations` and it will be
     removed in a future release.
 
 {{- end }}
