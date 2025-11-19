@@ -34,16 +34,10 @@ spec:
       containers:
         - name: flower-management
           image: {{ required "Missing .Values.flower.image" .Values.flower.image }}
+          {{- with .Values.flower.command }}
           command:
-              [
-                "celery",
-                "--config=/var/celery/celeryconfig.py",
-                "--broker=$(INVENIO_CELERY_BROKER_URL)",
-                "flower",
-                "--broker_api=$(RABBITMQ_API_URI)",
-                "--basic_auth=$(FLOWER_BASIC_AUTH_CREDENTIALS)",
-                "--conf=/var/flower/flowerconfig.py"
-              ]
+            {{- tpl (. | toYaml) $ | nindent 14 }}
+          {{- end }}
           ports:
             - containerPort: 5555
           livenessProbe: {{- tpl (.Values.flower.livenessProbe | toYaml) $ | nindent 12 }}
