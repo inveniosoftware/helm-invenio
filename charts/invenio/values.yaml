@@ -496,6 +496,14 @@ web:
     ##
     strategy: null
 
+  ## @extra web.deploymentAnnotations Extra annotations for the web Deployment
+  ##
+  deploymentAnnotations: {}
+
+  ## @extra web.deploymentLabels Extra labels for the web Deployment
+  ##
+  deploymentLabels: {}
+
 ## @Section Worker (Celery) configuration
 ##
 worker:
@@ -627,6 +635,14 @@ worker:
     ##
     strategy: null
 
+  ## @extra worker.deploymentAnnotations Extra annotations for the worker Deployment
+  ##
+  deploymentAnnotations: {}
+
+  ## @extra worker.deploymentLabels Extra labels for the worker Deployment
+  ##
+  deploymentLabels: {}
+
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
   ##
@@ -728,6 +744,14 @@ workerBeat:
     ## @param workerBeat.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
     ##
     strategy: null
+
+  ## @extra workerBeat.deploymentAnnotations Extra annotations for the workerBeat Deployment
+  ##
+  deploymentAnnotations: {}
+
+  ## @extra workerBeat.deploymentLabels Extra labels for the workerBeat Deployment
+  ##
+  deploymentLabels: {}
 
 ## @section Terminal
 ## Pods for runnning maintenance tasks.
@@ -854,6 +878,14 @@ terminal:
     ## @param terminal.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
     ##
     strategy: null
+
+  ## @extra terminal.deploymentAnnotations Extra annotations for the terminal Deployment
+  ##
+  deploymentAnnotations: {}
+
+  ## @extra terminal.deploymentLabels Extra labels for the terminal Deployment
+  ##
+  deploymentLabels: {}
 
 ## @Section Persistence
 ##
@@ -1037,6 +1069,14 @@ flower:
     ## @param flower.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
     ##
     strategy: null
+
+  ## @extra flower.deploymentAnnotations Extra annotations for the flower Deployment
+  ##
+  deploymentAnnotations: {}
+
+  ## @extra flower.deploymentLabels Extra labels for the flower Deployment
+  ##
+  deploymentLabels: {}
 
 ## @section PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
