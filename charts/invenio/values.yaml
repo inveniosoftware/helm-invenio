@@ -879,13 +879,13 @@ terminal:
     ##
     strategy: null
 
-  ## @extra terminal.deploymentAnnotations Extra annotations for the terminal Deployment
-  ##
-  deploymentAnnotations: {}
-
-  ## @extra terminal.deploymentLabels Extra labels for the terminal Deployment
-  ##
-  deploymentLabels: {}
+  deployment:
+    ## @extra terminal.deployment.annotations Extra annotations for the terminal Deployment
+    ##
+    annotations: {}
+    ## @extra terminal.deployment.labels Extra labels for the terminal Deployment
+    ##
+    labels: {}
 
 ## @Section Persistence
 ##
