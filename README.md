@@ -460,8 +460,8 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `flower.deploymentSpec.progressDeadlineSeconds` | See API spec for `Deployment.spec.progressDeadlineSeconds                                    | `nil`             |
 | `flower.deploymentSpec.revisionHistoryLimit`    | See API spec for `Deployment.spec.revisionHistoryLimit                                       | `nil`             |
 | `flower.deploymentSpec.strategy`                | See API spec for `Deployment.spec.strategy                                                   | `nil`             |
-| `flower.deploymentAnnotations`                  | Extra annotations for the flower Deployment                                                  | `{}`              |
-| `flower.deploymentLabels`                       | Extra labels for the flower Deployment                                                       | `{}`              |
+| `flower.deployment.annotations`                  | Extra annotations for the flower Deployment                                                  | `{}`              |
+| `flower.deployment.labels`                       | Extra labels for the flower Deployment                                                       | `{}`              |
 
 ### PostgreSQL chart configuration
 
