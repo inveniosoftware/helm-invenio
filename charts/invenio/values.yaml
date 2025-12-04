@@ -745,13 +745,13 @@ workerBeat:
     ##
     strategy: null
 
-  ## @extra workerBeat.deploymentAnnotations Extra annotations for the workerBeat Deployment
-  ##
-  deploymentAnnotations: {}
-
-  ## @extra workerBeat.deploymentLabels Extra labels for the workerBeat Deployment
-  ##
-  deploymentLabels: {}
+  deployment:
+    ## @extra workerBeat.deployment.annotations Extra annotations for the workerBeat Deployment
+    ##
+    annotations: {}
+    ## @extra workerBeat.deployment.labels Extra labels for the workerBeat Deployment
+    ##
+    deployment.labels: {}
 
 ## @section Terminal
 ## Pods for runnning maintenance tasks.
