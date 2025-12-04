@@ -635,13 +635,13 @@ worker:
     ##
     strategy: null
 
-  ## @extra worker.deploymentAnnotations Extra annotations for the worker Deployment
-  ##
-  deploymentAnnotations: {}
-
-  ## @extra worker.deploymentLabels Extra labels for the worker Deployment
-  ##
-  deploymentLabels: {}
+  deployment:
+    ## @extra worker.deployment.annotations Extra annotations for the worker Deployment
+    ##
+    annotations: {}
+    ## @extra worker.deployment.labels Extra labels for the worker Deployment
+    ##
+    labels: {}
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
