@@ -496,13 +496,13 @@ web:
     ##
     strategy: null
 
-  ## @extra web.deploymentAnnotations Extra annotations for the web Deployment
-  ##
-  deploymentAnnotations: {}
-
-  ## @extra web.deploymentLabels Extra labels for the web Deployment
-  ##
-  deploymentLabels: {}
+  deployment:
+    ## @extra web.deployment.annotations Extra annotations for the web Deployment
+    ##
+    annotations: {}
+    ## @extra web.deployment.labels Extra labels for the web Deployment
+    ##
+    labels: {}
 
 ## @Section Worker (Celery) configuration
 ##
