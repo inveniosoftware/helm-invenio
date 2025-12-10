@@ -514,6 +514,12 @@ worker:
   ## @param worker.log_level Celery app lof level.
   ##
   log_level: INFO
+  ## @param worker.queues Comma-separated list of queues to append to the celery worker command (e.g., "celery,files,indexer"). If set, adds "-Q <queues>" to the command. Ignored if worker.commandOverride is set.
+  ##
+  queues: "celery,low"
+  ## @param worker.commandOverride Complete command override for the celery worker. If set, this replaces the entire celery command, ignoring app, concurrency, log_level, and queues settings.
+  ##
+  commandOverride: ""
   ## @param worker.replicas Number of web replicas to deploy.
   ##
   replicas: 2
@@ -628,6 +634,9 @@ worker:
     strategy: null
 
 workerBeat:
+  ## @param workerBeat.commandOverride Complete command override for the celery beat worker. If set, this replaces the entire celery command, ignoring app, log_level, celery_schedule, celery_pidfile, and queues settings.
+  ##
+  commandOverride: ""
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
   ##
   extraEnvVars: []
