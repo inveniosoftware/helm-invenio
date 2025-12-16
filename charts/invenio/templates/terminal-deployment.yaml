@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  {{- with .Values.terminal.deploymentAnnotations }}
+  {{- with .Values.terminal.deployment.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
