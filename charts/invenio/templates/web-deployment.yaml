@@ -10,7 +10,7 @@ metadata:
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: web
-    {{- with .Values.web.deploymentLabels }}
+    {{- with .Values.web.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:

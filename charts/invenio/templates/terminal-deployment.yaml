@@ -11,7 +11,7 @@ metadata:
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: terminal
-    {{- with .Values.terminal.deploymentLabels }}
+    {{- with .Values.terminal.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:

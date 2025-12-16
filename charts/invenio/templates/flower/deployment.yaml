@@ -10,7 +10,7 @@ metadata:
   name: flower-management
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
-    {{- with .Values.flower.deploymentLabels }}
+    {{- with .Values.flower.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
