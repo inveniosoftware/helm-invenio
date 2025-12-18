@@ -3,9 +3,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- with .Values.flower.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   name: flower-management
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
+    {{- with .Values.flower.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- with .Values.flower.deploymentSpec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}

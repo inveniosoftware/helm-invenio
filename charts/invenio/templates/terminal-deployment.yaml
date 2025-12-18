@@ -3,10 +3,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- with .Values.terminal.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   name: {{ include "invenio.fullname" . }}-terminal
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     app.kubernetes.io/component: terminal
+    {{- with .Values.terminal.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- with .Values.terminal.deploymentSpec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}
