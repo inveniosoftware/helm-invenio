@@ -1034,6 +1034,16 @@ flower:
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
+  ## @extra flower.securityContext securityContext for the flower container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param flower.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param flower.securityContext.capabilities.drop list of capabilities to be dropped
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
   ## @param flower.nodeSelector Node labels for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
