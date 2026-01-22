@@ -59,11 +59,19 @@ spec:
       - name: worker-beat
         image: {{ default .Values.worker.image (include "invenio.image" .) }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.workerBeat.commandOverride }}
+        command: [
+          "/bin/bash",
+          "-c",
+          "{{ .Values.workerBeat.commandOverride }}"
+        ]
+        {{- else }}
         command: [
           "/bin/bash",
           "-c",
           "celery -A {{ .Values.worker.app }} beat -l {{ .Values.worker.log_level }} -s {{ .Values.worker.celery_schedule }} --pidfile {{ .Values.worker.celery_pidfile }}"
         ]
+        {{- end }}
         securityContext:
           {{- with .Values.workerBeat.securityContext }}
           {{- toYaml . | nindent 10 }}
