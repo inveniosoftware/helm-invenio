@@ -14,23 +14,23 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- with .Values.flower.deploymentSpec.minReadySeconds }}
+  {{- with .Values.flower.deployment.spec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.flower.deploymentSpec.paused }}
+  {{- with .Values.flower.deployment.spec.paused }}
   paused: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.flower.deploymentSpec.progressDeadlineSeconds }}
+  {{- with .Values.flower.deployment.spec.progressDeadlineSeconds }}
   progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
   replicas: 1
-  {{- with .Values.flower.deploymentSpec.revisionHistoryLimit }}
+  {{- with .Values.flower.deployment.spec.revisionHistoryLimit }}
   revisionHistoryLimit: {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
       app: flower-management
-  {{- with .Values.flower.deploymentSpec.strategy }}
+  {{- with .Values.flower.deployment.spec.strategy }}
   strategy: {{- toYaml . | nindent 4 }}
   {{- end }}
   template:

@@ -150,3 +150,33 @@ DEPRECATION WARNING:
     Please use  `nginx.extraEnvFrom` instead.
 
 {{- end }}
+
+{{- if .Values.flower.deploymentSpec }}
+DEPRECATION WARNING:
+    `flower.deploymentSpec` has been renamed and will be removed in a future release.
+    Please use `flower.deployment.spec` instead.
+{{- end }}
+
+{{- if .Values.terminal.deploymentSpec }}
+DEPRECATION WARNING:
+    `terminal.deploymentSpec` has been renamed and will be removed in a future release.
+    Please use `terminal.deployment.spec` instead.
+{{- end }}
+
+{{- if .Values.web.deploymentSpec }}
+DEPRECATION WARNING:
+    `web.deploymentSpec` has been renamed and will be removed in a future release.
+    Please use `web.deployment.spec` instead.
+{{- end }}
+
+{{- if .Values.worker.deploymentSpec }}
+DEPRECATION WARNING:
+    `worker.deploymentSpec` has been renamed and will be removed in a future release.
+    Please use `worker.deployment.spec` instead.
+{{- end }}
+
+{{- if .Values.workerBeat.deploymentSpec }}
+DEPRECATION WARNING:
+    `workerBeat.deploymentSpec` has been renamed and will be removed in a future release.
+    Please use `workerBeat.deployment.spec` instead.
+{{- end }}

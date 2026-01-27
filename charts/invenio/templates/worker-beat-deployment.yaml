@@ -14,23 +14,23 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- with .Values.workerBeat.deploymentSpec.minReadySeconds }}
+  {{- with .Values.workerBeat.deployment.spec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.workerBeat.deploymentSpec.paused }}
+  {{- with .Values.workerBeat.deployment.spec.paused }}
   paused: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.workerBeat.deploymentSpec.progressDeadlineSeconds }}
+  {{- with .Values.workerBeat.deployment.spec.progressDeadlineSeconds }}
   progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
   replicas: 1 # For data safety, beat must never have more than 1 replica!
-  {{- with .Values.workerBeat.deploymentSpec.revisionHistoryLimit }}
+  {{- with .Values.workerBeat.deployment.spec.revisionHistoryLimit }}
   revisionHistoryLimit: {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: worker-beat
-  {{- with .Values.workerBeat.deploymentSpec.strategy }}
+  {{- with .Values.workerBeat.deployment.spec.strategy }}
   strategy: {{- toYaml . | nindent 4 }}
   {{- end }}
   template:
