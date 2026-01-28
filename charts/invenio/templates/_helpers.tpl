@@ -392,7 +392,6 @@ Invenio basic configuration variables
 */}}
 {{- define "invenio.configBase" -}}
 INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
-INVENIO_APP_ALLOWED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
 INVENIO_TRUSTED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
 INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
 INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'

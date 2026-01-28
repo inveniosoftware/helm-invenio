@@ -74,7 +74,7 @@ route:
   annotations: {}
 
 invenio:
-  ## @param invenio.hostname Invenio hostname (templated) used in configuration varibales like APP_ALLOWED_HOSTS, SITE_HOSTNAME or SITE_URL
+  ## @param invenio.hostname Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL
   ##
   hostname: ""
   ## @param invenio.secret_key DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret

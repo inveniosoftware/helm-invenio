@@ -172,7 +172,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `ingress.annotations`                     | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. | `{}`                              |
 | `ingress.tlsSecretNameOverride`           | Custom TLS secret name.                                                                                                          | `""`                              |
 | `route.annotations`                       | Annotations to be added to the Route                                                                                             | `{}`                              |
-| `invenio.hostname`                        | Invenio hostname (templated) used in configuration varibales like APP_ALLOWED_HOSTS, SITE_HOSTNAME or SITE_URL                   | `""`                              |
+| `invenio.hostname`                        | Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL                   | `""`                              |
 | `invenio.secret_key`                      | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
 | `invenio.security_login_salt`             | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
 | `invenio.csrf_secret_salt`                | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
