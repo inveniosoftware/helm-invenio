@@ -477,7 +477,7 @@ web:
   ##
   extraVolumes: []
 
-  ## @extra web.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra web.deploymentSpec DEPRECATED: Use `.Values.web.deployment.spec` instead!
   ##
   deploymentSpec:
     ## @param web.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -503,6 +503,24 @@ web:
     ## @extra web.deployment.labels Extra labels for the web Deployment
     ##
     labels: {}
+    ## @extra web.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param web.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param web.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param web.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param web.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param web.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
 
 ## @Section Worker (Celery) configuration
 ##
@@ -616,7 +634,7 @@ worker:
   ##
   startupProbe: null
 
-  ## @extra worker.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra worker.deploymentSpec DEPRECATED: Use `.Values.worker.deployment.spec` instead!
   ##
   deploymentSpec:
     ## @param worker.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -642,6 +660,24 @@ worker:
     ## @extra worker.deployment.labels Extra labels for the worker Deployment
     ##
     labels: {}
+    ## @extra worker.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param worker.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param worker.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param worker.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param worker.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param worker.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
 
 workerBeat:
   ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
@@ -726,7 +762,7 @@ workerBeat:
   ##
   startupProbe: null
 
-  ## @extra workerBeat.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra workerBeat.deploymentSpec DEPRECATED: Use `.Values.workerBeat.deployment.spec` instead!
   ##
   deploymentSpec:
     ## @param workerBeat.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -752,6 +788,24 @@ workerBeat:
     ## @extra workerBeat.deployment.labels Extra labels for the workerBeat Deployment
     ##
     deployment.labels: {}
+    ## @extra workerBeat.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param workerBeat.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param workerBeat.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param workerBeat.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param workerBeat.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param workerBeat.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
 
 ## @section Terminal
 ## Pods for runnning maintenance tasks.
@@ -860,7 +914,7 @@ terminal:
   ##
   extraVolumes: []
 
-  ## @extra terminal.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra terminal.deploymentSpec DEPRECATED: Use `.Values.terminal.deployment.spec` instead!
   ##
   deploymentSpec:
     ## @param terminal.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -886,6 +940,24 @@ terminal:
     ## @extra terminal.deployment.labels Extra labels for the terminal Deployment
     ##
     labels: {}
+    ## @extra terminal.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param terminal.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param terminal.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param terminal.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param terminal.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param terminal.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
 
 ## @Section Persistence
 ##
@@ -1061,7 +1133,7 @@ flower:
   ## @param flower.startupProbe templated `startupProbe` for the flower-management container
   ##
   startupProbe: null
-  ## @extra flower.deploymentSpec Configuration for other configurable fields in the Deployment.spec.
+  ## @extra flower.deploymentSpec DEPRECATED: Use `.Values.flower.deployment.spec` instead!
   ##
   deploymentSpec:
     ## @param flower.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
@@ -1087,6 +1159,24 @@ flower:
     ## @extra flower.deployment.labels Extra labels for the flower Deployment
     ##
     labels: {}
+    ## @extra flower.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param flower.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param flower.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param flower.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param flower.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param flower.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
 
 ## @section PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml

@@ -15,23 +15,23 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- with .Values.terminal.deploymentSpec.minReadySeconds }}
+  {{- with .Values.terminal.deployment.spec.minReadySeconds }}
   minReadySeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.terminal.deploymentSpec.paused }}
+  {{- with .Values.terminal.deployment.spec.paused }}
   paused: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.terminal.deploymentSpec.progressDeadlineSeconds }}
+  {{- with .Values.terminal.deployment.spec.progressDeadlineSeconds }}
   progressDeadlineSeconds: {{- toYaml . | nindent 4 }}
   {{- end }}
   replicas: {{ .Values.terminal.replicas }}
-  {{- with .Values.terminal.deploymentSpec.revisionHistoryLimit }}
+  {{- with .Values.terminal.deployment.spec.revisionHistoryLimit }}
   revisionHistoryLimit: {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: terminal
-  {{- with .Values.terminal.deploymentSpec.strategy }}
+  {{- with .Values.terminal.deployment.spec.strategy }}
   strategy: {{- toYaml . | nindent 4 }}
   {{- end }}
   template:
