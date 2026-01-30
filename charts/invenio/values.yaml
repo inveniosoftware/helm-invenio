@@ -787,7 +787,7 @@ workerBeat:
     annotations: {}
     ## @extra workerBeat.deployment.labels Extra labels for the workerBeat Deployment
     ##
-    deployment.labels: {}
+    labels: {}
     ## @extra workerBeat.deployment.spec Configuration for other configurable fields in the Deployment.spec.
     ##
     spec:
