@@ -1,6 +1,6 @@
 # Publishing new versions of the `invenio` Helm chart
 
-1. Upgrade the `version` field in the `invenio/Chart.yaml` file.
+1. Upgrade the `version` field in [./charts/invenio/Chart.yaml](./charts/invenio/Chart.yaml).
 1. Commit and tag:
 
     ```shell
