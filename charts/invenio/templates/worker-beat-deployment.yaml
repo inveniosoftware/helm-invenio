@@ -80,6 +80,12 @@ spec:
           mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
           subPath: "{{ $key }}"
         {{- end }}
+        {{- range .Values.invenio.extraVolumeMounts }}
+        - {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- range .Values.workerBeat.extraVolumeMounts }}
+        - {{ toYaml . | nindent 8 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: {{ include "invenio.fullname" . }}-config
@@ -132,6 +138,12 @@ spec:
       - name: vocabularies
         configMap:
           name: "{{ include "invenio.fullname" . }}-vocabularies"
+      {{- end }}
+      {{- range .Values.invenio.extraVolumes }}
+      - {{ toYaml . | nindent 6 }}
+      {{- end }}
+      {{- range .Values.worker.extraVolumes }}
+      - {{ toYaml . | nindent 6 }}
       {{- end }}
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
