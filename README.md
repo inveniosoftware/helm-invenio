@@ -172,7 +172,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `ingress.annotations`                     | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. | `{}`                              |
 | `ingress.tlsSecretNameOverride`           | Custom TLS secret name.                                                                                                          | `""`                              |
 | `route.annotations`                       | Annotations to be added to the Route                                                                                             | `{}`                              |
-| `invenio.hostname`                        | Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL                   | `""`                              |
+| `invenio.hostname`                        | Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL                       | `""`                              |
 | `invenio.secret_key`                      | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
 | `invenio.security_login_salt`             | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
 | `invenio.csrf_secret_salt`                | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
@@ -270,7 +270,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `web.podAnnotations`                                          | Add extra annotations to the Invenio web pods                                                                                               | `{}`                                                                                                             |
 | `web.nodeSelector`                                            | Node labels for web pods assignment                                                                                                         | `{}`                                                                                                             |
 | `web.tolerations`                                             | Tolerations for web pods assignment                                                                                                         | `[]`                                                                                                             |
-| `web.service.annotations`                                     | Add extra (templated) annotations to the web service                                                                                        | `ClusterIP`                                                                                                      |
+| `web.service.annotations`                                     | Add extra (templated) annotations to the web service                                                                                        | `{}`                                                                                                             |
 | `web.service.type`                                            | Web service type                                                                                                                            | `ClusterIP`                                                                                                      |
 | `web.podSecurityContext`                                      | securityContext for the web pod                                                                                                             |                                                                                                                  |
 | `web.podSecurityContext.runAsNonRoot`                         | TODO:                                                                                                                                       | `true`                                                                                                           |
@@ -283,7 +283,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `web.extraEnvFrom`                                            | Extra secretRef or configMapRef for the `envFrom` field in the web container (templated).                                                   | `[]`                                                                                                             |
 | `web.extraVolumeMounts`                                       | Extra volumeMounts for the web container.                                                                                                   | `[]`                                                                                                             |
 | `web.extraVolumes`                                            | Extra volumes for the web Pod.                                                                                                              | `[]`                                                                                                             |
-| `web.deploymentSpec`                                          | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `web.deploymentSpec`                                          | DEPRECATED: Use `.Values.web.deployment.spec` instead!                                                                                      |                                                                                                                  |
 | `web.deploymentSpec.minReadySeconds`                          | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
 | `web.deploymentSpec.paused`                                   | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
 | `web.deploymentSpec.progressDeadlineSeconds`                  | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
@@ -291,6 +291,12 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `web.deploymentSpec.strategy`                                 | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 | `web.deployment.annotations`                                  | Extra annotations for the web Deployment                                                                                                    | `{}`                                                                                                             |
 | `web.deployment.labels`                                       | Extra labels for the web Deployment                                                                                                         | `{}`                                                                                                             |
+| `web.deployment.spec`                                         | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `web.deployment.spec.minReadySeconds`                         | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
+| `web.deployment.spec.paused`                                  | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
+| `web.deployment.spec.progressDeadlineSeconds`                 | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
+| `web.deployment.spec.revisionHistoryLimit`                    | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                      | `nil`                                                                                                            |
+| `web.deployment.spec.strategy`                                | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 | `worker.image`                                                | DEPRECATED: Use `.Values.image` instead!                                                                                                    | `""`                                                                                                             |
 | `worker.imagePullSecret`                                      | DEPRECATED: Use `.Values.image.imagePullSecrets` instead!                                                                                   | `""`                                                                                                             |
 | `worker.app`                                                  | Name of the celery app to run.                                                                                                              | `invenio_app.celery`                                                                                             |
@@ -321,7 +327,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `worker.livenessProbe.timeoutSeconds`                         | TODO:                                                                                                                                       | `30`                                                                                                             |
 | `worker.readinessProbe`                                       | templated `readinessProbe` for the worker container                                                                                         | `nil`                                                                                                            |
 | `worker.startupProbe`                                         | templated `startupProbe` for the worker container                                                                                           | `nil`                                                                                                            |
-| `worker.deploymentSpec`                                       | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `worker.deploymentSpec`                                       | DEPRECATED: Use `.Values.worker.deployment.spec` instead!                                                                                   |                                                                                                                  |
 | `worker.deploymentSpec.minReadySeconds`                       | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
 | `worker.deploymentSpec.paused`                                | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
 | `worker.deploymentSpec.progressDeadlineSeconds`               | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
@@ -329,6 +335,12 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `worker.deploymentSpec.strategy`                              | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 | `worker.deployment.annotations`                               | Extra annotations for the worker Deployment                                                                                                 | `{}`                                                                                                             |
 | `worker.deployment.labels`                                    | Extra labels for the worker Deployment                                                                                                      | `{}`                                                                                                             |
+| `worker.deployment.spec`                                      | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `worker.deployment.spec.minReadySeconds`                      | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
+| `worker.deployment.spec.paused`                               | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
+| `worker.deployment.spec.progressDeadlineSeconds`              | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
+| `worker.deployment.spec.revisionHistoryLimit`                 | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                      | `nil`                                                                                                            |
+| `worker.deployment.spec.strategy`                             | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 | `workerBeat.extraEnvVars`                                     | Extra environment variables to be added to the pods.                                                                                        | `[]`                                                                                                             |
 | `workerBeat.resources`                                        | `resources` for the worker-beat container                                                                                                   | `{}`                                                                                                             |
 | `workerBeat.securityContext`                                  | securityContext for the worker-beat container                                                                                               |                                                                                                                  |
@@ -350,7 +362,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `workerBeat.livenessProbe.timeoutSeconds`                     | TODO:                                                                                                                                       | `30`                                                                                                             |
 | `workerBeat.readinessProbe`                                   | templated `readinessProbe` for the worker-beat container                                                                                    | `nil`                                                                                                            |
 | `workerBeat.startupProbe`                                     | templated `startupProbe` for the worker-beat container                                                                                      | `nil`                                                                                                            |
-| `workerBeat.deploymentSpec`                                   | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `workerBeat.deploymentSpec`                                   | DEPRECATED: Use `.Values.workerBeat.deployment.spec` instead!                                                                               |                                                                                                                  |
 | `workerBeat.deploymentSpec.minReadySeconds`                   | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
 | `workerBeat.deploymentSpec.paused`                            | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
 | `workerBeat.deploymentSpec.progressDeadlineSeconds`           | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
@@ -358,7 +370,12 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `workerBeat.deploymentSpec.strategy`                          | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 | `workerBeat.deployment.annotations`                           | Extra annotations for the workerBeat Deployment                                                                                             | `{}`                                                                                                             |
 | `workerBeat.deployment.labels`                                | Extra labels for the workerBeat Deployment                                                                                                  | `{}`                                                                                                             |
-
+| `workerBeat.deployment.spec`                                  | Configuration for other configurable fields in the Deployment.spec.                                                                         |                                                                                                                  |
+| `workerBeat.deployment.spec.minReadySeconds`                  | See API spec for `Deployment.spec.minReadySeconds                                                                                           | `nil`                                                                                                            |
+| `workerBeat.deployment.spec.paused`                           | See API spec for `Deployment.spec.paused                                                                                                    | `nil`                                                                                                            |
+| `workerBeat.deployment.spec.progressDeadlineSeconds`          | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                   | `nil`                                                                                                            |
+| `workerBeat.deployment.spec.revisionHistoryLimit`             | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                      | `nil`                                                                                                            |
+| `workerBeat.deployment.spec.strategy`                         | See API spec for `Deployment.spec.strategy                                                                                                  | `nil`                                                                                                            |
 
 ### Terminal
 
@@ -388,7 +405,7 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `terminal.extraEnvFrom`                                            | Extra secretRef or configMapRef for the `envFrom` field in the terminal container (templated).                                                   | `[]`             |
 | `terminal.extraVolumeMounts`                                       | Extra volumeMounts for the terminal container.                                                                                                   | `[]`             |
 | `terminal.extraVolumes`                                            | Extra volumes for the terminal Pod.                                                                                                              | `[]`             |
-| `terminal.deploymentSpec`                                          | Configuration for other configurable fields in the Deployment.spec.                                                                              |                  |
+| `terminal.deploymentSpec`                                          | DEPRECATED: Use `.Values.terminal.deployment.spec` instead!                                                                                      |                  |
 | `terminal.deploymentSpec.minReadySeconds`                          | See API spec for `Deployment.spec.minReadySeconds                                                                                                | `nil`            |
 | `terminal.deploymentSpec.paused`                                   | See API spec for `Deployment.spec.paused                                                                                                         | `nil`            |
 | `terminal.deploymentSpec.progressDeadlineSeconds`                  | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                        | `nil`            |
@@ -396,6 +413,12 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `terminal.deploymentSpec.strategy`                                 | See API spec for `Deployment.spec.strategy                                                                                                       | `nil`            |
 | `terminal.deployment.annotations`                                  | Extra annotations for the terminal Deployment                                                                                                    | `{}`             |
 | `terminal.deployment.labels`                                       | Extra labels for the terminal Deployment                                                                                                         | `{}`             |
+| `terminal.deployment.spec`                                         | Configuration for other configurable fields in the Deployment.spec.                                                                              |                  |
+| `terminal.deployment.spec.minReadySeconds`                         | See API spec for `Deployment.spec.minReadySeconds                                                                                                | `nil`            |
+| `terminal.deployment.spec.paused`                                  | See API spec for `Deployment.spec.paused                                                                                                         | `nil`            |
+| `terminal.deployment.spec.progressDeadlineSeconds`                 | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                        | `nil`            |
+| `terminal.deployment.spec.revisionHistoryLimit`                    | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                           | `nil`            |
+| `terminal.deployment.spec.strategy`                                | See API spec for `Deployment.spec.strategy                                                                                                       | `nil`            |
 | `persistence.enabled`                                              | Enable persistence volume claim                                                                                                                  | `true`           |
 | `persistence.name`                                                 | Name of the PVC                                                                                                                                  | `shared-volume`  |
 | `persistence.access_mode`                                          | Persistent Volume Access Modes                                                                                                                   | `ReadWriteMany`  |
@@ -406,86 +429,102 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 
 ### Redis configuration
 
-| Name                            | Description                    | Value   |
-| ------------------------------- | ------------------------------ | ------- |
-| `redis.enabled`                 | Enable redis helm chart        | `true`  |
-| `redis.auth.enabled`            | Enable password authentication | `false` |
-| `redis.master.disableCommands`  |                                | `[]`    |
-| `redis.replica.disableCommands` |                                | `[]`    |
-| `redisExternal`                 | External redis configuration   | `{}`    |
-| `redisExternal.hostname`        |                                |         |
+| Name                            | Description                    | Value                 |
+| ------------------------------- | ------------------------------ | --------------------- |
+| `redis.enabled`                 | Enable redis helm chart        | `true`                |
+| `redis.auth.enabled`            | Enable password authentication | `false`               |
+| `redis.image.repository`        | Sets bitnamilegacy by default  | `bitnamilegacy/redis` |
+| `redis.master.disableCommands`  |                                | `[]`                  |
+| `redis.replica.disableCommands` |                                | `[]`                  |
+| `redisExternal`                 | External redis configuration   | `{}`                  |
+| `redisExternal.hostname`        |                                |                       |
 
 ### RabbitMQ chart configuration
 
-| Name                                         | Description                                                    | Value  |
-| -------------------------------------------- | -------------------------------------------------------------- | ------ |
-| `rabbitmq.enabled`                           | Enable RabbitMQ helm chart                                     | `true` |
-| `rabbitmq.auth.password`                     |                                                                | `""`   |
-| `rabbitmqExternal`                           | External RabbitMQ configuration                                | `{}`   |
-| `rabbitmqExternal.username`                  | RabbitMQ user                                                  |        |
-| `rabbitmqExternal.password`                  | Password                                                       |        |
-| `rabbitmqExternal.amqpPort`                  |                                                                |        |
-| `rabbitmqExternal.managementPort`            |                                                                |        |
-| `rabbitmqExternal.hostname`                  |                                                                |        |
-| `rabbitmqExternal.protocol`                  |                                                                |        |
-| `rabbitmqExternal.vhost`                     |                                                                |        |
-| `rabbitmqExternal.existingSecret`            | Name of an existing secret resource containing the credentials |        |
-| `rabbitmqExternal.existingSecretPasswordKey` | Name of an existing secret key containing the credentials      |        |
+| Name                                         | Description                                                    | Value                    |
+| -------------------------------------------- | -------------------------------------------------------------- | ------------------------ |
+| `rabbitmq.enabled`                           | Enable RabbitMQ helm chart                                     | `true`                   |
+| `rabbitmq.auth.password`                     |                                                                | `""`                     |
+| `rabbitmq.image.repository`                  | Sets bitnamilegacy by default                                  | `bitnamilegacy/rabbitmq` |
+| `rabbitmqExternal`                           | External RabbitMQ configuration                                | `{}`                     |
+| `rabbitmqExternal.username`                  | RabbitMQ user                                                  |                          |
+| `rabbitmqExternal.password`                  | Password                                                       |                          |
+| `rabbitmqExternal.amqpPort`                  |                                                                |                          |
+| `rabbitmqExternal.managementPort`            |                                                                |                          |
+| `rabbitmqExternal.hostname`                  |                                                                |                          |
+| `rabbitmqExternal.protocol`                  |                                                                |                          |
+| `rabbitmqExternal.vhost`                     |                                                                |                          |
+| `rabbitmqExternal.existingSecret`            | Name of an existing secret resource containing the credentials |                          |
+| `rabbitmqExternal.existingSecretPasswordKey` | Name of an existing secret key containing the credentials      |                          |
 
 ### Flower configuration
 
-| Name                                            | Description                                                                                  | Value             |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------- |
-| `flower.enabled`                                | Enable Flower.                                                                               | `true`            |
-| `flower.image`                                  |                                                                                              | `mher/flower:2.0` |
-| `flower.secret_name`                            |                                                                                              | `flower-secrets`  |
-| `flower.default_username`                       |                                                                                              | `flower`          |
-| `flower.default_password`                       |                                                                                              | `flower_password` |
-| `flower.host`                                   |                                                                                              | `""`              |
-| `flower.resources`                              | `resources` for the flower-management container                                              | `{}`              |
-| `flower.extraEnvFrom`                           | Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated). | `[]`              |
-| `flower.podSecurityContext`                     | securityContext for the flower pod                                                           |                   |
-| `flower.podSecurityContext.runAsNonRoot`        | TODO:                                                                                        | `true`            |
-| `flower.podSecurityContext.runAsUser`           | TODO:                                                                                        | `1000`            |
-| `flower.podSecurityContext.runAsGroup`          | TODO:                                                                                        | `1000`            |
-| `flower.podSecurityContext.seccompProfile.type` | TODO:                                                                                        | `RuntimeDefault`  |
-| `flower.nodeSelector`                           | Node labels for flower pods assignment                                                       | `{}`              |
-| `flower.tolerations`                            | Tolerations for flower pods assignment                                                       | `[]`              |
-| `flower.livenessProbe`                          | templated `livenessProbe` for the flower-management container                                | `nil`             |
-| `flower.readinessProbe`                         | templated `readinessProbe` for the flower-management container                               | `nil`             |
-| `flower.startupProbe`                           | templated `startupProbe` for the flower-management container                                 | `nil`             |
-| `flower.deploymentSpec`                         | Configuration for other configurable fields in the Deployment.spec.                          |                   |
-| `flower.deploymentSpec.minReadySeconds`         | See API spec for `Deployment.spec.minReadySeconds                                            | `nil`             |
-| `flower.deploymentSpec.paused`                  | See API spec for `Deployment.spec.paused                                                     | `nil`             |
-| `flower.deploymentSpec.progressDeadlineSeconds` | See API spec for `Deployment.spec.progressDeadlineSeconds                                    | `nil`             |
-| `flower.deploymentSpec.revisionHistoryLimit`    | See API spec for `Deployment.spec.revisionHistoryLimit                                       | `nil`             |
-| `flower.deploymentSpec.strategy`                | See API spec for `Deployment.spec.strategy                                                   | `nil`             |
-| `flower.deployment.annotations`                 | Extra annotations for the flower Deployment                                                  | `{}`              |
-| `flower.deployment.labels`                      | Extra labels for the flower Deployment                                                       | `{}`              |
+| Name                                              | Description                                                                                                                                      | Value             |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `flower.enabled`                                  | Enable Flower.                                                                                                                                   | `true`            |
+| `flower.image`                                    |                                                                                                                                                  | `mher/flower:2.0` |
+| `flower.secret_name`                              |                                                                                                                                                  | `flower-secrets`  |
+| `flower.default_username`                         |                                                                                                                                                  | `flower`          |
+| `flower.default_password`                         |                                                                                                                                                  | `flower_password` |
+| `flower.host`                                     |                                                                                                                                                  | `""`              |
+| `flower.resources`                                | `resources` for the flower-management container                                                                                                  | `{}`              |
+| `flower.extraEnvFrom`                             | Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated).                                                     | `[]`              |
+| `flower.podSecurityContext`                       | securityContext for the flower pod                                                                                                               |                   |
+| `flower.podSecurityContext.runAsNonRoot`          | TODO:                                                                                                                                            | `true`            |
+| `flower.podSecurityContext.runAsUser`             | TODO:                                                                                                                                            | `1000`            |
+| `flower.podSecurityContext.runAsGroup`            | TODO:                                                                                                                                            | `1000`            |
+| `flower.podSecurityContext.seccompProfile.type`   | TODO:                                                                                                                                            | `RuntimeDefault`  |
+| `flower.securityContext`                          | securityContext for the flower container                                                                                                         |                   |
+| `flower.securityContext.allowPrivilegeEscalation` | set container's security context allowprivilegeescalation # @param terminal.securityContext.capabilities.drop list of capabilities to be dropped | `false`           |
+| `flower.securityContext.capabilities.drop`        | list of capabilities to be dropped                                                                                                               | `["ALL"]`         |
+| `flower.nodeSelector`                             | Node labels for flower pods assignment                                                                                                           | `{}`              |
+| `flower.tolerations`                              | Tolerations for flower pods assignment                                                                                                           | `[]`              |
+| `flower.livenessProbe`                            | templated `livenessProbe` for the flower-management container                                                                                    | `nil`             |
+| `flower.readinessProbe`                           | templated `readinessProbe` for the flower-management container                                                                                   | `nil`             |
+| `flower.startupProbe`                             | templated `startupProbe` for the flower-management container                                                                                     | `nil`             |
+| `flower.deploymentSpec`                           | DEPRECATED: Use `.Values.flower.deployment.spec` instead!                                                                                        |                   |
+| `flower.deploymentSpec.minReadySeconds`           | See API spec for `Deployment.spec.minReadySeconds                                                                                                | `nil`             |
+| `flower.deploymentSpec.paused`                    | See API spec for `Deployment.spec.paused                                                                                                         | `nil`             |
+| `flower.deploymentSpec.progressDeadlineSeconds`   | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                        | `nil`             |
+| `flower.deploymentSpec.revisionHistoryLimit`      | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                           | `nil`             |
+| `flower.deploymentSpec.strategy`                  | See API spec for `Deployment.spec.strategy                                                                                                       | `nil`             |
+| `flower.deployment.annotations`                   | Extra annotations for the flower Deployment                                                                                                      | `{}`              |
+| `flower.deployment.labels`                        | Extra labels for the flower Deployment                                                                                                           | `{}`              |
+| `flower.deployment.spec`                          | Configuration for other configurable fields in the Deployment.spec.                                                                              |                   |
+| `flower.deployment.spec.minReadySeconds`          | See API spec for `Deployment.spec.minReadySeconds                                                                                                | `nil`             |
+| `flower.deployment.spec.paused`                   | See API spec for `Deployment.spec.paused                                                                                                         | `nil`             |
+| `flower.deployment.spec.progressDeadlineSeconds`  | See API spec for `Deployment.spec.progressDeadlineSeconds                                                                                        | `nil`             |
+| `flower.deployment.spec.revisionHistoryLimit`     | See API spec for `Deployment.spec.revisionHistoryLimit                                                                                           | `nil`             |
+| `flower.deployment.spec.strategy`                 | See API spec for `Deployment.spec.strategy                                                                                                       | `nil`             |
 
 ### PostgreSQL chart configuration
 
-| Name                                           | Description                                                             | Value     |
-| ---------------------------------------------- | ----------------------------------------------------------------------- | --------- |
-| `postgresql.enabled`                           | Switch to enable or disable the PostgreSQL helm chart                   | `true`    |
-| `postgresql.auth.username`                     | Name for a custom user to create                                        | `invenio` |
-| `postgresql.auth.password`                     | Password for the custom user to create                                  | `""`      |
-| `postgresql.auth.database`                     | Name for a custom database to create                                    | `invenio` |
-| `postgresql.auth.existingSecret`               | Name os the existing secret to get the password from.                   | `""`      |
-| `postgresqlExternal`                           | External PostgreSQL configuration                                       | `{}`      |
-| `postgresqlExternal.host`                      | Database host                                                           |           |
-| `postgresqlExternal.port`                      | Database port number                                                    |           |
-| `postgresqlExternal.user`                      | Non-root username for Invenio                                           |           |
-| `postgresqlExternal.password`                  | Password for the non-root username for Invenio                          |           |
-| `postgresqlExternal.database`                  | Invenio instance database name                                          |           |
-| `postgresqlExternal.existingSecret`            | Name of an existing secret resource containing the database credentials |           |
-| `postgresqlExternal.existingSecretPasswordKey` | Name of an existing secret key containing the database credentials      |           |
+| Name                                           | Description                                                             | Value                      |
+| ---------------------------------------------- | ----------------------------------------------------------------------- | -------------------------- |
+| `postgresql.enabled`                           | Switch to enable or disable the PostgreSQL helm chart                   | `true`                     |
+| `postgresql.auth.username`                     | Name for a custom user to create                                        | `invenio`                  |
+| `postgresql.auth.password`                     | Password for the custom user to create                                  | `""`                       |
+| `postgresql.auth.database`                     | Name for a custom database to create                                    | `invenio`                  |
+| `postgresql.auth.existingSecret`               | Name os the existing secret to get the password from.                   | `""`                       |
+| `postgresql.image.repository`                  | Sets bitnamilegacy by default                                           | `bitnamilegacy/postgresql` |
+| `postgresql.snapshots.image.repository`        | Sets bitnamilegacy by default                                           | `bitnamilegacy/os-shell`   |
+| `postgresqlExternal`                           | External PostgreSQL configuration                                       | `{}`                       |
+| `postgresqlExternal.host`                      | Database host                                                           |                            |
+| `postgresqlExternal.port`                      | Database port number                                                    |                            |
+| `postgresqlExternal.user`                      | Non-root username for Invenio                                           |                            |
+| `postgresqlExternal.password`                  | Password for the non-root username for Invenio                          |                            |
+| `postgresqlExternal.database`                  | Invenio instance database name                                          |                            |
+| `postgresqlExternal.existingSecret`            | Name of an existing secret resource containing the database credentials |                            |
+| `postgresqlExternal.existingSecretPasswordKey` | Name of an existing secret key containing the database credentials      |                            |
 
 ### Opensearch chart configuration
 
 | Name                                                | Description                                                                                                                                 | Value                                            |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | `opensearch.enabled`                                | Switch to enable or disable the Opensearch helm chart                                                                                       | `true`                                           |
+| `opensearch.dashboards.image.repository`            | Sets bitnamilegacy by default                                                                                                               | `bitnamilegacy/opensearch-dashboards`            |
+| `opensearch.image.repository`                       | Sets bitnamilegacy by default                                                                                                               | `bitnamilegacy/opensearch`                       |
+| `opensearch.sysctlImage.repository`                 | Sets bitnamilegacy by default                                                                                                               | `bitnamilegacy/os-shell`                         |
 | `externalOpensearch`                                | External Opensearch configuration                                                                                                           | `{}`                                             |
 | `logstash.enabled`                                  |                                                                                                                                             | `false`                                          |
 | `logstash.filebeat_image`                           |                                                                                                                                             | `docker.elastic.co/beats/filebeat-oss:8.10.2`    |

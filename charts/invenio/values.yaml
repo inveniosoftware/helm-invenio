@@ -497,10 +497,10 @@ web:
     strategy: null
 
   deployment:
-    ## @extra web.deployment.annotations Extra annotations for the web Deployment
+    ## @param web.deployment.annotations Extra annotations for the web Deployment
     ##
     annotations: {}
-    ## @extra web.deployment.labels Extra labels for the web Deployment
+    ## @param web.deployment.labels Extra labels for the web Deployment
     ##
     labels: {}
     ## @extra web.deployment.spec Configuration for other configurable fields in the Deployment.spec.
@@ -654,10 +654,10 @@ worker:
     strategy: null
 
   deployment:
-    ## @extra worker.deployment.annotations Extra annotations for the worker Deployment
+    ## @param worker.deployment.annotations Extra annotations for the worker Deployment
     ##
     annotations: {}
-    ## @extra worker.deployment.labels Extra labels for the worker Deployment
+    ## @param worker.deployment.labels Extra labels for the worker Deployment
     ##
     labels: {}
     ## @extra worker.deployment.spec Configuration for other configurable fields in the Deployment.spec.
@@ -782,10 +782,10 @@ workerBeat:
     strategy: null
 
   deployment:
-    ## @extra workerBeat.deployment.annotations Extra annotations for the workerBeat Deployment
+    ## @param workerBeat.deployment.annotations Extra annotations for the workerBeat Deployment
     ##
     annotations: {}
-    ## @extra workerBeat.deployment.labels Extra labels for the workerBeat Deployment
+    ## @param workerBeat.deployment.labels Extra labels for the workerBeat Deployment
     ##
     labels: {}
     ## @extra workerBeat.deployment.spec Configuration for other configurable fields in the Deployment.spec.
@@ -934,10 +934,10 @@ terminal:
     strategy: null
 
   deployment:
-    ## @extra terminal.deployment.annotations Extra annotations for the terminal Deployment
+    ## @param terminal.deployment.annotations Extra annotations for the terminal Deployment
     ##
     annotations: {}
-    ## @extra terminal.deployment.labels Extra labels for the terminal Deployment
+    ## @param terminal.deployment.labels Extra labels for the terminal Deployment
     ##
     labels: {}
     ## @extra terminal.deployment.spec Configuration for other configurable fields in the Deployment.spec.
@@ -1000,6 +1000,8 @@ redis:
     ##
     enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
   image:
+    ## @param redis.image.repository Sets bitnamilegacy by default
+    ##
     repository: bitnamilegacy/redis  # Work-around until we've migrated away from Bitnami.
   master:
     ## @param redis.master.disableCommands
@@ -1026,6 +1028,8 @@ rabbitmq:
   auth:
     password: ""
   image:
+    ## @param rabbitmq.image.repository Sets bitnamilegacy by default
+    ##
     repository: bitnamilegacy/rabbitmq  # Work-around until we've migrated away from Bitnami.
 
 ## @param rabbitmqExternal External RabbitMQ configuration
@@ -1153,10 +1157,10 @@ flower:
     strategy: null
 
   deployment:
-    ## @extra flower.deployment.annotations Extra annotations for the flower Deployment
+    ## @param flower.deployment.annotations Extra annotations for the flower Deployment
     ##
     annotations: {}
-    ## @extra flower.deployment.labels Extra labels for the flower Deployment
+    ## @param flower.deployment.labels Extra labels for the flower Deployment
     ##
     labels: {}
     ## @extra flower.deployment.spec Configuration for other configurable fields in the Deployment.spec.
@@ -1194,9 +1198,13 @@ postgresql:
     database: invenio
     existingSecret: ""
   image:
+    ## @param postgresql.image.repository Sets bitnamilegacy by default
+    ##
     repository: bitnamilegacy/postgresql  # Work-around until we've migrated away from Bitnami.
   snapshots:
     image:
+      ## @param postgresql.snapshots.image.repository Sets bitnamilegacy by default
+      ##
       repository: bitnamilegacy/os-shell
 
 ## @param postgresqlExternal External PostgreSQL configuration
@@ -1225,10 +1233,16 @@ opensearch:
   enabled: true
   dashboards:
     image:
+      ## @param opensearch.dashboards.image.repository Sets bitnamilegacy by default
+      ##
       repository: bitnamilegacy/opensearch-dashboards
   image:
+    ## @param opensearch.image.repository Sets bitnamilegacy by default
+    ##
     repository: bitnamilegacy/opensearch  # Work-around until we've migrated away from Bitnami.
   sysctlImage:
+    ## @param opensearch.sysctlImage.repository Sets bitnamilegacy by default
+    ##
     repository: bitnamilegacy/os-shell  # Work-around until we've migrated away from Bitnami.
 
 ## @param externalOpensearch External Opensearch configuration
