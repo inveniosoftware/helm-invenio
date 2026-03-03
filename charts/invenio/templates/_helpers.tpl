@@ -207,7 +207,7 @@ Return the proper Invenio image name
   {{- if .Values.rabbitmq.enabled }}
     {{- "" }}
   {{- else }}
-    {{- required "Missing .Values.rabbitmqExternal.vhost" (tpl .Values.rabbitmqExternal.vhost .) }}
+    {{- tpl .Values.rabbitmqExternal.vhost . | default "" }}
   {{- end }}
 {{- end -}}
 
