@@ -59,11 +59,19 @@ spec:
         - name: worker
           image: {{ default .Values.worker.image (include "invenio.image" .) }}
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          {{- if .Values.worker.commandOverride }}
           command: [
               "/bin/bash",
               "-c",
-              "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}"
+              "{{ .Values.worker.commandOverride }}"
           ]
+          {{- else }}
+          command: [
+              "/bin/bash",
+              "-c",
+              "celery -A {{ .Values.worker.app }} worker -c {{ .Values.worker.concurrency }} -l {{ .Values.worker.log_level }}{{- if .Values.worker.queues }} -Q {{ .Values.worker.queues }}{{- end }}"
+          ]
+          {{- end }}
           resources: {{- toYaml .Values.worker.resources | nindent 12 }}
           securityContext:
             {{- with .Values.worker.securityContext }}
