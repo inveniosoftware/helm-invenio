@@ -1,0 +1,33 @@
+invenio:
+  init: true
+  hostname: "my-site.local"
+
+# Slim down for testing
+web:
+  replicas: 1
+
+worker:
+  replicas: 1
+
+redis:
+  replica:
+    replicaCount: 1
+
+opensearch:
+  master:
+    replicaCount: 1
+  ingest:
+    enabled: false
+  data:
+    replicaCount: 1
+  coordinating:
+    replicaCount: 0
+
+postgresql:
+  auth:
+    password: should-use-secrets
+
+rabbitmq:
+  enabled: true
+  auth:
+    password: should-use-secrets

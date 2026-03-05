@@ -33,6 +33,27 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --all
 
+      - name: Build dependencies (if any)
+        run: |
+          helm dependency build charts/invenio || true
+
+      # TODO: at some point we might want to add --kube-version
+      - name: Render manifests (helm template)
+        run: |
+          for vf in charts/invenio/ci/*-values.yaml; do
+            name="$(basename "$vf" .yaml)"
+            out="/tmp/invenio-${name}.yaml"
+            echo "--- Rendering with $vf -> $out"
+            helm template invenio-tmpl ./charts/invenio -f "$vf" > "$out"
+          done
+
+      - name: Upload rendered manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: invenio-templates
+          path: /tmp/invenio-*.yaml
+          if-no-files-found: error
+
       # - name: create kind cluster
       #   if: steps.list-changed.outputs.changed == 'true'
       #   uses: helm/kind-action@v1.12.0
