@@ -133,11 +133,11 @@ spec:
             mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
             subPath: "{{ $key }}"
           {{- end }}
-          {{- range .Values.invenio.extraVolumeMounts }}
-          - {{ toYaml . | nindent 10 }}
+          {{- with .Values.invenio.extraVolumeMounts }}
+          {{- tpl (toYaml .) $ | nindent 10 }}
           {{- end }}
-          {{- range .Values.web.extraVolumeMounts }}
-          - {{ toYaml . | nindent 10 }}
+          {{- with .Values.web.extraVolumeMounts }}
+          {{- tpl (toYaml .) $ | nindent 10 }}
           {{- end }}
         securityContext:
           {{- with .Values.web.securityContext }}
@@ -293,11 +293,11 @@ spec:
         configMap:
           name: "{{ include "invenio.fullname" . }}-vocabularies"
       {{- end }}
-      {{- range .Values.invenio.extraVolumes }}
-      - {{ toYaml . | nindent 6 }}
+      {{- with .Values.invenio.extraVolumes }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
-      {{- range .Values.web.extraVolumes }}
-      - {{ toYaml . | nindent 6 }}
+      {{- with .Values.web.extraVolumes }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- if .Values.web.imagePullSecret }}
       imagePullSecrets:

@@ -127,11 +127,11 @@ spec:
               mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
               subPath: "{{ $key }}"
             {{- end }}
-            {{- range .Values.invenio.extraVolumeMounts }}
-            - {{ toYaml . | nindent 12 }}
+            {{- with .Values.invenio.extraVolumeMounts }}
+            {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
-            {{- range .Values.worker.extraVolumeMounts }}
-            - {{ toYaml . | nindent 12 }}
+            {{- with .Values.worker.extraVolumeMounts }}
+            {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
         {{- if .Values.kerberos.enabled }}
         - name: kerberos-credentials
@@ -185,11 +185,11 @@ spec:
           configMap:
             name: "{{ include "invenio.fullname" . }}-vocabularies"
         {{- end }}
-        {{- range .Values.invenio.extraVolumes }}
-        - {{ toYaml . | nindent 8 }}
+        {{- with .Values.invenio.extraVolumes }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
-        {{- range .Values.worker.extraVolumes }}
-        - {{ toYaml . | nindent 8 }}
+        {{- with .Values.worker.extraVolumes }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
       {{- if .Values.worker.imagePullSecret }}
       imagePullSecrets:
