@@ -119,10 +119,14 @@ spec:
           {{- if .Values.persistence.enabled }}
           - mountPath: /opt/invenio/var/instance/data
             name: shared-volume
+            {{- if .Values.persistence.useSubPath }}
             subPath: data
+            {{- end }}
           - mountPath: /opt/invenio/var/instance/profiler
             name: shared-volume
+            {{- if .Values.persistence.useSubPath }}
             subPath: profiler
+            {{- end }}
           {{- end }}
           {{- if .Values.kerberos.enabled }}
           - name: kerberos-credentials-cache
@@ -131,7 +135,9 @@ spec:
           {{- range $key, $value := .Values.invenio.vocabularies }}
           - name: vocabularies
             mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+            {{- if $.Values.persistence.useSubPath }}
             subPath: "{{ $key }}"
+            {{- end }}
           {{- end }}
           {{- with .Values.invenio.extraVolumeMounts }}
           {{- tpl (toYaml .) $ | nindent 10 }}
