@@ -1015,6 +1015,15 @@ persistence:
   ## @param persistence.useExistingClaim Use an existing PVC to use for persistence.
   ##
   useExistingClaim: false
+  ## @param persistence.useSubPath Enable or disable usage of subPath for PVC mounts.
+  ## When enabled, each logical path is mounted using Kubernetes subPath,
+  ## providing directory-level isolation within a single PVC.
+  ## When disabled, the entire PVC is mounted at the base path and the
+  ## application is responsible for managing internal directory structure.
+  ## This option can improve compatibility with Kubernetes volume metrics
+  ## (e.g. kubelet_volume_stats_used_bytes) in some CSI environments such as Ceph CSI.
+  ##
+  useSubPath: true
 
 ## @section Redis configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml

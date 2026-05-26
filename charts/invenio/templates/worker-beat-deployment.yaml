@@ -78,7 +78,9 @@ spec:
         {{- range $key, $value := .Values.invenio.vocabularies }}
         - name: vocabularies
           mountPath: "/opt/invenio/var/instance/app_data/vocabularies/{{ $key }}"
+          {{- if $.Values.persistence.useSubPath }}
           subPath: "{{ $key }}"
+          {{- end }}
         {{- end }}
         {{- with .Values.invenio.extraVolumeMounts }}
         {{- tpl (toYaml .) $ | nindent 8 }}
