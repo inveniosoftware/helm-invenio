@@ -1285,45 +1285,6 @@ opensearch:
 ## All of these values are only used when opensearch.enabled is set to false
 externalOpensearch: {}
 
-## @secion Logstash configuration
-## TODO: review content and possibly remove
-##
-logstash:
-  ## @param logstash.enabled
-  ##
-  enabled: false
-  ## @param logstash.filebeat_image
-  ##
-  filebeat_image: "docker.elastic.co/beats/filebeat-oss:8.10.2"
-  ## @skip logstash.filebeat_resources TODO: not documentis this, it should be refactor like the other resouces sections
-  ##
-  filebeat_resources:
-    limits:
-      memory: 200Mi
-    requests:
-      cpu: 100m
-      memory: 100Mi
-  ## @param logstash.logstash_image
-  logstash_image: "docker.elastic.co/logstash/logstash-oss:8.10.2"
-  ## @param logstash.environment
-  ##
-  environment: "qa"
-  ## @skip logstash.cern_monit
-  ### TODO: probably remove this an allow to add extra configuration
-  cern_monit:
-    enabled: false
-    producer: "invenio"
-  ## @extra logstash.securityContext securityContext for the logstash container
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param logstash.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param logstash.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-
 kerberos:
   ## @param kerberos.enabled
   ##
