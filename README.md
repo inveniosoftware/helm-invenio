@@ -532,6 +532,11 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `opensearch.image.repository`                       | Sets bitnamilegacy by default                                                                                                               | `bitnamilegacy/opensearch`                       |
 | `opensearch.sysctlImage.repository`                 | Sets bitnamilegacy by default                                                                                                               | `bitnamilegacy/os-shell`                         |
 | `externalOpensearch`                                | External Opensearch configuration                                                                                                           | `{}`                                             |
+
+### Logstash configuration
+
+| Name                                                | Description                                                                                                                                 | Value                                            |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | `logstash.enabled`                                  |                                                                                                                                             | `false`                                          |
 | `logstash.filebeat_image`                           |                                                                                                                                             | `docker.elastic.co/beats/filebeat-oss:8.10.2`    |
 | `logstash.logstash_image`                           |                                                                                                                                             | `docker.elastic.co/logstash/logstash-oss:8.10.2` |
@@ -539,6 +544,11 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 | `logstash.securityContext`                          | securityContext for the logstash container                                                                                                  |                                                  |
 | `logstash.securityContext.allowPrivilegeEscalation` | set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped | `false`                                          |
 | `logstash.securityContext.capabilities.drop`        | list of capabilities to be dropped                                                                                                          | `["ALL"]`                                        |
+
+### Kerberos configuration
+
+| Name                                                | Description                                                                                                                                 | Value                                            |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | `kerberos.enabled`                                  |                                                                                                                                             | `false`                                          |
 | `kerberos.secret_name`                              |                                                                                                                                             | `""`                                             |
 | `kerberos.image`                                    |                                                                                                                                             | `""`                                             |
