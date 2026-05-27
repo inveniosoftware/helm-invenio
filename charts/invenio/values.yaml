@@ -1281,9 +1281,9 @@ opensearch:
     ##
     repository: bitnamilegacy/os-shell  # Work-around until we've migrated away from Bitnami.
 
-## @param externalOpensearch External Opensearch configuration
+## @param opensearchExternal External Opensearch configuration
 ## All of these values are only used when opensearch.enabled is set to false
-externalOpensearch: {}
+opensearchExternal: {}
 
 ## @secion Logstash configuration
 ## TODO: review content and possibly remove
