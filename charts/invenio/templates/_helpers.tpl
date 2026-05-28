@@ -264,7 +264,10 @@ Return the proper Invenio image name
   {{- if not .Values.opensearch.enabled }}
     {{- with $.Values.opensearchExternal -}}
       {{- if .auth.enabled -}}
-        {{- $params = append $params "'http_auth': ('$(OPENSEARCH_USERNAME)', '$(OPENSEARCH_PASSWORD)')" -}}
+        {{- $username := .auth.usernameEnv.name -}}
+        {{- $password := .auth.passwordEnv.name -}}
+        {{- $credentials := printf "'http_auth': ('$(%s)','$(%s)')" $username $password -}}
+        {{- $params = append $params $credentials -}}
       {{- end -}}
       {{- if .encryption.enabled -}}
         {{- $params = append $params "'use_ssl': True" -}}
