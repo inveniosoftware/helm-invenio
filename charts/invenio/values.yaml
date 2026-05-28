@@ -1283,6 +1283,15 @@ opensearch:
 
 ## @param opensearchExternal External Opensearch configuration
 ## All of these values are only used when opensearch.enabled is set to false
+## @extra opensearchExternal.auth.enabled Enable credentials for http_auth to the OpenSearch endpoint.
+## @extra opensearchExternal.auth.usernameEnv Stanza for the username variable for authentication to the OpenSearch endpoint. Same format as EnvVar items in the containers[].env field.
+## @extra opensearchExternal.auth.passwordEnv Stanza for the password variable for authentication to the OpenSearch endpoint. Same format as EnvVar items in the containers[].env field.
+## @extra opensearchExternal.encryption.enabled Enables TLS encryption for the connection to the OpenSearch endpoint.
+## @extra opensearchExternal.encryption.caCert.mountPath Mount path for the OpenSearch endpoint's CA certificate.
+## @extra opensearchExternal.encryption.caCert.secretKey The key in the secret containing the OpenSearch endpoint's CA certificate.
+## @extra opensearchExternal.encryption.caCert.secretName The name of the secret containing the OpenSearch endpoint's CA certificate.
+## @extra opensearchExternal.hostname The hostname of the OpenSearch endpoint.
+## @extra opensearchExternal.port The port number of the OpenSearch endpoint.
 opensearchExternal: {}
   # auth:
   #   enabled: false
