@@ -293,6 +293,40 @@ Return the proper Invenio image name
 {{- end -}}
 {{- end -}}
 
+##############     Extra volumeMounts for opensearchExternal     ##############
+{{/*
+  This template renders the extra volumeMounts needed for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.volumeMounts" -}}
+{{- if not .Values.opensearch.enabled -}}
+{{- with $.Values.opensearchExternal.encryption -}}
+{{- if .enabled -}}
+- name: opensearch-ca
+  mountPath: {{ required "Missing .Values.opensearchExternal.encryption.caCert.mountPath" .caCert.mountPath }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+#################     Extra volumes for opensearchExternal     #################
+{{/*
+  This template renders the extra volumes needed for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.volumes" -}}
+{{- if not .Values.opensearch.enabled -}}
+{{- with $.Values.opensearchExternal.encryption -}}
+{{- if .enabled -}}
+- name: opensearch-ca
+  secret:
+    secretName: {{ required "Missing .Values.opensearchExternal.encryption.caCert.secretName" .caCert.secretName }}
+    items:
+      - key: {{ required "Missing .Values.opensearchExternal.encryption.caCert.secretName" .caCert.secretKey }}
+        path: ca.crt
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 #########################     PostgreSQL connection configuration     #########################
 {{/*
   This template renders the username used for the PostgreSQL instance.

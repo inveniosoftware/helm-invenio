@@ -131,6 +131,7 @@ spec:
               subPath: "{{ $key }}"
               {{- end }}
             {{- end }}
+            {{- include "invenio.opensearch.volumeMounts" . | nindent 12 }}
             {{- with .Values.invenio.extraVolumeMounts }}
             {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
@@ -189,6 +190,7 @@ spec:
           configMap:
             name: "{{ include "invenio.fullname" . }}-vocabularies"
         {{- end }}
+        {{- include "invenio.opensearch.volumes" . | nindent 8 }}
         {{- with .Values.invenio.extraVolumes }}
         {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
