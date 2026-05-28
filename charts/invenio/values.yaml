@@ -1286,8 +1286,15 @@ opensearch:
 opensearchExternal: {}
   # auth:
   #   enabled: false
-  #   usernameEnvValue: ""
-  #   passwordEnvValue: ""
+  #   usernameEnv:
+  #     name: OPENSEARCH_USERNAME
+  #     value: admin
+  #   passwordEnv:
+  #     name: OPENSEARCH_PASSWORD
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: password
+  #         name: opensearch-admin-password
   # encryption:
   #   enabled: false
   #   caCert:

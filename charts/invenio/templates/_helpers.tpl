@@ -278,6 +278,21 @@ Return the proper Invenio image name
   {{- printf "[{%s}]" (join "," $params) -}}
 {{- end -}}
 
+###################     Extra env for opensearchExternal     ###################
+{{/*
+  This template renders the extra environment variables for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.env" -}}
+{{- if not .Values.opensearch.enabled -}}
+{{- with $.Values.opensearchExternal -}}
+{{- if .auth.enabled -}}
+{{ list (required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv) | toYaml }}
+{{ list (required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv) | toYaml }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 #########################     PostgreSQL connection configuration     #########################
 {{/*
   This template renders the username used for the PostgreSQL instance.
