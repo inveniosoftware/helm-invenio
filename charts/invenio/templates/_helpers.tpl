@@ -255,6 +255,29 @@ Return the proper Invenio image name
   {{- end }}
 {{- end -}}
 
+#########################     SEARCH_HOSTS string     #########################
+{{/*
+  This template renders the string value for the [INVENIO_]SEARCH_HOSTS environment variable.
+*/}}
+{{- define "invenio.searchHostsString" -}}
+  {{- $params := list (printf "'host': '%s'" (include "invenio.opensearch.hostname" .)) -}}
+  {{- if not .Values.opensearch.enabled }}
+    {{- with $.Values.opensearchExternal -}}
+      {{- if .auth.enabled -}}
+        {{- $params = append $params "'http_auth': ('$(OPENSEARCH_USERNAME)', '$(OPENSEARCH_PASSWORD)')" -}}
+      {{- end -}}
+      {{- if .encryption.enabled -}}
+        {{- $params = append $params "'use_ssl': True" -}}
+        {{- $params = append $params (printf "'ca_certs': '%s'" .encryption.caCert.mountPath) -}}
+      {{- end -}}
+      {{- if .port -}}
+        {{- $params = append $params (printf "'port': '%d'" .port) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- printf "[{%s}]" (join "," $params) -}}
+{{- end -}}
+
 #########################     PostgreSQL connection configuration     #########################
 {{/*
   This template renders the username used for the PostgreSQL instance.
@@ -399,7 +422,7 @@ INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}
 INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
 INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
 INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
-INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
+INVENIO_SEARCH_HOSTS: {{ include "invenio.searchHostsString" $ | quote }}
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
