@@ -263,13 +263,13 @@ Return the proper Invenio image name
   {{- $params := list (printf "'host': '%s'" (include "invenio.opensearch.hostname" .)) -}}
   {{- if not .Values.opensearch.enabled }}
     {{- with $.Values.opensearchExternal -}}
-      {{- if .auth.enabled -}}
+      {{- if (dig "auth" "enabled" false .) -}}
         {{- $username := .auth.usernameEnv.name -}}
         {{- $password := .auth.passwordEnv.name -}}
         {{- $credentials := printf "'http_auth': ('$(%s)','$(%s)')" $username $password -}}
         {{- $params = append $params $credentials -}}
       {{- end -}}
-      {{- if .encryption.enabled -}}
+      {{- if (dig "encryption" "enabled" false .) -}}
         {{- $params = append $params "'use_ssl': True" -}}
         {{- $params = append $params (printf "'ca_certs': '%s'" .encryption.caCert.mountPath) -}}
       {{- end -}}
@@ -288,7 +288,7 @@ Return the proper Invenio image name
 {{- define "invenio.opensearch.env" -}}
 {{- if not .Values.opensearch.enabled -}}
 {{- with $.Values.opensearchExternal -}}
-{{- if .auth.enabled -}}
+{{- if (dig "auth" "enabled" false .) -}}
 {{ list (required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv) | toYaml }}
 {{ list (required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv) | toYaml }}
 {{- end -}}
