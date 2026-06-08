@@ -289,8 +289,9 @@ Return the proper Invenio image name
 {{- if not .Values.opensearch.enabled -}}
 {{- with $.Values.opensearchExternal -}}
 {{- if (dig "auth" "enabled" false .) -}}
-{{ list (required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv) | toYaml }}
-{{ list (required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv) | toYaml }}
+{{- $u := required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv -}}
+{{- $p := required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv -}}
+{{- list $u $p | toYaml -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
