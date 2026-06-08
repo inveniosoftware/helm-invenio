@@ -286,15 +286,15 @@ Return the proper Invenio image name
   This template renders the extra environment variables for opensearchExternal
 */}}
 {{- define "invenio.opensearch.env" -}}
-{{- if not .Values.opensearch.enabled -}}
-{{- with $.Values.opensearchExternal -}}
-{{- if (dig "auth" "enabled" false .) -}}
-{{- $u := required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv -}}
-{{- $p := required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv -}}
-{{- list $u $p | toYaml -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+  {{- if not .Values.opensearch.enabled -}}
+    {{- with $.Values.opensearchExternal -}}
+      {{- if (dig "auth" "enabled" false .) -}}
+        {{- $u := required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv -}}
+        {{- $p := required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv -}}
+        {{- list $u $p | toYaml -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
 
 ##############     Extra volumeMounts for opensearchExternal     ##############
