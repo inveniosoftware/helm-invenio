@@ -255,6 +255,82 @@ Return the proper Invenio image name
   {{- end }}
 {{- end -}}
 
+#########################     SEARCH_HOSTS string     #########################
+{{/*
+  This template renders the string value for the [INVENIO_]SEARCH_HOSTS environment variable.
+*/}}
+{{- define "invenio.searchHostsString" -}}
+  {{- $params := list (printf "'host': '%s'" (include "invenio.opensearch.hostname" .)) -}}
+  {{- if not .Values.opensearch.enabled }}
+    {{- with $.Values.opensearchExternal -}}
+      {{- if (dig "auth" "enabled" false .) -}}
+        {{- $username := .auth.usernameEnv.name -}}
+        {{- $password := .auth.passwordEnv.name -}}
+        {{- $credentials := printf "'http_auth': ('$(%s)','$(%s)')" $username $password -}}
+        {{- $params = append $params $credentials -}}
+      {{- end -}}
+      {{- if (dig "encryption" "enabled" false .) -}}
+        {{- $params = append $params "'use_ssl': True" -}}
+        {{- $params = append $params (printf "'ca_certs': '%s'" .encryption.caCert.mountPath) -}}
+      {{- end -}}
+      {{- if .port -}}
+        {{- $params = append $params (printf "'port': '%v'" .port) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- printf "[{%s}]" (join "," $params) -}}
+{{- end -}}
+
+###################     Extra env for opensearchExternal     ###################
+{{/*
+  This template renders the extra environment variables for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.env" -}}
+  {{- if not .Values.opensearch.enabled -}}
+    {{- with $.Values.opensearchExternal -}}
+      {{- if (dig "auth" "enabled" false .) -}}
+        {{- $u := required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv -}}
+        {{- $p := required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv -}}
+        {{- list $u $p | toYaml -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+##############     Extra volumeMounts for opensearchExternal     ##############
+{{/*
+  This template renders the extra volumeMounts needed for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.volumeMounts" -}}
+{{- if not .Values.opensearch.enabled -}}
+{{- with $.Values.opensearchExternal.encryption -}}
+{{- if .enabled -}}
+- name: opensearch-ca
+  mountPath: {{ required "Missing .Values.opensearchExternal.encryption.caCert.mountPath" .caCert.mountPath }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+#################     Extra volumes for opensearchExternal     #################
+{{/*
+  This template renders the extra volumes needed for opensearchExternal
+*/}}
+{{- define "invenio.opensearch.volumes" -}}
+{{- if not .Values.opensearch.enabled -}}
+{{- with $.Values.opensearchExternal.encryption -}}
+{{- if .enabled -}}
+- name: opensearch-ca
+  secret:
+    secretName: {{ required "Missing .Values.opensearchExternal.encryption.caCert.secretName" .caCert.secretName }}
+    items:
+      - key: {{ required "Missing .Values.opensearchExternal.encryption.caCert.secretName" .caCert.secretKey }}
+        path: ca.crt
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 #########################     PostgreSQL connection configuration     #########################
 {{/*
   This template renders the username used for the PostgreSQL instance.
@@ -399,7 +475,7 @@ INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}
 INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
 INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
 INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
-INVENIO_SEARCH_HOSTS: {{ printf "[{'host': '%s'}]" (include "invenio.opensearch.hostname" .) | quote }}
+INVENIO_SEARCH_HOSTS: {{ include "invenio.searchHostsString" $ | quote }}
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
