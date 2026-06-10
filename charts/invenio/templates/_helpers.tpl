@@ -295,7 +295,7 @@ Return the proper Invenio image name
       {{- end -}}
     {{- end -}}
   {{- end -}}
-  {{- $hosts_string := (include "invenio.searchHostsString" . | quote) -}}
+  {{- $hosts_string := (include "invenio.searchHostsString" .) -}}
   {{- $search_hosts := dict "name" "INVENIO_SEARCH_HOSTS" "value" $hosts_string -}}
   {{- append $env $search_hosts | toYaml -}}
 {{- end -}}
