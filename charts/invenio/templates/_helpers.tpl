@@ -271,7 +271,7 @@ Return the proper Invenio image name
       {{- end -}}
       {{- if (dig "encryption" "enabled" false .) -}}
         {{- $params = append $params "'use_ssl': True" -}}
-        {{- $params = append $params (printf "'ca_certs': '%s'" .encryption.caCert.mountPath) -}}
+        {{- $params = append $params (printf "'ca_certs': '%s/ca.crt'" .encryption.caCert.mountPath) -}}
       {{- end -}}
       {{- if .port -}}
         {{- $params = append $params (printf "'port': '%v'" .port) -}}
