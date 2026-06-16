@@ -271,7 +271,7 @@ Return the proper Invenio image name
       {{- end -}}
       {{- if (dig "encryption" "enabled" false .) -}}
         {{- $params = append $params "'use_ssl': True" -}}
-        {{- $params = append $params (printf "'ca_certs': '%s'" .encryption.caCert.mountPath) -}}
+        {{- $params = append $params (printf "'ca_certs': '%s/ca.crt'" .encryption.caCert.mountPath) -}}
       {{- end -}}
       {{- if .port -}}
         {{- $params = append $params (printf "'port': '%v'" .port) -}}
@@ -286,15 +286,18 @@ Return the proper Invenio image name
   This template renders the extra environment variables for opensearchExternal
 */}}
 {{- define "invenio.opensearch.env" -}}
+  {{- $env := list -}}
   {{- if not .Values.opensearch.enabled -}}
     {{- with $.Values.opensearchExternal -}}
       {{- if (dig "auth" "enabled" false .) -}}
-        {{- $u := required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv -}}
-        {{- $p := required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv -}}
-        {{- list $u $p | toYaml -}}
+        {{- $env = append $env (required "Missing .Values.opensearchExternal.auth.usernameEnv" .auth.usernameEnv) -}}
+        {{- $env = append $env (required "Missing .Values.opensearchExternal.auth.passwordEnv" .auth.passwordEnv) -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
+  {{- $hosts_string := (include "invenio.searchHostsString" .) -}}
+  {{- $search_hosts := dict "name" "INVENIO_SEARCH_HOSTS" "value" $hosts_string -}}
+  {{- append $env $search_hosts | toYaml -}}
 {{- end -}}
 
 ##############     Extra volumeMounts for opensearchExternal     ##############
@@ -475,7 +478,6 @@ INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}
 INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
 INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
 INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
-INVENIO_SEARCH_HOSTS: {{ include "invenio.searchHostsString" $ | quote }}
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
