@@ -844,7 +844,7 @@ workerBeat:
 workerScheduler:
   ## @param workerScheduler.enabled Enable the Invenio jobs scheduler.
   ##
-  enabled: false
+  enabled: true
   ## @param workerScheduler.class Scheduler class used by Celery beat.
   ##
   class: invenio_jobs.services.scheduler:RunScheduler
@@ -938,25 +938,6 @@ workerScheduler:
   ## @param workerScheduler.startupProbe templated `startupProbe` for the worker-beat container
   ##
   startupProbe: null
-
-  ## @extra workerScheduler.deploymentSpec DEPRECATED: Use `.Values.workerScheduler.deployment.spec` instead!
-  ##
-  deploymentSpec:
-    ## @param workerScheduler.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
-    minReadySeconds: null
-    ## @param workerScheduler.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
-    paused: null
-    ## @param workerScheduler.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
-    progressDeadlineSeconds: null
-    ## @param workerScheduler.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
-    revisionHistoryLimit: null
-    ## @param workerScheduler.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
-    strategy: null
 
   deployment:
     ## @param workerScheduler.deployment.annotations Extra annotations for the workerScheduler Deployment

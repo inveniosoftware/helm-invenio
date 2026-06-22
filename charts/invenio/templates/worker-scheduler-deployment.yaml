@@ -153,12 +153,8 @@ spec:
       {{- with .Values.invenio.extraVolumes }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
-      {{- with .Values.worker.extraVolumes }}
+      {{- with .Values.workerScheduler.extraVolumes }}
       {{- tpl (toYaml .) $ | nindent 6 }}
-      {{- end }}
-      {{- if .Values.worker.imagePullSecret }}
-      imagePullSecrets:
-      - name: {{ .Values.worker.imagePullSecret }}
       {{- end }}
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
