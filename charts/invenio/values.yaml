@@ -833,6 +833,146 @@ workerBeat:
       ## @param workerBeat.deployment.spec.strategy See API spec for `Deployment.spec.strategy
       ##
       strategy: null
+  ## @param workerBeat.commandOverride Optional override for the worker-beat startup command.
+  ## If empty, the default Celery beat command defined in the Helm template is used.
+  ##
+  ## Example:
+  ## workerBeat:
+  ##   commandOverride: "celery -A invenio_app.celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler --loglevel=INFO"
+  commandOverride: ""
+
+workerScheduler:
+  ## @param workerScheduler.enabled Enable the Invenio jobs scheduler.
+  ##
+  enabled: true
+  ## @param workerScheduler.class Scheduler class used by Celery beat.
+  ##
+  class: invenio_jobs.services.scheduler:RunScheduler
+  ## @param workerScheduler.extraEnvVars Extra environment variables to be added to the pods.
+  ##
+  extraEnvVars: []
+  ## @param workerScheduler.resources `resources` for the worker-beat container
+  ##
+  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
+  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
+  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
+  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
+  ##
+  resources: {}
+    # limits:
+    #   cpu: "2"
+    #   memory: 500Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 200Mi
+  ## @extra workerScheduler.securityContext securityContext for the worker-beat container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param workerScheduler.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
+  ## @param workerScheduler.securityContext.capabilities.drop list of capabilities to be dropped
+  ##
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  ## @extra workerScheduler.podSecurityContext securityContext for the worker-beat pod
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param workerScheduler.podSecurityContext.runAsNonRoot TODO:
+  ## @param workerScheduler.podSecurityContext.runAsUser TODO:
+  ## @param workerScheduler.podSecurityContext.runAsGroup TODO:
+  ## @param workerScheduler.podSecurityContext.seccompProfile.type TODO:
+  ##
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## @param workerScheduler.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container (templated).
+  ##
+  extraEnvFrom: []
+    # - secretRef:
+    #     name: foo
+    # - configMapRef:
+    #     name: bar
+
+  ## @param workerScheduler.extraVolumeMounts Extra volumeMounts for the worker beat container.
+  ##
+  extraVolumeMounts: []
+
+  ## @param workerScheduler.extraVolumes Extra volumes for the worker beat Pod.
+  ##
+  extraVolumes: []
+
+  ## @param workerScheduler.podLabels Add extra labels to the Invenio workerScheduler pods
+  ##
+  podLabels: {}
+  ## @param workerScheduler.podAnnotations Add extra annotations to the Invenio workerScheduler pods
+  ##
+  podAnnotations: {}
+  ## @param workerScheduler.nodeSelector Node labels for workerScheduler pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param workerScheduler.tolerations Tolerations for workerScheduler pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## @extra workerScheduler.livenessProbe templated `livenessProbe` for the worker-scheduler container
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ## @param workerScheduler.livenessProbe.exec.command TODO:
+  ## @param workerScheduler.livenessProbe.initialDelaySeconds TODO:
+  ## @param workerScheduler.livenessProbe.timeoutSeconds TODO:
+  ##
+  livenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - "celery -A {{ .Values.worker.app }} inspect ping"
+    initialDelaySeconds: 20
+    timeoutSeconds: 30
+  ## @param workerScheduler.readinessProbe templated `readinessProbe` for the worker-beat container
+  ##
+  readinessProbe: null
+  ## @param workerScheduler.startupProbe templated `startupProbe` for the worker-beat container
+  ##
+  startupProbe: null
+
+  deployment:
+    ## @param workerScheduler.deployment.annotations Extra annotations for the workerScheduler Deployment
+    ##
+    annotations: {}
+    ## @param workerScheduler.deployment.labels Extra labels for the workerScheduler Deployment
+    ##
+    labels: {}
+    ## @extra workerScheduler.deployment.spec Configuration for other configurable fields in the Deployment.spec.
+    ##
+    spec:
+      ## @param workerScheduler.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
+      ##
+      minReadySeconds: null
+      ## @param workerScheduler.deployment.spec.paused See API spec for `Deployment.spec.paused
+      ##
+      paused: null
+      ## @param workerScheduler.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
+      ##
+      progressDeadlineSeconds: null
+      ## @param workerScheduler.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
+      ##
+      revisionHistoryLimit: null
+      ## @param workerScheduler.deployment.spec.strategy See API spec for `Deployment.spec.strategy
+      ##
+      strategy: null
+
+  ## @param workerScheduler.commandOverride Optional override for the scheduler startup command.
+  ## If empty, the default Celery scheduler command defined in the Helm template is used.
+  ##
+  ## Example:
+  ## workerScheduler:
+  ##   commandOverride: "celery -A invenio_app.celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler --loglevel=INFO"
+  ##
+  commandOverride: ""
 
 ## @section Terminal
 ## Pods for runnning maintenance tasks.
