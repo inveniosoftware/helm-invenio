@@ -833,7 +833,7 @@ workerBeat:
       ## @param workerBeat.deployment.spec.strategy See API spec for `Deployment.spec.strategy
       ##
       strategy: null
-  ## @extra workerBeat.commandOverride Optional override for the worker-beat startup command.
+  ## @param workerBeat.commandOverride Optional override for the worker-beat startup command.
   ## If empty, the default Celery beat command defined in the Helm template is used.
   ##
   ## Example:
