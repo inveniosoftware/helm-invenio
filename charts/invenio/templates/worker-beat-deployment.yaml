@@ -90,6 +90,7 @@ spec:
           subPath: "{{ $key }}"
           {{- end }}
         {{- end }}
+        {{- include "invenio.opensearch.volumeMounts" . | nindent 8 }}
         {{- with .Values.invenio.extraVolumeMounts }}
         {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
@@ -112,6 +113,7 @@ spec:
           value: {{ required "Missing .Values.global.timezone" .Values.global.timezone }}
         {{- include "invenio.config.queue" . | nindent 8 }}
         {{- include "invenio.config.database" . | nindent 8}}
+        {{- include "invenio.opensearch.env" . | nindent 8 }}
         {{- with .Values.invenio.extraEnvVars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -149,6 +151,7 @@ spec:
         configMap:
           name: "{{ include "invenio.fullname" . }}-vocabularies"
       {{- end }}
+      {{- include "invenio.opensearch.volumes" . | nindent 6 }}
       {{- with .Values.invenio.extraVolumes }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
