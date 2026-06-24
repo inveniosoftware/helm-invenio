@@ -1,0 +1,48 @@
+suite: terminal deployment
+templates:
+  - templates/terminal-deployment.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  rabbitmq.auth.password: "test"
+  postgresql.auth.password: "test"
+tests:
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders a Deployment when enabled
+    set:
+      terminal.enabled: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: terminal
+
+  - it: adds nodeSelector when set
+    set:
+      terminal.enabled: true
+      terminal.nodeSelector:
+        node-role: terminal
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            node-role: terminal
+
+  - it: adds tolerations when set
+    set:
+      terminal.enabled: true
+      terminal.tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "terminal"
+          effect: "NoSchedule"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: dedicated

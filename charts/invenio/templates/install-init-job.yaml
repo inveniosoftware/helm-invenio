@@ -44,6 +44,7 @@ spec:
         {{- with .Values.invenio.extraEnvVars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- include "invenio.config.sentry" . | nindent 8 }}
         volumeMounts:
           {{- range $key, $value := .Values.invenio.vocabularies }}
           - name: vocabularies
@@ -52,7 +53,6 @@ spec:
             subPath: "{{ $key }}"
             {{- end }}
           {{- end }}
-        {{- include "invenio.config.sentry" . | nindent 8 }}
         {{- if .Values.web.resources }}
         resources: {{- toYaml .Values.web.resources | nindent 10 }}
         {{- end }}

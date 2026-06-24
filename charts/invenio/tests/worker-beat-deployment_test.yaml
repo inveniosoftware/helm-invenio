@@ -1,0 +1,73 @@
+suite: worker-beat deployment
+templates:
+  - templates/worker-beat-deployment.yaml
+  - templates/invenio-configmap.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  rabbitmq.auth.password: "test"
+  postgresql.auth.password: "test"
+tests:
+  - it: renders a Deployment with correct component label
+    asserts:
+      - isKind:
+          of: Deployment
+        template: templates/worker-beat-deployment.yaml
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: worker-beat
+        template: templates/worker-beat-deployment.yaml
+
+  - it: always has replicas 1
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: templates/worker-beat-deployment.yaml
+
+  - it: adds nodeSelector when set
+    set:
+      workerBeat.nodeSelector:
+        node-role: worker-beat
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            node-role: worker-beat
+        template: templates/worker-beat-deployment.yaml
+
+  - it: adds tolerations when set
+    set:
+      workerBeat.tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "worker-beat"
+          effect: "NoSchedule"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: dedicated
+        template: templates/worker-beat-deployment.yaml
+
+  - it: adds pod annotations when set
+    set:
+      workerBeat.podAnnotations:
+        prometheus.io/scrape: "true"
+    asserts:
+      - exists:
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+        template: templates/worker-beat-deployment.yaml
+
+  - it: adds extra env vars
+    set:
+      workerBeat.extraEnvVars:
+        - name: MY_VAR
+          value: my-value
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MY_VAR
+            value: my-value
+        template: templates/worker-beat-deployment.yaml

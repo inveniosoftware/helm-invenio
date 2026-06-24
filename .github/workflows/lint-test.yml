@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Helm
         uses: azure/setup-helm@v4.2.0
         with:
-          version: v3.17.0
+          version: v3.21.2
 
       - uses: actions/setup-python@v5.3.0
         with:
@@ -32,6 +32,49 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --all
+
+      - name: Install tools
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+          helm plugin install https://github.com/losisin/helm-values-schema-json.git
+          pip install pyyaml
+          helm plugin install https://github.com/jtyr/kubeconform-helm.git
+          HELM_DOCS_VERSION=1.14.2
+          curl -sSL "https://github.com/norwoodj/helm-docs/releases/download/v${HELM_DOCS_VERSION}/helm-docs_${HELM_DOCS_VERSION}_Linux_x86_64.tar.gz" | tar xz helm-docs
+          sudo mv helm-docs /usr/local/bin/
+
+      - name: Verify schema is up-to-date
+        working-directory: charts/invenio
+        run: |
+          helm schema -f values.yaml -o /tmp/values.schema.json --use-helm-docs
+          diff values.schema.json /tmp/values.schema.json || \
+            (echo "::error::Schema is out of date. Run: cd charts/invenio && helm schema --use-helm-docs" && exit 1)
+
+      - name: Verify README is up-to-date
+        run: |
+          helm-docs --chart-search-root charts
+          git diff --exit-code charts/invenio/README.md || \
+            (echo "::error::README is out of date. Run: helm-docs --chart-search-root charts" && exit 1)
+
+      - name: Run unit tests
+        run: helm unittest charts/invenio
+
+      - name: Build Helm dependencies
+        run: helm dependency build charts/invenio
+
+      - name: Validate rendered manifests (minimal values)
+        run: |
+          helm kubeconform charts/invenio \
+            -f charts/invenio/ci/minimal-values.yaml \
+            --strict \
+            --summary
+
+      - name: Validate rendered manifests (full values)
+        run: |
+          helm kubeconform charts/invenio \
+            -f charts/invenio/ci/full-values.yaml \
+            --strict \
+            --summary
 
       # - name: create kind cluster
       #   if: steps.list-changed.outputs.changed == 'true'

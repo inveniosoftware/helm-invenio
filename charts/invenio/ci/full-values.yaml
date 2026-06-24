@@ -1,0 +1,152 @@
+invenio:
+  hostname: "ci-full-test.example.com"
+  init: true
+  default_users:
+    testuser@example.com: "testpassword123"
+  demo_data: true
+
+  sentry:
+    enabled: true
+    dsn: "https://key@sentry.example.com/1"
+
+  datacite:
+    enabled: true
+    username: "CI.TEST"
+    password: "datacite-ci-password"
+    existingSecret: ""
+    prefix: "10.5072"
+    testMode: "True"
+
+  remote_apps:
+    enabled: true
+    credentials:
+      - name: "test-oauth"
+        consumer_key: "ci-consumer-key"
+        consumer_secret: "ci-consumer-secret"
+
+  extraConfig:
+    INVENIO_CUSTOM_SETTING: "custom-value"
+
+  extraEnvVars:
+    - name: CI_EXTRA_ENV
+      value: "test"
+
+  extraEnvFrom:
+    - configMapRef:
+        name: ci-extra-configmap
+
+  vocabularies:
+    resource_types.yaml: |
+      - id: publication
+        title:
+          en: Publication
+
+  extraVolumeMounts:
+    - name: ci-extra-volume
+      mountPath: /tmp/ci-test
+
+  extraVolumes:
+    - name: ci-extra-volume
+      emptyDir: {}
+
+ingress:
+  enabled: true
+  class: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+web:
+  autoscaler:
+    enabled: true
+    scaler_cpu_utilization: 65
+    max_web_replicas: 10
+    min_web_replicas: 2
+  nodeSelector:
+    node-role: web
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "web"
+      effect: "NoSchedule"
+  podAnnotations:
+    prometheus.io/scrape: "true"
+  podLabels:
+    ci-test: "true"
+  deployment:
+    annotations:
+      ci-deployment: "true"
+    labels:
+      ci-label: "true"
+    spec:
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+
+worker:
+  nodeSelector:
+    node-role: worker
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "worker"
+      effect: "NoSchedule"
+  podAnnotations:
+    prometheus.io/scrape: "true"
+  podLabels:
+    ci-test: "true"
+
+workerBeat:
+  nodeSelector:
+    node-role: worker-beat
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "worker-beat"
+      effect: "NoSchedule"
+  podAnnotations:
+    prometheus.io/scrape: "true"
+  podLabels:
+    ci-test: "true"
+
+terminal:
+  enabled: true
+  replicas: 1
+  nodeSelector:
+    node-role: terminal
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "terminal"
+      effect: "NoSchedule"
+
+flower:
+  enabled: true
+  default_password: "ci-flower-password"
+  nodeSelector:
+    node-role: flower
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "flower"
+      effect: "NoSchedule"
+
+kerberos:
+  enabled: true
+  secret_name: "ci-kerberos-secret"
+  image: "ci-kerberos:latest"
+  args: ["--renew"]
+  initArgs: ["--init"]
+
+persistence:
+  enabled: true
+  size: "20G"
+
+rabbitmq:
+  auth:
+    password: "ci-test-password"
+
+postgresql:
+  auth:
+    password: "ci-test-password"
