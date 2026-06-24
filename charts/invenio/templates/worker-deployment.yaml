@@ -47,6 +47,10 @@ spec:
         {{- end }}
         app.kubernetes.io/component: worker
     spec:
+      {{- with .Values.worker.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       {{- with .Values.worker.nodeSelector }}
       nodeSelector:
         {{- tpl (toYaml .) $ | nindent 8 -}}
