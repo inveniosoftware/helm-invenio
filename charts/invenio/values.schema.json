@@ -1,0 +1,1976 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "image",
+        "invenio",
+        "nginx"
+    ],
+    "properties": {
+        "flower": {
+            "type": "object",
+            "properties": {
+                "default_password": {
+                    "description": "Flower default password",
+                    "type": "string"
+                },
+                "default_username": {
+                    "description": "Flower default username",
+                    "type": "string"
+                },
+                "deployment": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Extra annotations for the flower Deployment",
+                            "type": "object"
+                        },
+                        "labels": {
+                            "description": "Extra labels for the flower Deployment",
+                            "type": "object"
+                        },
+                        "spec": {
+                            "description": "Configuration for other configurable fields in the Deployment.spec",
+                            "type": "object",
+                            "properties": {
+                                "minReadySeconds": {
+                                    "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "paused": {
+                                    "description": "See API spec for `Deployment.spec.paused`",
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "progressDeadlineSeconds": {
+                                    "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "revisionHistoryLimit": {
+                                    "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "See API spec for `Deployment.spec.strategy`",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deploymentSpec": {
+                    "description": "DEPRECATED: Use `.Values.flower.deployment.spec` instead!",
+                    "deprecated": true,
+                    "type": "object",
+                    "properties": {
+                        "minReadySeconds": {
+                            "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "paused": {
+                            "description": "See API spec for `Deployment.spec.paused`",
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "progressDeadlineSeconds": {
+                            "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "revisionHistoryLimit": {
+                            "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "strategy": {
+                            "description": "See API spec for `Deployment.spec.strategy`",
+                            "type": [
+                                "object",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Enable Flower",
+                    "type": "boolean"
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated)",
+                    "type": "array"
+                },
+                "host": {
+                    "description": "Flower host",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "Flower image",
+                    "type": "string"
+                },
+                "livenessProbe": {
+                    "description": "Templated `livenessProbe` for the flower container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "nodeSelector": {
+                    "description": "Node labels for flower pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "type": "object"
+                },
+                "podAnnotations": {
+                    "description": "Add extra annotations to the Invenio flower pods",
+                    "type": "object"
+                },
+                "podLabels": {
+                    "description": "Add extra labels to the Invenio flower pods",
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "description": "SecurityContext for the flower pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
+                            "type": "integer"
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "description": "Templated `readinessProbe` for the flower container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "resources": {
+                    "description": "Resources for the flower container",
+                    "type": "object"
+                },
+                "secret_name": {
+                    "description": "Flower secret name",
+                    "type": "string"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the flower container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "startupProbe": {
+                    "description": "Templated `startupProbe` for the flower container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "tolerations": {
+                    "description": "Tolerations for flower pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "type": "array"
+                }
+            }
+        },
+        "fullnameOverride": {
+            "description": "String to fully override common.names.fullname",
+            "type": "string"
+        },
+        "global": {
+            "type": "object",
+            "properties": {
+                "timezone": {
+                    "description": "Timezone",
+                    "type": "string"
+                }
+            }
+        },
+        "image": {
+            "type": "object",
+            "required": [
+                "registry",
+                "repository"
+            ],
+            "properties": {
+                "digest": {
+                    "description": "Invenio image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag",
+                    "type": "string"
+                },
+                "pullPolicy": {
+                    "description": "Invenio image pull policy # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent' # ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent",
+                        "Never"
+                    ]
+                },
+                "pullSecrets": {
+                    "description": "Invenio image pull secrets # Secrets must be manually created in the namespace. # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ # e.g: # pullSecrets: #   - name: myRegistryKeySecretName",
+                    "type": "array"
+                },
+                "registry": {
+                    "description": "Invenio image registry",
+                    "type": "string"
+                },
+                "repository": {
+                    "description": "Invenio image repository",
+                    "type": "string"
+                },
+                "tag": {
+                    "description": "Invenio image tag (immutable tags are recommended). Defaults to .Chart.appVersion",
+                    "type": "string"
+                }
+            }
+        },
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. # Use this parameter to set the required annotations for cert-manager, see # ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations # e.g: # annotations: #   kubernetes.io/ingress.class: nginx #   cert-manager.io/cluster-issuer: cluster-issuer-name",
+                    "type": "object"
+                },
+                "class": {
+                    "description": "IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+) # This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster. # ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/",
+                    "type": "string"
+                },
+                "enabled": {
+                    "description": "Enable ingress record generation for Invenio.",
+                    "type": "boolean"
+                },
+                "tlsSecretNameOverride": {
+                    "description": "Custom TLS secret name.",
+                    "type": "string"
+                }
+            }
+        },
+        "invenio": {
+            "type": "object",
+            "required": [
+                "hostname"
+            ],
+            "properties": {
+                "csrf_secret_salt": {
+                    "description": "DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "datacite": {
+                    "type": "object",
+                    "properties": {
+                        "dataCenterSymbol": {
+                            "description": "DataCite data center symbol, it will translate into DATACITE_DATACENTER_SYMBOL",
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "description": "Enable DataCite provider",
+                            "type": "boolean"
+                        },
+                        "existingSecret": {
+                            "description": "Existing secret name for datacite username and password",
+                            "type": "string"
+                        },
+                        "existing_secret": {
+                            "description": "DEPRECATED: use invenio.datacite.existingSecret instead",
+                            "deprecated": true,
+                            "type": "boolean"
+                        },
+                        "format": {
+                            "description": "A string used for formatting the DOI, it will translate into DATACITE_FORMAT",
+                            "type": "string"
+                        },
+                        "password": {
+                            "description": "Datacite password",
+                            "type": "string"
+                        },
+                        "prefix": {
+                            "description": "DataCite DOI prefix, it will translate into DATACITE_PREFIX",
+                            "type": "string"
+                        },
+                        "secretKeys": {
+                            "description": "Secret keys configuration for datacite",
+                            "type": "object",
+                            "properties": {
+                                "passwordKey": {
+                                    "description": "Name of key in existing secret to use for password. Only used when `invenio.datacite.existingSecret` is set.",
+                                    "type": "string"
+                                },
+                                "usernameKey": {
+                                    "description": "Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "secret_name": {
+                            "description": "DEPRECATED: use invenio.datacite.existingSecret instead",
+                            "deprecated": true,
+                            "type": "string"
+                        },
+                        "testMode": {
+                            "description": "DataCite test mode enabled, it will translate into DATACITE_TEST_MODE # This has to be a string value, Invenio will evaluate this as a python expression and transform it into a boolean. # Example: # testMode: \"False\"",
+                            "type": "string"
+                        },
+                        "username": {
+                            "description": "Datacite username",
+                            "type": "string"
+                        }
+                    }
+                },
+                "default_users": {
+                    "description": "Default users to create. Requires invenio.init=true",
+                    "type": [
+                        "object",
+                        "array"
+                    ]
+                },
+                "demo_data": {
+                    "description": "Load demo data. Requires invenio.init=true and default_users to be set",
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "description": "General existing secret name for, at least, secret key and salts # If not set a new secret will be generated automatically with random values # ref: https://inveniordm.docs.cern.ch/customize/authentication/#security",
+                    "type": "string"
+                },
+                "existing_secret": {
+                    "description": "DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret",
+                    "deprecated": true,
+                    "type": "boolean"
+                },
+                "extraConfig": {
+                    "description": "Extra environment variables (templated) to be added to all the pods",
+                    "type": "object"
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers (templated)",
+                    "type": "array"
+                },
+                "extraEnvVars": {
+                    "description": "Extra environment variables to be added to all the pods",
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "description": "Extra volumeMounts for all Invenio containers",
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "description": "Extra volumes for all Invenio pods",
+                    "type": "array"
+                },
+                "extra_config": {
+                    "description": "DEPRECATED: use invenio.extraConfig instead",
+                    "deprecated": true,
+                    "type": "object"
+                },
+                "extra_env_from_secret": {
+                    "description": "DEPRECATED: Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead",
+                    "deprecated": true,
+                    "type": "array"
+                },
+                "hostname": {
+                    "description": "Invenio hostname (templated) used in configuration variables like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "init": {
+                    "description": "Enable initial setup (create users, load demo data)",
+                    "type": "boolean"
+                },
+                "remote_apps": {
+                    "type": "object",
+                    "properties": {
+                        "credentials": {
+                            "description": "Remote apps credentials",
+                            "type": [
+                                "object",
+                                "array"
+                            ]
+                        },
+                        "enabled": {
+                            "description": "Enable remote apps integration",
+                            "type": "boolean"
+                        },
+                        "existing_secret": {
+                            "description": "Use an existing secret for remote apps credentials",
+                            "type": "boolean"
+                        },
+                        "secret_name": {
+                            "description": "Name of the existing secret for remote apps",
+                            "type": "string"
+                        }
+                    }
+                },
+                "secret_key": {
+                    "description": "DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "security_login_salt": {
+                    "description": "DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "sentry": {
+                    "type": "object",
+                    "properties": {
+                        "dsn": {
+                            "description": "Sentry DSN, required unless existingSecret is provided",
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "description": "Enable Sentry.io integration",
+                            "type": "boolean"
+                        },
+                        "existingSecret": {
+                            "description": "Existing secret name for sentry's dsn",
+                            "type": "string"
+                        },
+                        "existing_secret": {
+                            "description": "DEPRECATED: use invenio.sentry.existingSecret instead",
+                            "deprecated": true,
+                            "type": "boolean"
+                        },
+                        "secretKeys": {
+                            "description": "Secret keys configuration for sentry",
+                            "type": "object",
+                            "properties": {
+                                "dsnKey": {
+                                    "description": "Name of key in existing secret to use for dsn",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "secret_name": {
+                            "description": "DEPRECATED: use invenio.sentry.existingSecret instead",
+                            "deprecated": true,
+                            "type": "string"
+                        }
+                    }
+                },
+                "uwsgiExtraConfig": {
+                    "description": "Extra configuration variables (key: value) to be added to the uWSGI configuration file",
+                    "type": "object"
+                },
+                "vocabularies": {
+                    "description": "Vocabularies to be loaded as files under /app_data/vocabularies # Example # vocabularies: #   resource_types.yaml: | #    - id: publication #      icon: file alternate #      props: #        csl: report #        datacite_general: Text #        datacite_type: \"\" #        openaire_resourceType: \"0017\" #        openaire_type: publication #        eurepo: info:eu-repo/semantics/other #        schema.org: https://schema.org/CreativeWork #        subtype: \"\" #        type: publication #        marc21_type: publication #        marc21_subtype: \"\" #      title: #        en: Publication #      tags: #        - depositable #        - linkable",
+                    "type": "object"
+                }
+            }
+        },
+        "kerberos": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "description": "Kerberos sidecar args",
+                    "type": "array"
+                },
+                "enabled": {
+                    "description": "Enable Kerberos integration",
+                    "type": "boolean"
+                },
+                "image": {
+                    "description": "Kerberos sidecar image",
+                    "type": "string"
+                },
+                "initArgs": {
+                    "description": "Kerberos init container args",
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "object",
+                    "properties": {
+                        "resources": {
+                            "description": "Resources for the init-kerberos-credentials initContainers",
+                            "type": "object"
+                        }
+                    }
+                },
+                "resources": {
+                    "description": "Resources for the kerberos-credentials container",
+                    "type": "object"
+                },
+                "secret_name": {
+                    "description": "Kerberos secret name",
+                    "type": "string"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the kerberos container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "nameOverride": {
+            "description": "String to partially override common.names.name",
+            "type": "string"
+        },
+        "nginx": {
+            "type": "object",
+            "required": [
+                "image"
+            ],
+            "properties": {
+                "assets": {
+                    "description": "Assets configuration",
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "description": "Location of the static assets",
+                            "type": "string"
+                        }
+                    }
+                },
+                "denied_ips": {
+                    "description": "Denied IP addresses",
+                    "type": "string"
+                },
+                "denied_uas": {
+                    "description": "Denied user agents",
+                    "type": "string"
+                },
+                "extraServerConfig": {
+                    "description": "Extra configuration to be added to nginx.conf under the server section (templated)",
+                    "type": "string"
+                },
+                "extra_server_config": {
+                    "description": "DEPRECATED: Use nginx.extraServerConfig instead",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "files": {
+                    "description": "Files configuration",
+                    "type": "object",
+                    "properties": {
+                        "client_max_body_size": {
+                            "description": "Client max body size for files",
+                            "type": "string"
+                        }
+                    }
+                },
+                "image": {
+                    "description": "Nginx image",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "max_conns": {
+                    "description": "Maximum number of connections",
+                    "type": "integer"
+                },
+                "records": {
+                    "description": "Records configuration",
+                    "type": "object",
+                    "properties": {
+                        "client_max_body_size": {
+                            "description": "Client max body size for records",
+                            "type": "string"
+                        }
+                    }
+                },
+                "resources": {
+                    "description": "Resources for the nginx container",
+                    "type": "object"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the nginx container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "opensearch": {
+            "type": "object",
+            "properties": {
+                "dashboards": {
+                    "type": "object",
+                    "properties": {
+                        "image": {
+                            "type": "object",
+                            "properties": {
+                                "repository": {
+                                    "description": "Sets bitnamilegacy by default",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Switch to enable or disable the Opensearch helm chart",
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "description": "Sets bitnamilegacy by default",
+                            "type": "string"
+                        }
+                    }
+                },
+                "sysctlImage": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "description": "Sets bitnamilegacy by default",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "opensearchExternal": {
+            "description": "External Opensearch configuration # All of these values are only used when opensearch.enabled is set to false",
+            "type": "object"
+        },
+        "persistence": {
+            "type": "object",
+            "properties": {
+                "access_mode": {
+                    "description": "Persistent Volume Access Modes",
+                    "type": "string"
+                },
+                "annotations": {
+                    "description": "Additional Persistent Volume Claim annotations",
+                    "type": "object"
+                },
+                "enabled": {
+                    "description": "Enable persistence volume claim",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "Name of the PVC",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "Size of the volume",
+                    "type": "string"
+                },
+                "storage_class": {
+                    "description": "Storage class of backing PVC # If defined, storageClassName: \u003cstorageClass\u003e # If set to \"-\", storageClassName: \"\", which disables dynamic provisioning # If undefined (the default) or set to null, no storageClassName spec is #   set, choosing the default provisioner.  (gp2 on AWS, standard on #   GKE, AWS \u0026 OpenStack)",
+                    "type": "string"
+                },
+                "useExistingClaim": {
+                    "description": "Use an existing PVC to use for persistence",
+                    "type": "boolean"
+                },
+                "useSubPath": {
+                    "description": "Enable or disable usage of subPath for PVC mounts # When enabled, each logical path is mounted using Kubernetes subPath, # providing directory-level isolation within a single PVC. # When disabled, the entire PVC is mounted at the base path and the # application is responsible for managing internal directory structure. # This option can improve compatibility with Kubernetes volume metrics # (e.g. kubelet_volume_stats_used_bytes) in some CSI environments such as Ceph CSI.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "postgresql": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "database": {
+                            "description": "Name for a custom database to create",
+                            "type": "string"
+                        },
+                        "existingSecret": {
+                            "description": "Name of the existing secret to get the password from",
+                            "type": "string"
+                        },
+                        "password": {
+                            "description": "Password for the custom user to create",
+                            "type": "string"
+                        },
+                        "username": {
+                            "description": "Name for a custom user to create",
+                            "type": "string"
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Switch to enable or disable the PostgreSQL helm chart",
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "description": "Sets bitnamilegacy by default",
+                            "type": "string"
+                        }
+                    }
+                },
+                "snapshots": {
+                    "type": "object",
+                    "properties": {
+                        "image": {
+                            "type": "object",
+                            "properties": {
+                                "repository": {
+                                    "description": "Sets bitnamilegacy by default",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "postgresqlExternal": {
+            "description": "External PostgreSQL configuration # All of these values are only used when postgresql.enabled is set to false",
+            "type": "object"
+        },
+        "rabbitmq": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "password": {
+                            "description": "RabbitMQ password",
+                            "type": "string"
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Enable RabbitMQ helm chart",
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "description": "Sets bitnamilegacy by default",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "rabbitmqExternal": {
+            "description": "External RabbitMQ configuration # All of these values are only used when rabbitmq.enabled is set to false",
+            "type": "object"
+        },
+        "redis": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Enable password authentication",
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Enable redis helm chart",
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "description": "Sets bitnamilegacy by default",
+                            "type": "string"
+                        }
+                    }
+                },
+                "master": {
+                    "type": "object",
+                    "properties": {
+                        "disableCommands": {
+                            "description": "Disable commands",
+                            "type": "array"
+                        }
+                    }
+                },
+                "replica": {
+                    "type": "object",
+                    "properties": {
+                        "disableCommands": {
+                            "description": "Disable commands",
+                            "type": "array"
+                        }
+                    }
+                }
+            }
+        },
+        "redisExternal": {
+            "description": "External redis configuration # All of these values are only used when redis.enabled is set to false",
+            "type": "object"
+        },
+        "route": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations to be added to the Route",
+                    "type": "object"
+                }
+            }
+        },
+        "terminal": {
+            "type": "object",
+            "properties": {
+                "deployment": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Extra annotations for the terminal Deployment",
+                            "type": "object"
+                        },
+                        "labels": {
+                            "description": "Extra labels for the terminal Deployment",
+                            "type": "object"
+                        },
+                        "spec": {
+                            "description": "Configuration for other configurable fields in the Deployment.spec",
+                            "type": "object",
+                            "properties": {
+                                "minReadySeconds": {
+                                    "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "paused": {
+                                    "description": "See API spec for `Deployment.spec.paused`",
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "progressDeadlineSeconds": {
+                                    "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "revisionHistoryLimit": {
+                                    "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "See API spec for `Deployment.spec.strategy`",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deploymentSpec": {
+                    "description": "DEPRECATED: Use `.Values.terminal.deployment.spec` instead!",
+                    "deprecated": true,
+                    "type": "object",
+                    "properties": {
+                        "minReadySeconds": {
+                            "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "paused": {
+                            "description": "See API spec for `Deployment.spec.paused`",
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "progressDeadlineSeconds": {
+                            "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "revisionHistoryLimit": {
+                            "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "strategy": {
+                            "description": "See API spec for `Deployment.spec.strategy`",
+                            "type": [
+                                "object",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "enabled": {
+                    "description": "Enable the terminal deployment",
+                    "type": "boolean"
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in the terminal container (templated)",
+                    "type": "array"
+                },
+                "extraEnvVars": {
+                    "description": "Extra environment variables to be added to the terminal pods",
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "description": "Extra volumeMounts for the terminal container",
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "description": "Extra volumes for the terminal Pod",
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "object",
+                    "properties": {
+                        "resources": {
+                            "description": "Resources for the copy-terminal-assets initContainer",
+                            "type": "object"
+                        },
+                        "securityContext": {
+                            "description": "SecurityContext for the initContainers in the terminal pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                            "type": "object",
+                            "properties": {
+                                "allowPrivilegeEscalation": {
+                                    "type": "boolean"
+                                },
+                                "capabilities": {
+                                    "type": "object",
+                                    "properties": {
+                                        "drop": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "livenessProbe": {
+                    "description": "Templated `livenessProbe` for the terminal container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "nodeSelector": {
+                    "description": "Node labels for terminal pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "description": "SecurityContext for the terminal pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
+                            "type": "integer"
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "description": "Templated `readinessProbe` for the terminal container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "replicas": {
+                    "description": "Number of replicas. Start with 0 to avoid resource usage",
+                    "type": "integer"
+                },
+                "resources": {
+                    "description": "Resources for the terminal container",
+                    "type": "object"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the terminal container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "startupProbe": {
+                    "description": "Templated `startupProbe` for the terminal container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "tolerations": {
+                    "description": "Tolerations for terminal pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "type": "array"
+                }
+            }
+        },
+        "web": {
+            "type": "object",
+            "properties": {
+                "affinity": {
+                    "description": "Affinity rules for web pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "type": "object"
+                },
+                "annotations": {
+                    "description": "DEPRECATED: Use `.Values.web.service.annotations` instead!",
+                    "deprecated": true,
+                    "type": "object"
+                },
+                "assets": {
+                    "description": "Assets configuration",
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "description": "Location of the static assets",
+                            "type": "string"
+                        }
+                    }
+                },
+                "autoscaler": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Enable HPA",
+                            "type": "boolean"
+                        },
+                        "max_web_replicas": {
+                            "description": "Maximum number of replicas",
+                            "type": "integer"
+                        },
+                        "min_web_replicas": {
+                            "description": "Minimum number of replicas",
+                            "type": "integer"
+                        },
+                        "scaler_cpu_utilization": {
+                            "description": "Target CPU utilization percentage",
+                            "type": "integer"
+                        }
+                    }
+                },
+                "deployment": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Extra annotations for the web Deployment",
+                            "type": "object"
+                        },
+                        "labels": {
+                            "description": "Extra labels for the web Deployment",
+                            "type": "object"
+                        },
+                        "spec": {
+                            "description": "Configuration for other configurable fields in the Deployment.spec",
+                            "type": "object",
+                            "properties": {
+                                "minReadySeconds": {
+                                    "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "paused": {
+                                    "description": "See API spec for `Deployment.spec.paused`",
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "progressDeadlineSeconds": {
+                                    "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "revisionHistoryLimit": {
+                                    "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "See API spec for `Deployment.spec.strategy`",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deploymentSpec": {
+                    "description": "DEPRECATED: Use `.Values.web.deployment.spec` instead!",
+                    "deprecated": true,
+                    "type": "object",
+                    "properties": {
+                        "minReadySeconds": {
+                            "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "paused": {
+                            "description": "See API spec for `Deployment.spec.paused`",
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "progressDeadlineSeconds": {
+                            "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "revisionHistoryLimit": {
+                            "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "strategy": {
+                            "description": "See API spec for `Deployment.spec.strategy`",
+                            "type": [
+                                "object",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in the web container (templated)",
+                    "type": "array"
+                },
+                "extraEnvVars": {
+                    "description": "Extra environment variables to be added to the web pods",
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "description": "Extra volumeMounts for the web container",
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "description": "Extra volumes for the web Pod",
+                    "type": "array"
+                },
+                "image": {
+                    "description": "DEPRECATED: Use `.Values.image` instead!",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "imagePullSecret": {
+                    "description": "DEPRECATED: Use `.Values.image.imagePullSecrets` instead!",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "initContainers": {
+                    "type": "object",
+                    "properties": {
+                        "resources": {
+                            "description": "Resources for the copy-web-assets initContainer",
+                            "type": "object"
+                        },
+                        "securityContext": {
+                            "description": "SecurityContext for the initContainers in the web pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                            "type": "object",
+                            "properties": {
+                                "allowPrivilegeEscalation": {
+                                    "type": "boolean"
+                                },
+                                "capabilities": {
+                                    "type": "object",
+                                    "properties": {
+                                        "drop": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "livenessProbe": {
+                    "description": "Templated `livenessProbe` for the web container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "nodeSelector": {
+                    "description": "Node labels for web pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "type": "object"
+                },
+                "podAnnotations": {
+                    "description": "Add extra annotations to the Invenio web pods",
+                    "type": "object"
+                },
+                "podLabels": {
+                    "description": "Add extra labels to the Invenio web pods",
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "description": "SecurityContext for the web pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
+                            "type": "integer"
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "description": "Templated `readinessProbe` for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {
+                        "exec": {
+                            "type": "object",
+                            "properties": {
+                                "command": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        },
+                        "successThreshold": {
+                            "type": "integer"
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "replicas": {
+                    "description": "Number of web replicas to deploy",
+                    "type": "integer"
+                },
+                "resources": {
+                    "description": "Resources for the web container",
+                    "type": "object"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "service": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Add extra (templated) annotations to the web service",
+                            "type": "object"
+                        },
+                        "type": {
+                            "description": "Web service type",
+                            "type": "string"
+                        }
+                    }
+                },
+                "startupProbe": {
+                    "description": "Templated `startupProbe` for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {
+                        "exec": {
+                            "type": "object",
+                            "properties": {
+                                "command": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        },
+                        "successThreshold": {
+                            "type": "integer"
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "terminationGracePeriodSeconds": {
+                    "description": "Seconds the pod needs to terminate gracefully # ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods",
+                    "type": "integer"
+                },
+                "tolerations": {
+                    "description": "Tolerations for web pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "type": "array"
+                },
+                "uwsgi": {
+                    "type": "object",
+                    "properties": {
+                        "processes": {
+                            "description": "Number of uWSGI processes to run within each pod",
+                            "type": "integer"
+                        },
+                        "threads": {
+                            "description": "Number of uWSGI threads to run within each process",
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "worker": {
+            "type": "object",
+            "properties": {
+                "affinity": {
+                    "description": "Affinity rules for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "type": "object"
+                },
+                "app": {
+                    "description": "Name of the celery app to run",
+                    "type": "string"
+                },
+                "celery_pidfile": {
+                    "description": "Path to celery PID file",
+                    "type": "string"
+                },
+                "celery_schedule": {
+                    "description": "Path to celery schedule file",
+                    "type": "string"
+                },
+                "concurrency": {
+                    "description": "Number of concurrent tasks to run per worker",
+                    "type": "integer"
+                },
+                "deployment": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Extra annotations for the worker Deployment",
+                            "type": "object"
+                        },
+                        "labels": {
+                            "description": "Extra labels for the worker Deployment",
+                            "type": "object"
+                        },
+                        "spec": {
+                            "description": "Configuration for other configurable fields in the Deployment.spec",
+                            "type": "object",
+                            "properties": {
+                                "minReadySeconds": {
+                                    "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "paused": {
+                                    "description": "See API spec for `Deployment.spec.paused`",
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "progressDeadlineSeconds": {
+                                    "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "revisionHistoryLimit": {
+                                    "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "See API spec for `Deployment.spec.strategy`",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deploymentSpec": {
+                    "description": "DEPRECATED: Use `.Values.worker.deployment.spec` instead!",
+                    "deprecated": true,
+                    "type": "object",
+                    "properties": {
+                        "minReadySeconds": {
+                            "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "paused": {
+                            "description": "See API spec for `Deployment.spec.paused`",
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "progressDeadlineSeconds": {
+                            "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "revisionHistoryLimit": {
+                            "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "strategy": {
+                            "description": "See API spec for `Deployment.spec.strategy`",
+                            "type": [
+                                "object",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in the worker container (templated)",
+                    "type": "array"
+                },
+                "extraEnvVars": {
+                    "description": "Extra environment variables to be added to the worker pods",
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "description": "Extra volumeMounts for the worker container",
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "description": "Extra volumes for the worker Pod",
+                    "type": "array"
+                },
+                "image": {
+                    "description": "DEPRECATED: Use `.Values.image` instead!",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "imagePullSecret": {
+                    "description": "DEPRECATED: Use `.Values.image.imagePullSecrets` instead!",
+                    "deprecated": true,
+                    "type": "string"
+                },
+                "livenessProbe": {
+                    "description": "Templated `livenessProbe` for the worker container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {
+                        "exec": {
+                            "type": "object",
+                            "properties": {
+                                "command": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "log_level": {
+                    "description": "Celery app log level",
+                    "type": "string"
+                },
+                "nodeSelector": {
+                    "description": "Node labels for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "type": "object"
+                },
+                "podAnnotations": {
+                    "description": "Add extra annotations to the Invenio worker pods",
+                    "type": "object"
+                },
+                "podLabels": {
+                    "description": "Add extra labels to the Invenio worker pods",
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "description": "SecurityContext for the worker Pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
+                            "type": "integer"
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "description": "Templated `readinessProbe` for the worker container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "replicas": {
+                    "description": "Number of worker replicas to deploy",
+                    "type": "integer"
+                },
+                "resources": {
+                    "description": "Resources for the worker container",
+                    "type": "object"
+                },
+                "run_mount_path": {
+                    "description": "Mount path for celery run files",
+                    "type": "string"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the worker container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "startupProbe": {
+                    "description": "Templated `startupProbe` for the worker container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "tolerations": {
+                    "description": "Tolerations for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "type": "array"
+                }
+            }
+        },
+        "workerBeat": {
+            "type": "object",
+            "properties": {
+                "affinity": {
+                    "description": "Affinity rules for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "type": "object"
+                },
+                "commandOverride": {
+                    "description": "Override the worker-beat command",
+                    "type": "string"
+                },
+                "deployment": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "description": "Extra annotations for the workerBeat Deployment",
+                            "type": "object"
+                        },
+                        "labels": {
+                            "description": "Extra labels for the workerBeat Deployment",
+                            "type": "object"
+                        },
+                        "spec": {
+                            "description": "Configuration for other configurable fields in the Deployment.spec",
+                            "type": "object",
+                            "properties": {
+                                "minReadySeconds": {
+                                    "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "paused": {
+                                    "description": "See API spec for `Deployment.spec.paused`",
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "progressDeadlineSeconds": {
+                                    "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "revisionHistoryLimit": {
+                                    "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "See API spec for `Deployment.spec.strategy`",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deploymentSpec": {
+                    "description": "DEPRECATED: Use `.Values.workerBeat.deployment.spec` instead!",
+                    "deprecated": true,
+                    "type": "object",
+                    "properties": {
+                        "minReadySeconds": {
+                            "description": "See API spec for `Deployment.spec.minReadySeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "paused": {
+                            "description": "See API spec for `Deployment.spec.paused`",
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "progressDeadlineSeconds": {
+                            "description": "See API spec for `Deployment.spec.progressDeadlineSeconds`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "revisionHistoryLimit": {
+                            "description": "See API spec for `Deployment.spec.revisionHistoryLimit`",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        },
+                        "strategy": {
+                            "description": "See API spec for `Deployment.spec.strategy`",
+                            "type": [
+                                "object",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "extraEnvFrom": {
+                    "description": "Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container (templated)",
+                    "type": "array"
+                },
+                "extraEnvVars": {
+                    "description": "Extra environment variables to be added to the worker-beat pods",
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "description": "Extra volumeMounts for the worker-beat container",
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "description": "Extra volumes for the worker-beat Pod",
+                    "type": "array"
+                },
+                "livenessProbe": {
+                    "description": "Templated `livenessProbe` for the worker-beat container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {
+                        "exec": {
+                            "type": "object",
+                            "properties": {
+                                "command": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "nodeSelector": {
+                    "description": "Node labels for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "type": "object"
+                },
+                "podAnnotations": {
+                    "description": "Add extra annotations to the Invenio workerBeat pods",
+                    "type": "object"
+                },
+                "podLabels": {
+                    "description": "Add extra labels to the Invenio workerBeat pods",
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "description": "SecurityContext for the worker-beat pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
+                            "type": "integer"
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "description": "Templated `readinessProbe` for the worker-beat container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "resources": {
+                    "description": "Resources for the worker-beat container",
+                    "type": "object"
+                },
+                "securityContext": {
+                    "description": "SecurityContext for the worker-beat container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "startupProbe": {
+                    "description": "Templated `startupProbe` for the worker-beat container",
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                },
+                "tolerations": {
+                    "description": "Tolerations for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "type": "array"
+                }
+            }
+        }
+    }
+}
