@@ -138,7 +138,7 @@
                     ]
                 },
                 "nodeSelector": {
-                    "description": "Node labels for flower pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "description": "Node labels for flower pods assignment",
                     "type": "object"
                 },
                 "podAnnotations": {
@@ -150,7 +150,7 @@
                     "type": "object"
                 },
                 "podSecurityContext": {
-                    "description": "SecurityContext for the flower pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the flower pod",
                     "type": "object",
                     "properties": {
                         "runAsGroup": {
@@ -188,7 +188,7 @@
                     "type": "string"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the flower container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the flower container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -215,7 +215,7 @@
                     ]
                 },
                 "tolerations": {
-                    "description": "Tolerations for flower pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "description": "Tolerations for flower pods assignment",
                     "type": "array"
                 }
             }
@@ -245,7 +245,7 @@
                     "type": "string"
                 },
                 "pullPolicy": {
-                    "description": "Invenio image pull policy # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent' # ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images",
+                    "description": "Invenio image pull policy",
                     "type": "string",
                     "enum": [
                         "Always",
@@ -254,7 +254,7 @@
                     ]
                 },
                 "pullSecrets": {
-                    "description": "Invenio image pull secrets # Secrets must be manually created in the namespace. # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ # e.g: # pullSecrets: #   - name: myRegistryKeySecretName",
+                    "description": "Invenio image pull secrets",
                     "type": "array"
                 },
                 "registry": {
@@ -275,11 +275,11 @@
             "type": "object",
             "properties": {
                 "annotations": {
-                    "description": "Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. # Use this parameter to set the required annotations for cert-manager, see # ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations # e.g: # annotations: #   kubernetes.io/ingress.class: nginx #   cert-manager.io/cluster-issuer: cluster-issuer-name",
+                    "description": "Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.",
                     "type": "object"
                 },
                 "class": {
-                    "description": "IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+) # This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster. # ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/",
+                    "description": "IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)",
                     "type": "string"
                 },
                 "enabled": {
@@ -355,7 +355,7 @@
                             "type": "string"
                         },
                         "testMode": {
-                            "description": "DataCite test mode enabled, it will translate into DATACITE_TEST_MODE # This has to be a string value, Invenio will evaluate this as a python expression and transform it into a boolean. # Example: # testMode: \"False\"",
+                            "description": "DataCite test mode enabled, it will translate into DATACITE_TEST_MODE",
                             "type": "string"
                         },
                         "username": {
@@ -376,7 +376,7 @@
                     "type": "boolean"
                 },
                 "existingSecret": {
-                    "description": "General existing secret name for, at least, secret key and salts # If not set a new secret will be generated automatically with random values # ref: https://inveniordm.docs.cern.ch/customize/authentication/#security",
+                    "description": "General existing secret name for, at least, secret key and salts",
                     "type": "string"
                 },
                 "existing_secret": {
@@ -499,7 +499,7 @@
                     "type": "object"
                 },
                 "vocabularies": {
-                    "description": "Vocabularies to be loaded as files under /app_data/vocabularies # Example # vocabularies: #   resource_types.yaml: | #    - id: publication #      icon: file alternate #      props: #        csl: report #        datacite_general: Text #        datacite_type: \"\" #        openaire_resourceType: \"0017\" #        openaire_type: publication #        eurepo: info:eu-repo/semantics/other #        schema.org: https://schema.org/CreativeWork #        subtype: \"\" #        type: publication #        marc21_type: publication #        marc21_subtype: \"\" #      title: #        en: Publication #      tags: #        - depositable #        - linkable",
+                    "description": "Vocabularies to be loaded as files under /app_data/vocabularies",
                     "type": "object"
                 }
             }
@@ -541,7 +541,7 @@
                     "type": "string"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the kerberos container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the kerberos container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -633,7 +633,7 @@
                     "type": "object"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the nginx container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the nginx container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -696,7 +696,7 @@
             }
         },
         "opensearchExternal": {
-            "description": "External Opensearch configuration # All of these values are only used when opensearch.enabled is set to false",
+            "description": "External Opensearch configuration",
             "type": "object"
         },
         "persistence": {
@@ -723,7 +723,7 @@
                     "type": "string"
                 },
                 "storage_class": {
-                    "description": "Storage class of backing PVC # If defined, storageClassName: \u003cstorageClass\u003e # If set to \"-\", storageClassName: \"\", which disables dynamic provisioning # If undefined (the default) or set to null, no storageClassName spec is #   set, choosing the default provisioner.  (gp2 on AWS, standard on #   GKE, AWS \u0026 OpenStack)",
+                    "description": "Storage class of backing PVC",
                     "type": "string"
                 },
                 "useExistingClaim": {
@@ -731,7 +731,7 @@
                     "type": "boolean"
                 },
                 "useSubPath": {
-                    "description": "Enable or disable usage of subPath for PVC mounts # When enabled, each logical path is mounted using Kubernetes subPath, # providing directory-level isolation within a single PVC. # When disabled, the entire PVC is mounted at the base path and the # application is responsible for managing internal directory structure. # This option can improve compatibility with Kubernetes volume metrics # (e.g. kubelet_volume_stats_used_bytes) in some CSI environments such as Ceph CSI.",
+                    "description": "Enable or disable usage of subPath for PVC mounts",
                     "type": "boolean"
                 }
             }
@@ -790,7 +790,7 @@
             }
         },
         "postgresqlExternal": {
-            "description": "External PostgreSQL configuration # All of these values are only used when postgresql.enabled is set to false",
+            "description": "External PostgreSQL configuration",
             "type": "object"
         },
         "rabbitmq": {
@@ -821,7 +821,7 @@
             }
         },
         "rabbitmqExternal": {
-            "description": "External RabbitMQ configuration # All of these values are only used when rabbitmq.enabled is set to false",
+            "description": "External RabbitMQ configuration",
             "type": "object"
         },
         "redis": {
@@ -870,7 +870,7 @@
             }
         },
         "redisExternal": {
-            "description": "External redis configuration # All of these values are only used when redis.enabled is set to false",
+            "description": "External redis configuration",
             "type": "object"
         },
         "route": {
@@ -1009,7 +1009,7 @@
                             "type": "object"
                         },
                         "securityContext": {
-                            "description": "SecurityContext for the initContainers in the terminal pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                            "description": "SecurityContext for the initContainers in the terminal pod",
                             "type": "object",
                             "properties": {
                                 "allowPrivilegeEscalation": {
@@ -1038,11 +1038,11 @@
                     ]
                 },
                 "nodeSelector": {
-                    "description": "Node labels for terminal pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "description": "Node labels for terminal pods assignment",
                     "type": "object"
                 },
                 "podSecurityContext": {
-                    "description": "SecurityContext for the terminal pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the terminal pod",
                     "type": "object",
                     "properties": {
                         "runAsGroup": {
@@ -1080,7 +1080,7 @@
                     "type": "object"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the terminal container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the terminal container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -1107,7 +1107,7 @@
                     ]
                 },
                 "tolerations": {
-                    "description": "Tolerations for terminal pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "description": "Tolerations for terminal pods assignment",
                     "type": "array"
                 }
             }
@@ -1116,7 +1116,7 @@
             "type": "object",
             "properties": {
                 "affinity": {
-                    "description": "Affinity rules for web pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "description": "Affinity rules for web pods assignment",
                     "type": "object"
                 },
                 "annotations": {
@@ -1285,7 +1285,7 @@
                             "type": "object"
                         },
                         "securityContext": {
-                            "description": "SecurityContext for the initContainers in the web pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                            "description": "SecurityContext for the initContainers in the web pod",
                             "type": "object",
                             "properties": {
                                 "allowPrivilegeEscalation": {
@@ -1314,7 +1314,7 @@
                     ]
                 },
                 "nodeSelector": {
-                    "description": "Node labels for web pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "description": "Node labels for web pods assignment",
                     "type": "object"
                 },
                 "podAnnotations": {
@@ -1326,7 +1326,7 @@
                     "type": "object"
                 },
                 "podSecurityContext": {
-                    "description": "SecurityContext for the web pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the web pod",
                     "type": "object",
                     "properties": {
                         "runAsGroup": {
@@ -1349,7 +1349,7 @@
                     }
                 },
                 "readinessProbe": {
-                    "description": "Templated `readinessProbe` for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "description": "Templated `readinessProbe` for the web container",
                     "type": [
                         "object",
                         "null"
@@ -1392,7 +1392,7 @@
                     "type": "object"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the web container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -1425,7 +1425,7 @@
                     }
                 },
                 "startupProbe": {
-                    "description": "Templated `startupProbe` for the web container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "description": "Templated `startupProbe` for the web container",
                     "type": [
                         "object",
                         "null"
@@ -1460,11 +1460,11 @@
                     }
                 },
                 "terminationGracePeriodSeconds": {
-                    "description": "Seconds the pod needs to terminate gracefully # ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods",
+                    "description": "Seconds the pod needs to terminate gracefully",
                     "type": "integer"
                 },
                 "tolerations": {
-                    "description": "Tolerations for web pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "description": "Tolerations for web pods assignment",
                     "type": "array"
                 },
                 "uwsgi": {
@@ -1486,7 +1486,7 @@
             "type": "object",
             "properties": {
                 "affinity": {
-                    "description": "Affinity rules for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "description": "Affinity rules for worker pods assignment",
                     "type": "object"
                 },
                 "app": {
@@ -1628,7 +1628,7 @@
                     "type": "string"
                 },
                 "livenessProbe": {
-                    "description": "Templated `livenessProbe` for the worker container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "description": "Templated `livenessProbe` for the worker container",
                     "type": [
                         "object",
                         "null"
@@ -1658,7 +1658,7 @@
                     "type": "string"
                 },
                 "nodeSelector": {
-                    "description": "Node labels for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "description": "Node labels for worker pods assignment",
                     "type": "object"
                 },
                 "podAnnotations": {
@@ -1670,7 +1670,7 @@
                     "type": "object"
                 },
                 "podSecurityContext": {
-                    "description": "SecurityContext for the worker Pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the worker Pod",
                     "type": "object",
                     "properties": {
                         "runAsGroup": {
@@ -1712,7 +1712,7 @@
                     "type": "string"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the worker container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the worker container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -1739,7 +1739,7 @@
                     ]
                 },
                 "tolerations": {
-                    "description": "Tolerations for worker pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "description": "Tolerations for worker pods assignment",
                     "type": "array"
                 }
             }
@@ -1748,7 +1748,7 @@
             "type": "object",
             "properties": {
                 "affinity": {
-                    "description": "Affinity rules for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity",
+                    "description": "Affinity rules for workerBeat pods assignment",
                     "type": "object"
                 },
                 "commandOverride": {
@@ -1868,7 +1868,7 @@
                     "type": "array"
                 },
                 "livenessProbe": {
-                    "description": "Templated `livenessProbe` for the worker-beat container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                    "description": "Templated `livenessProbe` for the worker-beat container",
                     "type": [
                         "object",
                         "null"
@@ -1894,7 +1894,7 @@
                     }
                 },
                 "nodeSelector": {
-                    "description": "Node labels for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+                    "description": "Node labels for workerBeat pods assignment",
                     "type": "object"
                 },
                 "podAnnotations": {
@@ -1906,7 +1906,7 @@
                     "type": "object"
                 },
                 "podSecurityContext": {
-                    "description": "SecurityContext for the worker-beat pod # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the worker-beat pod",
                     "type": "object",
                     "properties": {
                         "runAsGroup": {
@@ -1940,7 +1940,7 @@
                     "type": "object"
                 },
                 "securityContext": {
-                    "description": "SecurityContext for the worker-beat container # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container",
+                    "description": "SecurityContext for the worker-beat container",
                     "type": "object",
                     "properties": {
                         "allowPrivilegeEscalation": {
@@ -1967,7 +1967,7 @@
                     ]
                 },
                 "tolerations": {
-                    "description": "Tolerations for workerBeat pods assignment # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
+                    "description": "Tolerations for workerBeat pods assignment",
                     "type": "array"
                 }
             }

@@ -1,6 +1,5 @@
 ---
 
-## Global parameters
 ## Please, note that this will override the parameters, including dependencies, configured to use the global value
 ##
 global:
@@ -27,16 +26,16 @@ image:
   # -- Invenio image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
   digest: ""
   # @schema enum:[Always, IfNotPresent, Never]
-  # -- Invenio image pull policy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
+  # -- Invenio image pull policy
   pullPolicy: IfNotPresent
-  # -- Invenio image pull secrets
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ## e.g:
   ## pullSecrets:
   ##   - name: myRegistryKeySecretName
+  # -- Invenio image pull secrets
   pullSecrets: []
 
 ## Invenio ingress parameters
@@ -44,17 +43,17 @@ image:
 ingress:
   # -- Enable ingress record generation for Invenio.
   enabled: false
-  # -- IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
   ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster.
   ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+  # -- IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
   class: ""
-  # -- Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
   ## Use this parameter to set the required annotations for cert-manager, see
   ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
   ## e.g:
   ## annotations:
   ##   kubernetes.io/ingress.class: nginx
   ##   cert-manager.io/cluster-issuer: cluster-issuer-name
+  # -- Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
   annotations: {}
   # -- Custom TLS secret name.
   tlsSecretNameOverride: ""
@@ -82,9 +81,9 @@ invenio:
   # -- DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
   existing_secret: false
 
-  # -- General existing secret name for, at least, secret key and salts
   ## If not set a new secret will be generated automatically with random values
   ## ref: https://inveniordm.docs.cern.ch/customize/authentication/#security
+  # -- General existing secret name for, at least, secret key and salts
   existingSecret: ""
 
   # -- Enable initial setup (create users, load demo data)
@@ -132,10 +131,10 @@ invenio:
       passwordKey: "DATACITE_PASSWORD"
     # -- DataCite DOI prefix, it will translate into DATACITE_PREFIX
     prefix: ""
-    # -- DataCite test mode enabled, it will translate into DATACITE_TEST_MODE
     ## This has to be a string value, Invenio will evaluate this as a python expression and transform it into a boolean.
     ## Example:
     ## testMode: "False"
+    # -- DataCite test mode enabled, it will translate into DATACITE_TEST_MODE
     testMode: ""
     # -- A string used for formatting the DOI, it will translate into DATACITE_FORMAT
     format: ""
@@ -185,7 +184,6 @@ invenio:
   # -- Extra volumes for all Invenio pods
   extraVolumes: []
 
-  # -- Vocabularies to be loaded as files under /app_data/vocabularies
   ## Example
   ## vocabularies:
   ##   resource_types.yaml: |
@@ -208,9 +206,9 @@ invenio:
   ##      tags:
   ##        - depositable
   ##        - linkable
+  # -- Vocabularies to be loaded as files under /app_data/vocabularies
   vocabularies: {}
 
-## nginx configuration
 # @schema required
 nginx:
   # @schema required;minLength:1
@@ -247,15 +245,14 @@ nginx:
   denied_ips: ""
   # -- Denied user agents
   denied_uas: ""
-  # -- SecurityContext for the nginx container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the nginx container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
 
-## Web
 web:
   # @schema deprecated
   # -- DEPRECATED: Use `.Values.image` instead!
@@ -265,8 +262,8 @@ web:
   imagePullSecret: ""
   # -- Number of web replicas to deploy
   replicas: 6
-  # -- Seconds the pod needs to terminate gracefully
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+  # -- Seconds the pod needs to terminate gracefully
   terminationGracePeriodSeconds: 60
   uwsgi:
     # -- Number of uWSGI processes to run within each pod
@@ -285,8 +282,8 @@ web:
     # -- Minimum number of replicas
     min_web_replicas: 2
   # @schema type:[object, null]
-  # -- Templated `readinessProbe` for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # -- Templated `readinessProbe` for the web container
   readinessProbe:
     exec:
       command:
@@ -299,8 +296,8 @@ web:
     successThreshold: 1
     timeoutSeconds: 1
   # @schema type:[object, null]
-  # -- Templated `startupProbe` for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # -- Templated `startupProbe` for the web container
   startupProbe:
     exec:
       command:
@@ -336,8 +333,8 @@ web:
       # limits:
       #   cpu: '1'
       #   memory: 100Mi
-    # -- SecurityContext for the initContainers in the web pod
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    # -- SecurityContext for the initContainers in the web pod
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -350,14 +347,14 @@ web:
   podLabels: {}
   # -- Add extra annotations to the Invenio web pods
   podAnnotations: {}
-  # -- Node labels for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  # -- Node labels for web pods assignment
   nodeSelector: {}
-  # -- Tolerations for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  # -- Tolerations for web pods assignment
   tolerations: []
-  # -- Affinity rules for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  # -- Affinity rules for web pods assignment
   affinity: {}
   ## Invenio web service parameters
   service:
@@ -365,16 +362,16 @@ web:
     annotations: {}
     # -- Web service type
     type: ClusterIP
-  # -- SecurityContext for the web pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the web pod
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  # -- SecurityContext for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the web container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -435,7 +432,6 @@ web:
       # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## Worker (Celery) configuration
 worker:
   # @schema deprecated
   # -- DEPRECATED: Use `.Values.image` instead!
@@ -467,16 +463,16 @@ worker:
     # limits:
     #   cpu: 1000m
     #   memory: 1Gi
-  # -- SecurityContext for the worker Pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the worker Pod
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  # -- SecurityContext for the worker container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the worker container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -499,18 +495,18 @@ worker:
   podLabels: {}
   # -- Add extra annotations to the Invenio worker pods
   podAnnotations: {}
-  # -- Node labels for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  # -- Node labels for worker pods assignment
   nodeSelector: {}
-  # -- Tolerations for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  # -- Tolerations for worker pods assignment
   tolerations: []
-  # -- Affinity rules for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  # -- Affinity rules for worker pods assignment
   affinity: {}
   # @schema type:[object, null]
-  # -- Templated `livenessProbe` for the worker container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # -- Templated `livenessProbe` for the worker container
   livenessProbe:
     exec:
       command:
@@ -579,15 +575,15 @@ workerBeat:
     # requests:
     #   cpu: 500m
     #   memory: 200Mi
-  # -- SecurityContext for the worker-beat container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the worker-beat container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  # -- SecurityContext for the worker-beat pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the worker-beat pod
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
@@ -611,18 +607,18 @@ workerBeat:
   podLabels: {}
   # -- Add extra annotations to the Invenio workerBeat pods
   podAnnotations: {}
-  # -- Node labels for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  # -- Node labels for workerBeat pods assignment
   nodeSelector: {}
-  # -- Tolerations for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  # -- Tolerations for workerBeat pods assignment
   tolerations: []
-  # -- Affinity rules for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  # -- Affinity rules for workerBeat pods assignment
   affinity: {}
   # @schema type:[object, null]
-  # -- Templated `livenessProbe` for the worker-beat container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # -- Templated `livenessProbe` for the worker-beat container
   livenessProbe:
     exec:
       command:
@@ -683,7 +679,6 @@ workerBeat:
       # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## Terminal
 ## Pods for running maintenance tasks.
 terminal:
   # -- Enable the terminal deployment
@@ -709,18 +704,18 @@ terminal:
       # limits:
       #   cpu: '1'
       #   memory: 100Mi
-    # -- SecurityContext for the initContainers in the terminal pod
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    # -- SecurityContext for the initContainers in the terminal pod
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
           - ALL
-  # -- Node labels for terminal pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  # -- Node labels for terminal pods assignment
   nodeSelector: {}
-  # -- Tolerations for terminal pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  # -- Tolerations for terminal pods assignment
   tolerations: []
   # @schema type:[object, null]
   # -- Templated `livenessProbe` for the terminal container
@@ -731,16 +726,16 @@ terminal:
   # @schema type:[object, null]
   # -- Templated `startupProbe` for the terminal container
   startupProbe: null
-  # -- SecurityContext for the terminal pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the terminal pod
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  # -- SecurityContext for the terminal container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the terminal container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -801,7 +796,6 @@ terminal:
       # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## Persistence
 persistence:
   # -- Enable persistence volume claim
   enabled: true
@@ -813,25 +807,24 @@ persistence:
   annotations: {}
   # -- Size of the volume
   size: 10G
-  # -- Storage class of backing PVC
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
+  # -- Storage class of backing PVC
   storage_class: ""
   # -- Use an existing PVC to use for persistence
   useExistingClaim: false
-  # -- Enable or disable usage of subPath for PVC mounts
   ## When enabled, each logical path is mounted using Kubernetes subPath,
   ## providing directory-level isolation within a single PVC.
   ## When disabled, the entire PVC is mounted at the base path and the
   ## application is responsible for managing internal directory structure.
   ## This option can improve compatibility with Kubernetes volume metrics
   ## (e.g. kubelet_volume_stats_used_bytes) in some CSI environments such as Ceph CSI.
+  # -- Enable or disable usage of subPath for PVC mounts
   useSubPath: true
 
-## Redis configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
   # -- Enable redis helm chart
@@ -849,12 +842,11 @@ redis:
     # -- Disable commands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
 
-# -- External redis configuration
 ## All of these values are only used when redis.enabled is set to false
+# -- External redis configuration
 redisExternal: {}
   # hostname: ""
 
-## RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
 rabbitmq:
   # -- Enable RabbitMQ helm chart
@@ -866,8 +858,8 @@ rabbitmq:
     # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/rabbitmq  # Work-around until we've migrated away from Bitnami.
 
-# -- External RabbitMQ configuration
 ## All of these values are only used when rabbitmq.enabled is set to false
+# -- External RabbitMQ configuration
 rabbitmqExternal: {}
   # username: invenio
   # password: ""
@@ -879,7 +871,6 @@ rabbitmqExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "amqp-password"
 
-## Flower configuration
 flower:
   # -- Enable Flower
   enabled: true
@@ -907,26 +898,26 @@ flower:
     #     name: foo
     # - configMapRef:
     #     name: bar
-  # -- SecurityContext for the flower pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the flower pod
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  # -- SecurityContext for the flower container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the flower container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  # -- Node labels for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  # -- Node labels for flower pods assignment
   nodeSelector: {}
-  # -- Tolerations for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  # -- Tolerations for flower pods assignment
   tolerations: []
   # -- Add extra labels to the Invenio flower pods
   podLabels: {}
@@ -983,7 +974,6 @@ flower:
       # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
   # -- Switch to enable or disable the PostgreSQL helm chart
@@ -1005,8 +995,8 @@ postgresql:
       # -- Sets bitnamilegacy by default
       repository: bitnamilegacy/os-shell
 
-# -- External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
+# -- External PostgreSQL configuration
 postgresqlExternal: {}
   # hostname: ""
   # port: 5432
@@ -1016,7 +1006,6 @@ postgresqlExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "password"
 
-## Opensearch chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
 opensearch:
   # -- Switch to enable or disable the Opensearch helm chart
@@ -1032,8 +1021,8 @@ opensearch:
     # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/os-shell  # Work-around until we've migrated away from Bitnami.
 
-# -- External Opensearch configuration
 ## All of these values are only used when opensearch.enabled is set to false
+# -- External Opensearch configuration
 opensearchExternal: {}
   # auth:
   #   enabled: false
@@ -1074,8 +1063,8 @@ kerberos:
     # requests:
     #   cpu: 10m
     #   memory: 2Mi
-  # -- SecurityContext for the kerberos container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  # -- SecurityContext for the kerberos container
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:

@@ -1,10 +1,11 @@
 apiVersion: v2
 name: invenio
 appVersion: 12.0.10
-description: Turn-key research data management platform.
+description: A helm chart for deploying Invenio RDM to Kubernetes.
 home: https://inveniosoftware.org/
 icon: https://inveniosoftware.org/static/img/logo-invenio-white.svg
 sources:
+  - https://github.com/inveniosoftware/helm-invenio
   - https://github.com/inveniosoftware/invenio-app-rdm
 keywords:
   - digital-repository
