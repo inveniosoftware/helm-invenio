@@ -20,7 +20,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4.2.0
         with:
-          version: v3.17.0
+          version: v3.21.2
 
       - uses: actions/setup-python@v5.3.0
         with:
@@ -33,34 +33,31 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --all
 
+      - name: Install Helm plugins
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+          pip install pyyaml
+          helm plugin install https://github.com/jtyr/kubeconform-helm.git
+
+      - name: Run unit tests
+        run: helm unittest charts/invenio
+
       - name: Build Helm dependencies
         run: helm dependency build charts/invenio
 
-      - name: Install kubeconform
+      - name: Validate rendered manifests (minimal values)
         run: |
-          KUBECONFORM_VERSION="v0.6.7"
-          curl -fsSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
-            | tar xz -C /usr/local/bin kubeconform
-
-      - name: Template and validate (minimal values)
-        run: |
-          helm template ci-minimal charts/invenio \
+          helm kubeconform charts/invenio \
             -f charts/invenio/ci/minimal-values.yaml \
-            > /tmp/rendered-minimal.yaml
-          kubeconform \
-            -strict \
-            -summary \
-            /tmp/rendered-minimal.yaml
+            --strict \
+            --summary
 
-      - name: Template and validate (full values)
+      - name: Validate rendered manifests (full values)
         run: |
-          helm template ci-full charts/invenio \
+          helm kubeconform charts/invenio \
             -f charts/invenio/ci/full-values.yaml \
-            > /tmp/rendered-full.yaml
-          kubeconform \
-            -strict \
-            -summary \
-            /tmp/rendered-full.yaml
+            --strict \
+            --summary
 
       # - name: create kind cluster
       #   if: steps.list-changed.outputs.changed == 'true'
