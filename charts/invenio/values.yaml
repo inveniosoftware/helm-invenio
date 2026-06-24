@@ -1,220 +1,191 @@
 ---
 
-## @section Global parameters
+## Global parameters
 ## Please, note that this will override the parameters, including dependencies, configured to use the global value
 ##
 global:
-  ## @param global.timezone Timezone
+  # -- Timezone
   timezone: "Europe/Zurich"
 
-## @param nameOverride String to partially override common.names.name
-##
+# -- String to partially override common.names.name
 nameOverride: ""
-## @param fullnameOverride String to fully override common.names.fullname
-##
+# -- String to fully override common.names.fullname
 fullnameOverride: ""
-
-## @section Invenio common parameters
 
 ## Invenio image version
 ## ref: https://github.com/inveniosoftware/demo-inveniordm/pkgs/container/demo-inveniordm%2Fdemo-inveniordm
-## @param image.registry Invenio image registry
-## @param image.repository Invenio image repository
-## @param image.tag Invenio image tag (immutable tags are recommended). Defaults to .Chart.appVersion
-## @param image.digest Invenio image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-## @param image.pullPolicy Invenio image pull policy
-## @param image.pullSecrets Invenio image pull secrets
+# @schema required
 image:
+  # @schema required
+  # -- Invenio image registry
   registry: ghcr.io/inveniosoftware
+  # @schema required
+  # -- Invenio image repository
   repository: demo-inveniordm/demo-inveniordm
+  # -- Invenio image tag (immutable tags are recommended). Defaults to .Chart.appVersion
   tag: ""
+  # -- Invenio image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
   digest: ""
-  ## Specify a imagePullPolicy
+  # @schema enum:[Always, IfNotPresent, Never]
+  # -- Invenio image pull policy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
-  ##
   pullPolicy: IfNotPresent
-  ## Optionally specify an array of imagePullSecrets.
+  # -- Invenio image pull secrets
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ## e.g:
   ## pullSecrets:
   ##   - name: myRegistryKeySecretName
-  ##
   pullSecrets: []
 
 ## Invenio ingress parameters
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
-##
 ingress:
-  ## @param ingress.enabled Enable ingress record generation for Invenio.
-  ##
+  # -- Enable ingress record generation for Invenio.
   enabled: false
-  ## @param ingress.class IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
-  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+  # -- IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster.
   ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
-  ##
   class: ""
-  ## @param ingress.annotations Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+  # -- Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
   ## Use this parameter to set the required annotations for cert-manager, see
   ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
   ## e.g:
   ## annotations:
   ##   kubernetes.io/ingress.class: nginx
   ##   cert-manager.io/cluster-issuer: cluster-issuer-name
-  ##
   annotations: {}
-  ## @param ingress.tlsSecretNameOverride Custom TLS secret name.
-  ##
+  # -- Custom TLS secret name.
   tlsSecretNameOverride: ""
 
 ## Openshift Route object
-## @param route.annotations Annotations to be added to the Route
 route:
+  # -- Annotations to be added to the Route
   annotations: {}
 
+# @schema required
 invenio:
-  ## @param invenio.hostname Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL
-  ##
+  # @schema required;minLength:1
+  # -- Invenio hostname (templated) used in configuration variables like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL
   hostname: ""
-  ## @param invenio.secret_key DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
   secret_key: ""
-  ## @param invenio.security_login_salt DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
   security_login_salt: ""
-  ## @param invenio.csrf_secret_salt DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
   csrf_secret_salt: ""
-  ## @param invenio.existing_secret DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret
   existing_secret: false
 
-  ## @param invenio.existingSecret General existing secret name for, at least, secret key and salts
+  # -- General existing secret name for, at least, secret key and salts
   ## If not set a new secret will be generated automatically with random values
   ## ref: https://inveniordm.docs.cern.ch/customize/authentication/#security
-  ##
   existingSecret: ""
 
-  ## @param invenio.init
-  ##
+  # -- Enable initial setup (create users, load demo data)
   init: false
-  ## @param invenio.default_users
-  ## Requires invenio.init=true
+  # @schema type:[object, array]
+  # -- Default users to create. Requires invenio.init=true
   default_users: []
-  ## @param invenio.demo_data
-  ## Setting invenio.demo_data=true requires also setting default_users!
+  # -- Load demo data. Requires invenio.init=true and default_users to be set
   demo_data: false
 
   sentry:
-    ## @param invenio.sentry.enabled Enable Sentry.io integration
-    ##
+    # -- Enable Sentry.io integration
     enabled: false
-    ## @param invenio.sentry.dsn Sentry DSN, required unless existingSecret is provided
-    ##
+    # -- Sentry DSN, required unless existingSecret is provided
     dsn: ""
-    ## @param invenio.sentry.secret_name DEPRECATED: invenio.sentry.existingSecret instead
-    ##
+    # @schema deprecated
+    # -- DEPRECATED: use invenio.sentry.existingSecret instead
     secret_name: ""
-    ## @param invenio.sentry.existing_secret DEPRECATED: invenio.sentry.existingSecret instead
-    ##
+    # @schema deprecated
+    # -- DEPRECATED: use invenio.sentry.existingSecret instead
     existing_secret: false
-    ## @param invenio.sentry.existingSecret Existing secret name for sentry's dsn
-    ##
+    # -- Existing secret name for sentry's dsn
     existingSecret: ""
-    ## @param invenio.sentry.secretKeys.dsnKey Name of key in existing secret to use for dns.
-    ##
+    # -- Secret keys configuration for sentry
     secretKeys:
+      # -- Name of key in existing secret to use for dsn
       dsnKey: "SENTRY_DSN"
 
   ## Invenio DataCite configuration
   ## ref: https://inveniordm.docs.cern.ch/customize/dois
   datacite:
-    ## @param invenio.datacite.enabled Enable DataCite provider
-    ##
+    # -- Enable DataCite provider
     enabled: false
-    ## @param invenio.datacite.username Datacite username
-    ##
+    # -- Datacite username
     username: ""
-    ## @param invenio.datacite.password Datacite password
-    ##
+    # -- Datacite password
     password: ""
-    ## @param invenio.datacite.existingSecret Existing secret name for datacite username and password.
-    ##
+    # -- Existing secret name for datacite username and password
     existingSecret: "datacite-secrets"
-    ## @param invenio.datacite.secretKeys.usernameKey Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.
-    ## @param invenio.datacite.secretKeys.passwordKey Name of key in existing secret to use for password. Only used when `invenio.datacite.existingSecret` is set.
-    ##
+    # -- Secret keys configuration for datacite
     secretKeys:
+      # -- Name of key in existing secret to use for username. Only used when `invenio.datacite.existingSecret` is set.
       usernameKey: "DATACITE_USERNAME"
+      # -- Name of key in existing secret to use for password. Only used when `invenio.datacite.existingSecret` is set.
       passwordKey: "DATACITE_PASSWORD"
-    ## @param invenio.datacite.prefix DataCite DOI prefix, it will translate into DATACITE_PREFIX.
-    ##
+    # -- DataCite DOI prefix, it will translate into DATACITE_PREFIX
     prefix: ""
-    ## @param invenio.datacite.testMode DataCite test mode enabled, it will trasnlate into DATACITE_TEST_MODE.
+    # -- DataCite test mode enabled, it will translate into DATACITE_TEST_MODE
     ## This has to be a string value, Invenio will evaluate this as a python expression and transform it into a boolean.
     ## Example:
     ## testMode: "False"
-    ##
     testMode: ""
-    ## @param invenio.datacite.format A string used for formatting the DOI, it will translate into DATACITE_FORMAT.
-    ##
+    # -- A string used for formatting the DOI, it will translate into DATACITE_FORMAT
     format: ""
-    ## @param invenio.datacite.dataCenterSymbol DataCite data center symbol, it will translate into DATACITE_DATACENTER_SYMBOL.
-    ##
+    # -- DataCite data center symbol, it will translate into DATACITE_DATACENTER_SYMBOL
     dataCenterSymbol: ""
-    ## @param invenio.datacite.existing_secret DEPRECATED: use invenio.datacite.existingSecret instead
-    ##
+    # @schema deprecated
+    # -- DEPRECATED: use invenio.datacite.existingSecret instead
     existing_secret: false
-    ## @param invenio.datacite.secret_name DEPRECATED: use invenio.datacite.existingSecret instead
-    ##
+    # @schema deprecated
+    # -- DEPRECATED: use invenio.datacite.existingSecret instead
     secret_name: ""
   remote_apps:
-    ## @param invenio.remote_apps.enabled TODO:
-    ##
+    # -- Enable remote apps integration
     enabled: false
-    ## @param invenio.remote_apps.existing_secret TODO:
-    ##
+    # -- Use an existing secret for remote apps credentials
     existing_secret: false
-    ## @param invenio.remote_apps.secret_name TODO:
-    ##
+    # -- Name of the existing secret for remote apps
     secret_name: "remote-apps-secrets"
-    ## @param invenio.remote_apps.credentials TODO:
-    ##
+    # @schema type:[object, array]
+    # -- Remote apps credentials
     credentials: {}
       # - name: ""
       #   consumer_key: ""
       #   consumer_secret: ""
-  ## @param invenio.extra_config DEPRECATED: invenio.extraConfig instead
+  # @schema deprecated
+  # -- DEPRECATED: use invenio.extraConfig instead
   extra_config: {}
-  ## @param invenio.extraConfig Extra environment variables (templated) to be added to all the pods.
-  ##
+  # -- Extra environment variables (templated) to be added to all the pods
   extraConfig: {}
-  ## @param invenio.extra_env_from_secret DEPRECATED: Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead.
+  # @schema deprecated
+  # -- DEPRECATED: Use `invenio.extraEnvFrom` or `invenio.extraEnvVars` instead
   extra_env_from_secret: []
-  ## @param invenio.extraEnvVars Extra environment variables to be added to all the pods.
-  ##
+  # -- Extra environment variables to be added to all the pods
   extraEnvVars: []
-  ## @param invenio.uwsgiExtraConfig Extra configuration variables (key: value) to be added to the uWSGI configuration file.
-  ##
+  # -- Extra configuration variables (key: value) to be added to the uWSGI configuration file
   uwsgiExtraConfig: {}
-  ## @param invenio.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in all Invenio containers (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
 
-  ## @param invenio.extraVolumeMounts Extra volumeMounts for all Invenio containers.
-  ##
+  # -- Extra volumeMounts for all Invenio containers
   extraVolumeMounts: []
 
-  ## @param invenio.extraVolumes Extra volumes for all Invenio pods.
-  ##
+  # -- Extra volumes for all Invenio pods
   extraVolumes: []
 
-  ## @param invenio.vocabularies Vocabularies to be loaded as files under /app_data/vocabularies
+  # -- Vocabularies to be loaded as files under /app_data/vocabularies
   ## Example
   ## vocabularies:
   ##   resource_types.yaml: |
@@ -239,34 +210,27 @@ invenio:
   ##        - linkable
   vocabularies: {}
 
-## @section nginx configuration
-##
+## nginx configuration
+# @schema required
 nginx:
-  ## @param nginx.image TODO:
-  ##
+  # @schema required;minLength:1
+  # -- Nginx image
   image: "nginx:1.31.1"
-  ## @param nginx.max_conns TODO:
-  ##
+  # -- Maximum number of connections
   max_conns: 100
-  ## @param nginx.assets.location TODO:
-  ##
+  # -- Assets configuration
   assets:
+    # -- Location of the static assets
     location: /opt/invenio/var/instance/static
-  ## @param nginx.records.client_max_body_size TODO:
-  ##
+  # -- Records configuration
   records:
+    # -- Client max body size for records
     client_max_body_size: 100m
-  ## @param nginx.files.client_max_body_size TODO:
-  ##
+  # -- Files configuration
   files:
+    # -- Client max body size for files
     client_max_body_size: 50G
-  ## @param nginx.resources `resources` for the nginx container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the nginx container
   resources: {}
     # requests:
     #   cpu: 250m
@@ -274,75 +238,55 @@ nginx:
     # limits:
     #   cpu: 250m
     #   memory: 500Mi
-  ## @param nginx.extra_server_config DEPRECATED: Use nginx.extraServerConfig instead.
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use nginx.extraServerConfig instead
   extra_server_config: ""
-  ## @param nginx.extraServerConfig Extra configuration to be added to nginx.conf under the server section (templated).
-  ##
+  # -- Extra configuration to be added to nginx.conf under the server section (templated)
   extraServerConfig: ""
-  ## @param nginx.denied_ips TODO:
-  ##
+  # -- Denied IP addresses
   denied_ips: ""
-  ## @param nginx.denied_uas TODO:
-  ##
+  # -- Denied user agents
   denied_uas: ""
-  ## @extra nginx.securityContext SecurityContext for the nginx container
+  # -- SecurityContext for the nginx container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param nginx.securityContext.allowPrivilegeEscalation Set container's Security Context allowPrivilegeEscalation
-  ## @param nginx.securityContext.capabilities.drop List of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-## @section Web
-##
+
+## Web
 web:
-  ## @param web.image DEPRECATED: Use `.Values.image` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.image` instead!
   image: ""
-  ## @param web.imagePullSecret DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
   imagePullSecret: ""
-  ## @param web.replicas Number of web replicas to deploy
-  ##
+  # -- Number of web replicas to deploy
   replicas: 6
-  ## @param web.terminationGracePeriodSeconds Seconds Redmine pod needs to terminate gracefully
+  # -- Seconds the pod needs to terminate gracefully
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
-  ##
   terminationGracePeriodSeconds: 60
   uwsgi:
-    ## @param web.uwsgi.processes Number of uWSGI processes to run within each pod.
-    ##
+    # -- Number of uWSGI processes to run within each pod
     processes: 6
-    ## @param web.uwsgi.threads Number of uWSGI threads to run within each process.
-    ##
+    # -- Number of uWSGI threads to run within each process
     threads: 4
-  ## @param web.extraEnvVars Extra environment variables to be added to the pods.
-  ##
+  # -- Extra environment variables to be added to the web pods
   extraEnvVars: []
   autoscaler:
-    ## @param web.autoscaler.enabled Enable HPA
-    ##
+    # -- Enable HPA
     enabled: false
-    ## @param web.autoscaler.scaler_cpu_utilization Target CPU utilization percentage
-    ##
+    # -- Target CPU utilization percentage
     scaler_cpu_utilization: 65
-    ## @param web.autoscaler.max_web_replicas Maximum number of replicas
-    ##
+    # -- Maximum number of replicas
     max_web_replicas: 10
-    ## @param web.autoscaler.min_web_replicas Minimum number of replicas
-    ##
+    # -- Minimum number of replicas
     min_web_replicas: 2
-  ## @extra web.readinessProbe templated `readinessProbe` for the web container
+  # @schema type:[object, null]
+  # -- Templated `readinessProbe` for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-  ## @param web.readinessProbe.exec.command TODO:
-  ## @param web.readinessProbe.failureThreshold TODO:
-  ## @param web.readinessProbe.initialDelaySeconds TODO:
-  ## @param web.readinessProbe.periodSeconds TODO:
-  ## @param web.readinessProbe.successThreshold TODO:
-  ## @param web.readinessProbe.timeoutSeconds TODO:
-  ##
   readinessProbe:
     exec:
       command:
@@ -354,15 +298,9 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 1
-  ## @extra web.startupProbe Templated `startupProbe` for the web container
+  # @schema type:[object, null]
+  # -- Templated `startupProbe` for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-  ## @param web.startupProbe.exec.command TODO:
-  ## @param web.startupProbe.failureThreshold TODO:
-  ## @param web.startupProbe.initialDelaySeconds TODO:
-  ## @param web.startupProbe.periodSeconds TODO:
-  ## @param web.startupProbe.successThreshold TODO:
-  ## @param web.startupProbe.timeoutSeconds TODO:
-  ##
   startupProbe:
     exec:
       command:
@@ -374,20 +312,14 @@ web:
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 5
-  ## @param web.livenessProbe templated `livenessProbe` for the web container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `livenessProbe` for the web container
   livenessProbe: null
-  ## @param web.assets.location Location of the static assets
-  ##
+  # -- Assets configuration
   assets:
+    # -- Location of the static assets
     location: /opt/invenio/var/instance/static
-  ## @param web.resources `resources` for the web container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the web container
   resources: {}
     # requests:
     #   cpu: 500m
@@ -396,13 +328,7 @@ web:
     #   cpu: 1000m
     #   memory: 1Gi
   initContainers:
-    ## @param web.initContainers.resources `resources` for the copy-web-assets initContainer
-    ##
-    ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-    ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-    ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-    ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-    ##
+    # -- Resources for the copy-web-assets initContainer
     resources: {}
       # requests:
       #   cpu: '1'
@@ -410,166 +336,130 @@ web:
       # limits:
       #   cpu: '1'
       #   memory: 100Mi
-    ## @extra web.initContainers.securityContext securityContext for the initContainers in the web pod
+    # -- SecurityContext for the initContainers in the web pod
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-    ## @param web.initContainers.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation
-    ## @param web.initContainers.securityContext.capabilities.drop list of capabilities to be dropped
-    ##
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
           - ALL
-  ## @param web.annotations DEPRECATED: Use `.Values.web.service.annotations` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.web.service.annotations` instead!
   annotations: {}
-  ## @param web.podLabels Add extra labels to the Invenio webs pods
-  ##
+  # -- Add extra labels to the Invenio web pods
   podLabels: {}
-  ## @param web.podAnnotations Add extra annotations to the Invenio web pods
-  ##
+  # -- Add extra annotations to the Invenio web pods
   podAnnotations: {}
-  ## @param web.nodeSelector Node labels for web pods assignment
+  # -- Node labels for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-  ##
   nodeSelector: {}
-  ## @param web.tolerations Tolerations for web pods assignment
+  # -- Tolerations for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
   tolerations: []
+  # -- Affinity rules for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
   ## Invenio web service parameters
-  ##
   service:
-    ## @param web.service.annotations Add extra (templated) annotations to the web service
-    ##
+    # -- Add extra (templated) annotations to the web service
     annotations: {}
-    ## @param web.service.type Web service type
-    ##
+    # -- Web service type
     type: ClusterIP
-  ## @extra web.podSecurityContext securityContext for the web pod
+  # -- SecurityContext for the web pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param web.podSecurityContext.runAsNonRoot TODO:
-  ## @param web.podSecurityContext.runAsUser TODO:
-  ## @param web.podSecurityContext.runAsGroup TODO:
-  ## @param web.podSecurityContext.seccompProfile.type TODO:
-  ##
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @extra web.securityContext securityContext for the web container
+  # -- SecurityContext for the web container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param web.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @param web.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the web container (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in the web container (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
 
-  ## @param web.extraVolumeMounts Extra volumeMounts for the web container.
-  ##
+  # -- Extra volumeMounts for the web container
   extraVolumeMounts: []
 
-  ## @param web.extraVolumes Extra volumes for the web Pod.
-  ##
+  # -- Extra volumes for the web Pod
   extraVolumes: []
 
-  ## @extra web.deploymentSpec DEPRECATED: Use `.Values.web.deployment.spec` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.web.deployment.spec` instead!
   deploymentSpec:
-    ## @param web.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.minReadySeconds`
     minReadySeconds: null
-    ## @param web.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
+    # @schema type:[boolean, null]
+    # -- See API spec for `Deployment.spec.paused`
     paused: null
-    ## @param web.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
     progressDeadlineSeconds: null
-    ## @param web.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.revisionHistoryLimit`
     revisionHistoryLimit: null
-    ## @param web.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
+    # @schema type:[object, null]
+    # -- See API spec for `Deployment.spec.strategy`
     strategy: null
 
   deployment:
-    ## @param web.deployment.annotations Extra annotations for the web Deployment
-    ##
+    # -- Extra annotations for the web Deployment
     annotations: {}
-    ## @param web.deployment.labels Extra labels for the web Deployment
-    ##
+    # -- Extra labels for the web Deployment
     labels: {}
-    ## @extra web.deployment.spec Configuration for other configurable fields in the Deployment.spec.
-    ##
+    # -- Configuration for other configurable fields in the Deployment.spec
     spec:
-      ## @param web.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.minReadySeconds`
       minReadySeconds: null
-      ## @param web.deployment.spec.paused See API spec for `Deployment.spec.paused
-      ##
+      # @schema type:[boolean, null]
+      # -- See API spec for `Deployment.spec.paused`
       paused: null
-      ## @param web.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
       progressDeadlineSeconds: null
-      ## @param web.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.revisionHistoryLimit`
       revisionHistoryLimit: null
-      ## @param web.deployment.spec.strategy See API spec for `Deployment.spec.strategy
-      ##
+      # @schema type:[object, null]
+      # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## @Section Worker (Celery) configuration
-##
+## Worker (Celery) configuration
 worker:
-  ## @param worker.image DEPRECATED: Use `.Values.image` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.image` instead!
   image: ""
-  ## @param worker.imagePullSecret DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.image.imagePullSecrets` instead!
   imagePullSecret: ""
-  ## @param worker.app Name of the celery app to run.
-  ##
+  # -- Name of the celery app to run
   app: invenio_app.celery
-  ## @param worker.concurrency Number of concurrent tasks to run per worker.
-  ##
+  # -- Number of concurrent tasks to run per worker
   concurrency: 2
-  ## @param worker.log_level Celery app lof level.
-  ##
+  # -- Celery app log level
   log_level: INFO
-  ## @param worker.replicas Number of web replicas to deploy.
-  ##
+  # -- Number of worker replicas to deploy
   replicas: 2
-  ## @param worker.run_mount_path
-  ##
+  # -- Mount path for celery run files
   run_mount_path: /var/run/celery
-  ## @param worker.celery_pidfile
-  ##
+  # -- Path to celery PID file
   celery_pidfile: /var/run/celery/celerybeat.pid
-  ## @param worker.celery_schedule
-  ##
+  # -- Path to celery schedule file
   celery_schedule: /var/run/celery/celery-schedule
-  ## @param worker.extraEnvVars Extra environment variables to be added to the pods.
-  ##
+  # -- Extra environment variables to be added to the worker pods
   extraEnvVars: []
-  ## @param worker.resources `resources` for the worker container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the worker container
   resources: {}
     # requests:
     #   cpu: 500m
@@ -577,66 +467,50 @@ worker:
     # limits:
     #   cpu: 1000m
     #   memory: 1Gi
-  ## @extra worker.podSecurityContext securityContext for the worker Pod
+  # -- SecurityContext for the worker Pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param worker.podSecurityContext.runAsNonRoot TODO:
-  ## @param worker.podSecurityContext.runAsUser TODO:
-  ## @param worker.podSecurityContext.runAsGroup TODO:
-  ## @param worker.podSecurityContext.seccompProfile.type TODO:
-  ##
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @extra worker.securityContext securityContext for the worker container
+  # -- SecurityContext for the worker container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param worker.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param worker.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @param worker.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker container (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in the worker container (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
 
-  ## @param worker.extraVolumeMounts Extra volumeMounts for the worker container.
-  ##
+  # -- Extra volumeMounts for the worker container
   extraVolumeMounts: []
 
-  ## @param worker.extraVolumes Extra volumes for the worker Pod.
-  ##
+  # -- Extra volumes for the worker Pod
   extraVolumes: []
 
-
-  ## @param worker.podLabels Add extra labels to the Invenio workers pods
-  ##
+  # -- Add extra labels to the Invenio worker pods
   podLabels: {}
-  ## @param worker.podAnnotations Add extra annotations to the Invenio worker pods
-  ##
+  # -- Add extra annotations to the Invenio worker pods
   podAnnotations: {}
-  ## @param worker.nodeSelector Node labels for worker pods assignment
+  # -- Node labels for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-  ##
   nodeSelector: {}
-  ## @param worker.tolerations Tolerations for worker pods assignment
+  # -- Tolerations for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
   tolerations: []
-  ## @extra worker.livenessProbe templated `livenessProbe` for the worker container
+  # -- Affinity rules for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+  # @schema type:[object, null]
+  # -- Templated `livenessProbe` for the worker container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-  ## @param worker.livenessProbe.exec.command TODO:
-  ## @param worker.livenessProbe.initialDelaySeconds TODO:
-  ## @param worker.livenessProbe.timeoutSeconds TODO:
-  ##
   livenessProbe:
     exec:
       command:
@@ -645,69 +519,59 @@ worker:
         - "celery -A {{ .Values.worker.app }} inspect ping -d celery@$(hostname)"
     initialDelaySeconds: 20
     timeoutSeconds: 30
-  ## @param worker.readinessProbe templated `readinessProbe` for the worker container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `readinessProbe` for the worker container
   readinessProbe: null
-  ## @param worker.startupProbe templated `startupProbe` for the worker container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `startupProbe` for the worker container
   startupProbe: null
 
-  ## @extra worker.deploymentSpec DEPRECATED: Use `.Values.worker.deployment.spec` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.worker.deployment.spec` instead!
   deploymentSpec:
-    ## @param worker.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.minReadySeconds`
     minReadySeconds: null
-    ## @param worker.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
+    # @schema type:[boolean, null]
+    # -- See API spec for `Deployment.spec.paused`
     paused: null
-    ## @param worker.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
     progressDeadlineSeconds: null
-    ## @param worker.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.revisionHistoryLimit`
     revisionHistoryLimit: null
-    ## @param worker.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
+    # @schema type:[object, null]
+    # -- See API spec for `Deployment.spec.strategy`
     strategy: null
 
   deployment:
-    ## @param worker.deployment.annotations Extra annotations for the worker Deployment
-    ##
+    # -- Extra annotations for the worker Deployment
     annotations: {}
-    ## @param worker.deployment.labels Extra labels for the worker Deployment
-    ##
+    # -- Extra labels for the worker Deployment
     labels: {}
-    ## @extra worker.deployment.spec Configuration for other configurable fields in the Deployment.spec.
-    ##
+    # -- Configuration for other configurable fields in the Deployment.spec
     spec:
-      ## @param worker.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.minReadySeconds`
       minReadySeconds: null
-      ## @param worker.deployment.spec.paused See API spec for `Deployment.spec.paused
-      ##
+      # @schema type:[boolean, null]
+      # -- See API spec for `Deployment.spec.paused`
       paused: null
-      ## @param worker.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
       progressDeadlineSeconds: null
-      ## @param worker.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.revisionHistoryLimit`
       revisionHistoryLimit: null
-      ## @param worker.deployment.spec.strategy See API spec for `Deployment.spec.strategy
-      ##
+      # @schema type:[object, null]
+      # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
 workerBeat:
-  ## @param workerBeat.extraEnvVars Extra environment variables to be added to the pods.
-  ##
+  # -- Extra environment variables to be added to the worker-beat pods
   extraEnvVars: []
-  ## @param workerBeat.resources `resources` for the worker-beat container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the worker-beat container
   resources: {}
     # limits:
     #   cpu: "2"
@@ -715,65 +579,50 @@ workerBeat:
     # requests:
     #   cpu: 500m
     #   memory: 200Mi
-  ## @extra workerBeat.securityContext securityContext for the worker-beat container
+  # -- SecurityContext for the worker-beat container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param workerBeat.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param workerBeat.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @extra workerBeat.podSecurityContext securityContext for the worker-beat pod
+  # -- SecurityContext for the worker-beat pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param workerBeat.podSecurityContext.runAsNonRoot TODO:
-  ## @param workerBeat.podSecurityContext.runAsUser TODO:
-  ## @param workerBeat.podSecurityContext.runAsGroup TODO:
-  ## @param workerBeat.podSecurityContext.seccompProfile.type TODO:
-  ##
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @param workerBeat.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in the worker-beat container (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
 
-  ## @param workerBeat.extraVolumeMounts Extra volumeMounts for the worker beat container.
-  ##
+  # -- Extra volumeMounts for the worker-beat container
   extraVolumeMounts: []
 
-  ## @param workerBeat.extraVolumes Extra volumes for the worker beat Pod.
-  ##
+  # -- Extra volumes for the worker-beat Pod
   extraVolumes: []
 
-  ## @param workerBeat.podLabels Add extra labels to the Invenio workerBeat pods
-  ##
+  # -- Add extra labels to the Invenio workerBeat pods
   podLabels: {}
-  ## @param workerBeat.podAnnotations Add extra annotations to the Invenio workerBeat pods
-  ##
+  # -- Add extra annotations to the Invenio workerBeat pods
   podAnnotations: {}
-  ## @param workerBeat.nodeSelector Node labels for workerBeat pods assignment
+  # -- Node labels for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-  ##
   nodeSelector: {}
-  ## @param workerBeat.tolerations Tolerations for workerBeat pods assignment
+  # -- Tolerations for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
   tolerations: []
-  ## @extra workerBeat.livenessProbe templated `livenessProbe` for the worker-beat container
+  # -- Affinity rules for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+  # @schema type:[object, null]
+  # -- Templated `livenessProbe` for the worker-beat container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-  ## @param workerBeat.livenessProbe.exec.command TODO:
-  ## @param workerBeat.livenessProbe.initialDelaySeconds TODO:
-  ## @param workerBeat.livenessProbe.timeoutSeconds TODO:
-  ##
   livenessProbe:
     exec:
       command:
@@ -782,77 +631,68 @@ workerBeat:
         - "celery -A {{ .Values.worker.app }} inspect ping"
     initialDelaySeconds: 20
     timeoutSeconds: 30
-  ## @param workerBeat.readinessProbe templated `readinessProbe` for the worker-beat container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `readinessProbe` for the worker-beat container
   readinessProbe: null
-  ## @param workerBeat.startupProbe templated `startupProbe` for the worker-beat container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `startupProbe` for the worker-beat container
   startupProbe: null
 
-  ## @extra workerBeat.deploymentSpec DEPRECATED: Use `.Values.workerBeat.deployment.spec` instead!
-  ##
+  # -- Override the worker-beat command
+  commandOverride: ""
+
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.workerBeat.deployment.spec` instead!
   deploymentSpec:
-    ## @param workerBeat.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.minReadySeconds`
     minReadySeconds: null
-    ## @param workerBeat.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
+    # @schema type:[boolean, null]
+    # -- See API spec for `Deployment.spec.paused`
     paused: null
-    ## @param workerBeat.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
     progressDeadlineSeconds: null
-    ## @param workerBeat.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.revisionHistoryLimit`
     revisionHistoryLimit: null
-    ## @param workerBeat.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
+    # @schema type:[object, null]
+    # -- See API spec for `Deployment.spec.strategy`
     strategy: null
 
   deployment:
-    ## @param workerBeat.deployment.annotations Extra annotations for the workerBeat Deployment
-    ##
+    # -- Extra annotations for the workerBeat Deployment
     annotations: {}
-    ## @param workerBeat.deployment.labels Extra labels for the workerBeat Deployment
-    ##
+    # -- Extra labels for the workerBeat Deployment
     labels: {}
-    ## @extra workerBeat.deployment.spec Configuration for other configurable fields in the Deployment.spec.
-    ##
+    # -- Configuration for other configurable fields in the Deployment.spec
     spec:
-      ## @param workerBeat.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.minReadySeconds`
       minReadySeconds: null
-      ## @param workerBeat.deployment.spec.paused See API spec for `Deployment.spec.paused
-      ##
+      # @schema type:[boolean, null]
+      # -- See API spec for `Deployment.spec.paused`
       paused: null
-      ## @param workerBeat.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
       progressDeadlineSeconds: null
-      ## @param workerBeat.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.revisionHistoryLimit`
       revisionHistoryLimit: null
-      ## @param workerBeat.deployment.spec.strategy See API spec for `Deployment.spec.strategy
-      ##
+      # @schema type:[object, null]
+      # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## @section Terminal
-## Pods for runnning maintenance tasks.
+## Terminal
+## Pods for running maintenance tasks.
 terminal:
-  ## @param terminal.enabled Enable the terminal deployment.
-  ##
+  # -- Enable the terminal deployment
   enabled: false
-  ## @param terminal.replicas Number of replicas. Start with 0 to avoid resource usage
-  ##
+  # -- Number of replicas. Start with 0 to avoid resource usage
   replicas: 0
-  ## @param terminal.extraEnvVars Extra environment variables to be added to the pods.
-  ##
+  # -- Extra environment variables to be added to the terminal pods
   extraEnvVars: []
-  ## @param terminal.resources `resources` for the terminal container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the terminal container
   resources: {}
     # requests:
     #   cpu: 500m
@@ -861,13 +701,7 @@ terminal:
     #   cpu: 1000m
     #   memory: 1Gi
   initContainers:
-    ## @param terminal.initContainers.resources `resources` for the copy-terminal-assets initContainer
-    ##
-    ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-    ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-    ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-    ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-    ##
+    # -- Resources for the copy-terminal-assets initContainer
     resources: {}
       # requests:
       #   cpu: '1'
@@ -875,211 +709,165 @@ terminal:
       # limits:
       #   cpu: '1'
       #   memory: 100Mi
-    ## @extra terminal.initContainers.securityContext securityContext for the initContainers in the terminal pod
+    # -- SecurityContext for the initContainers in the terminal pod
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-    ## @param terminal.initContainers.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation
-    ## @param terminal.initContainers.securityContext.capabilities.drop list of capabilities to be dropped
-    ##
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
           - ALL
-  ## @param terminal.nodeSelector Node labels for terminal pods assignment
+  # -- Node labels for terminal pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-  ##
   nodeSelector: {}
-  ## @param terminal.tolerations Tolerations for terminal pods assignment
+  # -- Tolerations for terminal pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
   tolerations: []
-  ## @param terminal.livenessProbe templated `livenessProbe` for the terminal container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `livenessProbe` for the terminal container
   livenessProbe: null
-  ## @param terminal.readinessProbe templated `readinessProbe` for the terminal container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `readinessProbe` for the terminal container
   readinessProbe: null
-  ## @param terminal.startupProbe templated `startupProbe` for the terminal container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `startupProbe` for the terminal container
   startupProbe: null
-  ## @extra terminal.podSecurityContext securityContext for the terminal pod
+  # -- SecurityContext for the terminal pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param terminal.podSecurityContext.runAsNonRoot TODO:
-  ## @param terminal.podSecurityContext.runAsUser TODO:
-  ## @param terminal.podSecurityContext.runAsGroup TODO:
-  ## @param terminal.podSecurityContext.seccompProfile.type TODO:
-  ##
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @extra terminal.securityContext securityContext for the terminal container
+  # -- SecurityContext for the terminal container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param terminal.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @param terminal.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the terminal container (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in the terminal container (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
 
-  ## @param terminal.extraVolumeMounts Extra volumeMounts for the terminal container.
-  ##
+  # -- Extra volumeMounts for the terminal container
   extraVolumeMounts: []
 
-  ## @param terminal.extraVolumes Extra volumes for the terminal Pod.
-  ##
+  # -- Extra volumes for the terminal Pod
   extraVolumes: []
 
-  ## @extra terminal.deploymentSpec DEPRECATED: Use `.Values.terminal.deployment.spec` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.terminal.deployment.spec` instead!
   deploymentSpec:
-    ## @param terminal.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.minReadySeconds`
     minReadySeconds: null
-    ## @param terminal.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
+    # @schema type:[boolean, null]
+    # -- See API spec for `Deployment.spec.paused`
     paused: null
-    ## @param terminal.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
     progressDeadlineSeconds: null
-    ## @param terminal.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.revisionHistoryLimit`
     revisionHistoryLimit: null
-    ## @param terminal.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
+    # @schema type:[object, null]
+    # -- See API spec for `Deployment.spec.strategy`
     strategy: null
 
   deployment:
-    ## @param terminal.deployment.annotations Extra annotations for the terminal Deployment
-    ##
+    # -- Extra annotations for the terminal Deployment
     annotations: {}
-    ## @param terminal.deployment.labels Extra labels for the terminal Deployment
-    ##
+    # -- Extra labels for the terminal Deployment
     labels: {}
-    ## @extra terminal.deployment.spec Configuration for other configurable fields in the Deployment.spec.
-    ##
+    # -- Configuration for other configurable fields in the Deployment.spec
     spec:
-      ## @param terminal.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.minReadySeconds`
       minReadySeconds: null
-      ## @param terminal.deployment.spec.paused See API spec for `Deployment.spec.paused
-      ##
+      # @schema type:[boolean, null]
+      # -- See API spec for `Deployment.spec.paused`
       paused: null
-      ## @param terminal.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
       progressDeadlineSeconds: null
-      ## @param terminal.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.revisionHistoryLimit`
       revisionHistoryLimit: null
-      ## @param terminal.deployment.spec.strategy See API spec for `Deployment.spec.strategy
-      ##
+      # @schema type:[object, null]
+      # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## @Section Persistence
-##
+## Persistence
 persistence:
-  ## @param persistence.enabled Enable persistence volume claim
-  ##
+  # -- Enable persistence volume claim
   enabled: true
-  ## @param persistence.name Name of the PVC
-  ##
+  # -- Name of the PVC
   name: "shared-volume"
-  ## @param persistence.access_mode Persistent Volume Access Modes
-  ##
+  # -- Persistent Volume Access Modes
   access_mode: ReadWriteMany
-  ## @param persistence.annotations Additional Persistent Volume Claim annotations
-  ##
+  # -- Additional Persistent Volume Claim annotations
   annotations: {}
-  ## @param persistence.size Size of the volume
-  ##
+  # -- Size of the volume
   size: 10G
-  ## @param persistence.storage_class Storage class of backing PVC
+  # -- Storage class of backing PVC
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
-  ##
   storage_class: ""
-  ## @param persistence.useExistingClaim Use an existing PVC to use for persistence.
-  ##
+  # -- Use an existing PVC to use for persistence
   useExistingClaim: false
-  ## @param persistence.useSubPath Enable or disable usage of subPath for PVC mounts.
+  # -- Enable or disable usage of subPath for PVC mounts
   ## When enabled, each logical path is mounted using Kubernetes subPath,
   ## providing directory-level isolation within a single PVC.
   ## When disabled, the entire PVC is mounted at the base path and the
   ## application is responsible for managing internal directory structure.
   ## This option can improve compatibility with Kubernetes volume metrics
   ## (e.g. kubelet_volume_stats_used_bytes) in some CSI environments such as Ceph CSI.
-  ##
   useSubPath: true
 
-## @section Redis configuration
+## Redis configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
-  ## @param redis.enabled Enable redis helm chart
-  ##
+  # -- Enable redis helm chart
   enabled: true
   auth:
-    ## @param redis.auth.enabled Enable password authentication
-    ##
+    # -- Enable password authentication
     enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
   image:
-    ## @param redis.image.repository Sets bitnamilegacy by default
-    ##
+    # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/redis  # Work-around until we've migrated away from Bitnami.
   master:
-    ## @param redis.master.disableCommands
+    # -- Disable commands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
   replica:
-    ## @param redis.replica.disableCommands
+    # -- Disable commands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
 
-
-## @param redisExternal External redis configuration
+# -- External redis configuration
 ## All of these values are only used when redis.enabled is set to false
-## @extra redisExternal.hostname
 redisExternal: {}
   # hostname: ""
 
-## @section RabbitMQ chart configuration
+## RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
-##
 rabbitmq:
-  ## @param rabbitmq.enabled Enable RabbitMQ helm chart
-  ##
+  # -- Enable RabbitMQ helm chart
   enabled: true
-  ## @param rabbitmq.auth.password
   auth:
+    # -- RabbitMQ password
     password: ""
   image:
-    ## @param rabbitmq.image.repository Sets bitnamilegacy by default
-    ##
+    # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/rabbitmq  # Work-around until we've migrated away from Bitnami.
 
-## @param rabbitmqExternal External RabbitMQ configuration
+# -- External RabbitMQ configuration
 ## All of these values are only used when rabbitmq.enabled is set to false
-## @extra rabbitmqExternal.username RabbitMQ user
-## @extra rabbitmqExternal.password Password
-## @extra rabbitmqExternal.amqpPort
-## @extra rabbitmqExternal.managementPort
-## @extra rabbitmqExternal.hostname
-## @extra rabbitmqExternal.protocol
-## @extra rabbitmqExternal.vhost
-## @extra rabbitmqExternal.existingSecret Name of an existing secret resource containing the credentials
-## @extra rabbitmqExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
-##
 rabbitmqExternal: {}
   # username: invenio
   # password: ""
@@ -1091,34 +879,21 @@ rabbitmqExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "amqp-password"
 
-## @section Flower configuration
-##
+## Flower configuration
 flower:
-  ## @param flower.enabled Enable Flower.
-  ##
+  # -- Enable Flower
   enabled: true
-  ## @param flower.image
-  ##
+  # -- Flower image
   image: "mher/flower:2.0"
-  ## @param flower.secret_name
-  ##
+  # -- Flower secret name
   secret_name: "flower-secrets"
-  ## @param flower.default_username
-  ##
+  # -- Flower default username
   default_username: "flower"
-  ## @param flower.default_password
-  ##
+  # -- Flower default password
   default_password: "flower_password"
-  ## @param flower.host
-  ##
+  # -- Flower host
   host: ""
-  ## @param flower.resources `resources` for the flower-management container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the flower container
   resources: {}
     # requests:
     #   memory: 125Mi
@@ -1126,133 +901,112 @@ flower:
     # limits:
     #   memory: 250Mi
     #   cpu: 0.1
-  ## @param flower.extraEnvFrom Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated).
-  ##
+  # -- Extra secretRef or configMapRef for the `envFrom` field in the flower container (templated)
   extraEnvFrom: []
     # - secretRef:
     #     name: foo
     # - configMapRef:
     #     name: bar
-  ## @extra flower.podSecurityContext securityContext for the flower pod
+  # -- SecurityContext for the flower pod
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param flower.podSecurityContext.runAsNonRoot TODO:
-  ## @param flower.podSecurityContext.runAsUser TODO:
-  ## @param flower.podSecurityContext.runAsGroup TODO:
-  ## @param flower.podSecurityContext.seccompProfile.type TODO:
-  ##
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
     seccompProfile:
       type: "RuntimeDefault"
-  ## @extra flower.securityContext securityContext for the flower container
+  # -- SecurityContext for the flower container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param flower.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param terminal.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param flower.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
-  ## @param flower.nodeSelector Node labels for flower pods assignment
+  # -- Node labels for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-  ##
   nodeSelector: {}
-  ## @param flower.tolerations Tolerations for flower pods assignment
+  # -- Tolerations for flower pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
   tolerations: []
-  ## @param flower.livenessProbe templated `livenessProbe` for the flower-management container
-  ##
+  # -- Add extra labels to the Invenio flower pods
+  podLabels: {}
+  # -- Add extra annotations to the Invenio flower pods
+  podAnnotations: {}
+  # @schema type:[object, null]
+  # -- Templated `livenessProbe` for the flower container
   livenessProbe: null
-  ## @param flower.readinessProbe templated `readinessProbe` for the flower-management container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `readinessProbe` for the flower container
   readinessProbe: null
-  ## @param flower.startupProbe templated `startupProbe` for the flower-management container
-  ##
+  # @schema type:[object, null]
+  # -- Templated `startupProbe` for the flower container
   startupProbe: null
-  ## @extra flower.deploymentSpec DEPRECATED: Use `.Values.flower.deployment.spec` instead!
-  ##
+  # @schema deprecated
+  # -- DEPRECATED: Use `.Values.flower.deployment.spec` instead!
   deploymentSpec:
-    ## @param flower.deploymentSpec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.minReadySeconds`
     minReadySeconds: null
-    ## @param flower.deploymentSpec.paused See API spec for `Deployment.spec.paused
-    ##
+    # @schema type:[boolean, null]
+    # -- See API spec for `Deployment.spec.paused`
     paused: null
-    ## @param flower.deploymentSpec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
     progressDeadlineSeconds: null
-    ## @param flower.deploymentSpec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-    ##
+    # @schema type:[integer, null]
+    # -- See API spec for `Deployment.spec.revisionHistoryLimit`
     revisionHistoryLimit: null
-    ## @param flower.deploymentSpec.strategy See API spec for `Deployment.spec.strategy
-    ##
+    # @schema type:[object, null]
+    # -- See API spec for `Deployment.spec.strategy`
     strategy: null
 
   deployment:
-    ## @param flower.deployment.annotations Extra annotations for the flower Deployment
-    ##
+    # -- Extra annotations for the flower Deployment
     annotations: {}
-    ## @param flower.deployment.labels Extra labels for the flower Deployment
-    ##
+    # -- Extra labels for the flower Deployment
     labels: {}
-    ## @extra flower.deployment.spec Configuration for other configurable fields in the Deployment.spec.
-    ##
+    # -- Configuration for other configurable fields in the Deployment.spec
     spec:
-      ## @param flower.deployment.spec.minReadySeconds See API spec for `Deployment.spec.minReadySeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.minReadySeconds`
       minReadySeconds: null
-      ## @param flower.deployment.spec.paused See API spec for `Deployment.spec.paused
-      ##
+      # @schema type:[boolean, null]
+      # -- See API spec for `Deployment.spec.paused`
       paused: null
-      ## @param flower.deployment.spec.progressDeadlineSeconds See API spec for `Deployment.spec.progressDeadlineSeconds
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.progressDeadlineSeconds`
       progressDeadlineSeconds: null
-      ## @param flower.deployment.spec.revisionHistoryLimit See API spec for `Deployment.spec.revisionHistoryLimit
-      ##
+      # @schema type:[integer, null]
+      # -- See API spec for `Deployment.spec.revisionHistoryLimit`
       revisionHistoryLimit: null
-      ## @param flower.deployment.spec.strategy See API spec for `Deployment.spec.strategy
-      ##
+      # @schema type:[object, null]
+      # -- See API spec for `Deployment.spec.strategy`
       strategy: null
 
-## @section PostgreSQL chart configuration
+## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
-## @param postgresql.enabled Switch to enable or disable the PostgreSQL helm chart
-## @param postgresql.auth.username Name for a custom user to create
-## @param postgresql.auth.password Password for the custom user to create
-## @param postgresql.auth.database Name for a custom database to create
-## @param postgresql.auth.existingSecret Name os the existing secret to get the password from.
-##
 postgresql:
+  # -- Switch to enable or disable the PostgreSQL helm chart
   enabled: true
   auth:
+    # -- Name for a custom user to create
     username: invenio
+    # -- Password for the custom user to create
     password: ""
+    # -- Name for a custom database to create
     database: invenio
+    # -- Name of the existing secret to get the password from
     existingSecret: ""
   image:
-    ## @param postgresql.image.repository Sets bitnamilegacy by default
-    ##
+    # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/postgresql  # Work-around until we've migrated away from Bitnami.
   snapshots:
     image:
-      ## @param postgresql.snapshots.image.repository Sets bitnamilegacy by default
-      ##
+      # -- Sets bitnamilegacy by default
       repository: bitnamilegacy/os-shell
 
-## @param postgresqlExternal External PostgreSQL configuration
+# -- External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
-## @extra postgresqlExternal.host Database host
-## @extra postgresqlExternal.port Database port number
-## @extra postgresqlExternal.user Non-root username for Invenio
-## @extra postgresqlExternal.password Password for the non-root username for Invenio
-## @extra postgresqlExternal.database Invenio instance database name
-## @extra postgresqlExternal.existingSecret Name of an existing secret resource containing the database credentials
-## @extra postgresqlExternal.existingSecretPasswordKey Name of an existing secret key containing the database credentials
-##
 postgresqlExternal: {}
   # hostname: ""
   # port: 5432
@@ -1262,36 +1016,24 @@ postgresqlExternal: {}
   # existingSecret: ""
   # existingSecretPasswordKey: "password"
 
-## @section Opensearch chart configuration
+## Opensearch chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
-## @param opensearch.enabled Switch to enable or disable the Opensearch helm chart
 opensearch:
+  # -- Switch to enable or disable the Opensearch helm chart
   enabled: true
   dashboards:
     image:
-      ## @param opensearch.dashboards.image.repository Sets bitnamilegacy by default
-      ##
+      # -- Sets bitnamilegacy by default
       repository: bitnamilegacy/opensearch-dashboards
   image:
-    ## @param opensearch.image.repository Sets bitnamilegacy by default
-    ##
+    # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/opensearch  # Work-around until we've migrated away from Bitnami.
   sysctlImage:
-    ## @param opensearch.sysctlImage.repository Sets bitnamilegacy by default
-    ##
+    # -- Sets bitnamilegacy by default
     repository: bitnamilegacy/os-shell  # Work-around until we've migrated away from Bitnami.
 
-## @param opensearchExternal External Opensearch configuration
+# -- External Opensearch configuration
 ## All of these values are only used when opensearch.enabled is set to false
-## @extra opensearchExternal.auth.enabled Enable credentials for http_auth to the OpenSearch endpoint.
-## @extra opensearchExternal.auth.usernameEnv Stanza for the username variable for authentication to the OpenSearch endpoint. Same format as EnvVar items in the containers[].env field.
-## @extra opensearchExternal.auth.passwordEnv Stanza for the password variable for authentication to the OpenSearch endpoint. Same format as EnvVar items in the containers[].env field.
-## @extra opensearchExternal.encryption.enabled Enables TLS encryption for the connection to the OpenSearch endpoint.
-## @extra opensearchExternal.encryption.caCert.mountPath Mount path for the OpenSearch endpoint's CA certificate.
-## @extra opensearchExternal.encryption.caCert.secretKey The key in the secret containing the OpenSearch endpoint's CA certificate.
-## @extra opensearchExternal.encryption.caCert.secretName The name of the secret containing the OpenSearch endpoint's CA certificate.
-## @extra opensearchExternal.hostname The hostname of the OpenSearch endpoint.
-## @extra opensearchExternal.port The port number of the OpenSearch endpoint.
 opensearchExternal: {}
   # auth:
   #   enabled: false
@@ -1314,28 +1056,17 @@ opensearchExternal: {}
   # port: 9200
 
 kerberos:
-  ## @param kerberos.enabled
-  ##
+  # -- Enable Kerberos integration
   enabled: false
-  ## @param kerberos.secret_name
-  ##
+  # -- Kerberos secret name
   secret_name: ""
-  ## @param kerberos.image
-  ##
+  # -- Kerberos sidecar image
   image: ""
-  ## @param kerberos.args
-  ##
+  # -- Kerberos sidecar args
   args: []
-  ## @param kerberos.initArgs
-  ##
+  # -- Kerberos init container args
   initArgs: []
-  ## @param kerberos.resources `resources` for the kerberos-credentials container
-  ##
-  ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-  ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-  ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-  ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-  ##
+  # -- Resources for the kerberos-credentials container
   resources: {}
     # limits:
     #   cpu: 100m
@@ -1343,24 +1074,15 @@ kerberos:
     # requests:
     #   cpu: 10m
     #   memory: 2Mi
-  ## @extra kerberos.securityContext securityContext for the kerberos container
+  # -- SecurityContext for the kerberos container
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  ## @param kerberos.securityContext.allowPrivilegeEscalation set container's security context allowprivilegeescalation # @param web.securityContext.capabilities.drop list of capabilities to be dropped
-  ## @param kerberos.securityContext.capabilities.drop list of capabilities to be dropped
-  ##
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
   initContainers:
-    ## @param kerberos.initContainers.resources `resources` for the init-kerberos-credentials initContainers
-    ##
-    ## We have decided to unset resources by default, leaving that as a conscious choice for the user.
-    ## One reason for this is that we want it to be possible to install the chart in minimal environments like minikube.
-    ## Another reason for this choice is that it's practically impossible to know which resource requests/limits are right, since that is entirely dependent on the hardware resources available in the target cluster as well as how the application is used (ammount of traffic, number of concurrent users, size of uploaded artifacts, etc.).
-    ## Therefore, we think it's better that users get to set the resources explicitly for each container.
-    ##
+    # -- Resources for the init-kerberos-credentials initContainers
     resources: {}
       # limits:
       #   cpu: 100m

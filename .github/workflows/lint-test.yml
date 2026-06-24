@@ -36,8 +36,16 @@ jobs:
       - name: Install Helm plugins
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest.git
+          helm plugin install https://github.com/losisin/helm-values-schema-json.git
           pip install pyyaml
           helm plugin install https://github.com/jtyr/kubeconform-helm.git
+
+      - name: Verify schema is up-to-date
+        working-directory: charts/invenio
+        run: |
+          helm schema -f values.yaml -o /tmp/values.schema.json --use-helm-docs
+          diff values.schema.json /tmp/values.schema.json || \
+            (echo "::error::Schema is out of date. Run: cd charts/invenio && helm schema --use-helm-docs" && exit 1)
 
       - name: Run unit tests
         run: helm unittest charts/invenio
