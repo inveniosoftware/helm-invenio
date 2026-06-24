@@ -1,0 +1,10 @@
+invenio:
+  hostname: "ci-test.example.com"
+
+rabbitmq:
+  auth:
+    password: "ci-test-password"
+
+postgresql:
+  auth:
+    password: "ci-test-password"
