@@ -1,0 +1,118 @@
+suite: web deployment
+templates:
+  - templates/web-deployment.yaml
+  - templates/invenio-configmap.yaml
+  - templates/nginx-configmap.yaml
+  - templates/uwsgi-configmap.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  rabbitmq.auth.password: "test"
+  postgresql.auth.password: "test"
+tests:
+  - it: renders a Deployment with correct component label
+    asserts:
+      - isKind:
+          of: Deployment
+        template: templates/web-deployment.yaml
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: web
+        template: templates/web-deployment.yaml
+
+  - it: sets replicas from values
+    set:
+      web.replicas: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+        template: templates/web-deployment.yaml
+
+  - it: adds nodeSelector when set
+    set:
+      web.nodeSelector:
+        node-role: web
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            node-role: web
+        template: templates/web-deployment.yaml
+
+  - it: adds tolerations when set
+    set:
+      web.tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "web"
+          effect: "NoSchedule"
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: dedicated
+        template: templates/web-deployment.yaml
+
+  - it: adds pod annotations when set
+    set:
+      web.podAnnotations:
+        prometheus.io/scrape: "true"
+    asserts:
+      - exists:
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+        template: templates/web-deployment.yaml
+
+  - it: adds pod labels when set
+    set:
+      web.podLabels:
+        custom-label: "test"
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["custom-label"]
+          value: "test"
+        template: templates/web-deployment.yaml
+
+  - it: adds extra env vars to web container
+    set:
+      web.extraEnvVars:
+        - name: MY_VAR
+          value: my-value
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MY_VAR
+            value: my-value
+        template: templates/web-deployment.yaml
+
+  - it: omits shared-volume when persistence is disabled
+    set:
+      persistence.enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: shared-volume
+          any: true
+        template: templates/web-deployment.yaml
+
+  - it: adds deployment annotations when set
+    set:
+      web.deployment.annotations:
+        custom-annotation: "test"
+    asserts:
+      - equal:
+          path: metadata.annotations["custom-annotation"]
+          value: "test"
+        template: templates/web-deployment.yaml
+
+  - it: adds deployment labels when set
+    set:
+      web.deployment.labels:
+        custom-label: "test"
+    asserts:
+      - equal:
+          path: metadata.labels["custom-label"]
+          value: "test"
+        template: templates/web-deployment.yaml
