@@ -61,6 +61,18 @@ web:
     scaler_cpu_utilization: 65
     max_web_replicas: 10
     min_web_replicas: 2
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - web
+            topologyKey: kubernetes.io/hostname
   nodeSelector:
     node-role: web
   tolerations:
@@ -85,6 +97,18 @@ web:
           maxUnavailable: 0
 
 worker:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - worker
+            topologyKey: kubernetes.io/hostname
   nodeSelector:
     node-role: worker
   tolerations:
@@ -98,6 +122,18 @@ worker:
     ci-test: "true"
 
 workerBeat:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - worker-beat
+            topologyKey: kubernetes.io/hostname
   nodeSelector:
     node-role: worker-beat
   tolerations:

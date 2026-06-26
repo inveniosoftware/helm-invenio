@@ -50,6 +50,10 @@ spec:
         app.kubernetes.io/component: web
     spec:
       terminationGracePeriodSeconds: {{ .Values.web.terminationGracePeriodSeconds }}
+      {{- with .Values.web.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       {{- with .Values.web.nodeSelector }}
       nodeSelector:
         {{- tpl (toYaml .) $ | nindent 8 -}}

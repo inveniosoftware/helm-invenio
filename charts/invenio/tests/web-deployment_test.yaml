@@ -86,6 +86,30 @@ tests:
             value: my-value
         template: templates/web-deployment.yaml
 
+  - it: adds affinity when set
+    set:
+      web.affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight
+          value: 100
+        template: templates/web-deployment.yaml
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey
+          value: kubernetes.io/hostname
+        template: templates/web-deployment.yaml
+
   - it: omits shared-volume when persistence is disabled
     set:
       persistence.enabled: false

@@ -59,6 +59,30 @@ tests:
           path: spec.template.metadata.annotations["prometheus.io/scrape"]
         template: templates/worker-beat-deployment.yaml
 
+  - it: adds affinity when set
+    set:
+      workerBeat.affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - worker-beat
+                topologyKey: kubernetes.io/hostname
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight
+          value: 100
+        template: templates/worker-beat-deployment.yaml
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey
+          value: kubernetes.io/hostname
+        template: templates/worker-beat-deployment.yaml
+
   - it: adds extra env vars
     set:
       workerBeat.extraEnvVars:

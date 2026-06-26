@@ -47,6 +47,10 @@ spec:
         {{- end }}
         app.kubernetes.io/component: worker-beat
     spec:
+      {{- with .Values.workerBeat.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+      {{- end }}
       {{- with .Values.workerBeat.nodeSelector }}
       nodeSelector:
         {{- tpl (toYaml .) $ | nindent 8 -}}

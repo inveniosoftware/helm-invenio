@@ -429,6 +429,26 @@ web:
   ## @param web.podAnnotations Add extra annotations to the Invenio web pods
   ##
   podAnnotations: {}
+  ## @param web.affinity Affinity rules for web pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  ## Useful for spreading replicas across nodes to improve availability.
+  ## Example — prefer scheduling web pods on different nodes:
+  ##
+  ##   affinity:
+  ##     podAntiAffinity:
+  ##       preferredDuringSchedulingIgnoredDuringExecution:
+  ##         - weight: 100
+  ##           podAffinityTerm:
+  ##             labelSelector:
+  ##               matchExpressions:
+  ##                 - key: app.kubernetes.io/component
+  ##                   operator: In
+  ##                   values:
+  ##                     - web
+  ##             topologyKey: kubernetes.io/hostname
+  ##
+  affinity: {}
   ## @param web.nodeSelector Node labels for web pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -623,6 +643,10 @@ worker:
   ## @param worker.podAnnotations Add extra annotations to the Invenio worker pods
   ##
   podAnnotations: {}
+  ## @param worker.affinity Affinity rules for worker pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
   ## @param worker.nodeSelector Node labels for worker pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -760,6 +784,10 @@ workerBeat:
   ## @param workerBeat.podAnnotations Add extra annotations to the Invenio workerBeat pods
   ##
   podAnnotations: {}
+  ## @param workerBeat.affinity Affinity rules for workerBeat pods assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
   ## @param workerBeat.nodeSelector Node labels for workerBeat pods assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
