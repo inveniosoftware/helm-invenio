@@ -1,0 +1,43 @@
+suite: horizontal pod autoscaler
+templates:
+  - templates/horizontalpodautoscaler.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  rabbitmq.auth.password: "test"
+  postgresql.auth.password: "test"
+tests:
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders an HPA when autoscaler is enabled
+    set:
+      web.autoscaler.enabled: true
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+
+  - it: sets min and max replicas from values
+    set:
+      web.autoscaler.enabled: true
+      web.autoscaler.min_web_replicas: 3
+      web.autoscaler.max_web_replicas: 15
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 3
+      - equal:
+          path: spec.maxReplicas
+          value: 15
+
+  - it: sets target CPU utilization
+    set:
+      web.autoscaler.enabled: true
+      web.autoscaler.scaler_cpu_utilization: 80
+    asserts:
+      - equal:
+          path: spec.targetCPUUtilizationPercentage
+          value: 80
