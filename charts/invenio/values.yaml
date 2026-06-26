@@ -205,7 +205,6 @@ invenio:
     #     name: foo
     # - configMapRef:
     #     name: bar
-
   ## @param invenio.extraVolumeMounts Extra volumeMounts for all Invenio containers.
   ##
   extraVolumeMounts: []
@@ -1033,8 +1032,13 @@ redis:
   enabled: true
   auth:
     ## @param redis.auth.enabled Enable password authentication
+    ## @extra redis.auth.existingSecret Name of an existing secret resource containing the credentials
+    ## @extra redis.auth.existingSecretPasswordKey Name of an existing secret key containing the credentials
     ##
     enabled: false  # Dangerous! This lets Invenio connect to Redis unauthenticated!
+    password: ""
+    # existingSecret:
+    # existingSecretPasswordKey:
   image:
     ## @param redis.image.repository Sets bitnamilegacy by default
     ##
@@ -1046,12 +1050,20 @@ redis:
     ## @param redis.replica.disableCommands
     disableCommands: []  # Dangerous! This lets us run the `FLUSHALL` and `FLUSHDB` commands! Unfortunately, they are required by the wipe_recreate.sh script when installing Invenio.
 
-
 ## @param redisExternal External redis configuration
 ## All of these values are only used when redis.enabled is set to false
+## @extra redisExternal.password Password
 ## @extra redisExternal.hostname
+## @extra redisExternal.existingSecret Name of an existing secret resource containing the credentials
+## @extra redisExternal.existingSecretPasswordKey Name of an existing secret key containing the credentials
+## @extra redisExternal.port defaults to 6379
+## @extra redisExternal.redisProtocol defaults to redis
+##
 redisExternal: {}
   # hostname: ""
+  # password:
+  # existingSecret:
+  # existingSecretPasswordKey:
 
 ## @section RabbitMQ chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
