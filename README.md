@@ -147,6 +147,45 @@ $ helm upgrade --atomic -f values-overrides.yaml invenio ./invenio
 # NOTES:
 # Invenio is ready to rock 🚀
 ```
+
+## Local development
+
+To run the same checks as CI locally, install the following tools:
+
+### Prerequisites
+
+- [Helm 3.x](https://helm.sh/docs/intro/install/)
+- [chart-testing (`ct`)](https://github.com/helm/chart-testing)
+- [kubeconform](https://github.com/yannh/kubeconform)
+
+### Install Helm plugins
+
+```bash
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
+```
+
+### Run checks
+
+```bash
+# Lint
+ct lint --all
+
+# Unit tests
+helm unittest charts/invenio
+
+# Build dependencies (required before template validation)
+helm dependency build charts/invenio
+
+# Validate rendered manifests against Kubernetes schemas
+helm template test charts/invenio \
+  -f charts/invenio/ci/minimal-values.yaml | \
+  kubeconform --strict --summary
+
+helm template test charts/invenio \
+  -f charts/invenio/ci/full-values.yaml | \
+  kubeconform --strict --summary
+```
+
 ## Parameters
 
 ### Global parameters

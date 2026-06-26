@@ -33,11 +33,12 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --all
 
-      - name: Install Helm plugins
+      - name: Install tools
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest.git
-          pip install pyyaml
-          helm plugin install https://github.com/jtyr/kubeconform-helm.git
+          KUBECONFORM_VERSION=v0.8.0
+          curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz kubeconform
+          sudo mv kubeconform /usr/local/bin/
 
       - name: Run unit tests
         run: helm unittest charts/invenio
@@ -47,17 +48,15 @@ jobs:
 
       - name: Validate rendered manifests (minimal values)
         run: |
-          helm kubeconform charts/invenio \
-            -f charts/invenio/ci/minimal-values.yaml \
-            --strict \
-            --summary
+          helm template test charts/invenio \
+            -f charts/invenio/ci/minimal-values.yaml | \
+            kubeconform --strict --summary
 
       - name: Validate rendered manifests (full values)
         run: |
-          helm kubeconform charts/invenio \
-            -f charts/invenio/ci/full-values.yaml \
-            --strict \
-            --summary
+          helm template test charts/invenio \
+            -f charts/invenio/ci/full-values.yaml | \
+            kubeconform --strict --summary
 
       # - name: create kind cluster
       #   if: steps.list-changed.outputs.changed == 'true'
