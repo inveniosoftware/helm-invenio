@@ -83,9 +83,88 @@ Return the proper Invenio image name
   {{- if .Values.redis.enabled }}
     {{- printf "%s-master" (include "common.names.fullname" .Subcharts.redis) }}
   {{- else }}
-      {{- required "Missing .Values.redisExternal.hostname" .Values.redisExternal.hostname }}
+    {{- required "\n\nYou have configured `.Values.redisExternal`, but  .Values.redisExternal.hostname is missing" .Values.redisExternal.hostname }}
   {{- end }}
 {{- end -}}
+
+{{- define "invenio.redis.password" }}
+  {{- if .Values.redis.enabled }}
+    {{- if not .Values.redis.auth.enabled }}
+      {{ print "value: \"\"" }}
+    {{- else if and .Values.redis.auth.enabled  .Values.redis.auth.password }}
+      {{ printf "value: %q" .Values.redis.auth.password }}
+    {{- else if and .Values.redis.auth.enabled .Values.redis.auth.existingSecret .Values.redis.auth.existingSecretPasswordKey }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.redis.auth.existingSecret }}
+      key: {{ .Values.redis.auth.existingSecretPasswordKey }}
+    {{- else }}
+      {{ fail "\n\n.Values.redis.auth.enabled is set to `True`, but the authentication configuration is missing.\nSpecify either .Values.redis.auth.password or both .Values.redis.auth.existingSecret and .Values.redis.auth.existingSecretPasswordKey." }}
+    {{- end }}
+  {{- else if .Values.redisExternal }}
+    {{- if .Values.redisExternal.password }}
+      {{ printf "value: %q" .Values.redisExternal.password }}
+    {{- else if and  .Values.redisExternal.existingSecret .Values.redisExternal.existingSecretPasswordKey }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.redisExternal.existingSecret }}
+      key: {{ .Values.redisExternal.existingSecretPasswordKey }}
+    {{- else }}
+      {{- fail "\n\nYou have configured `.Values.redisExternal`, but no authentication credentials were provided.\nSpecify either `.Values.redisExternal.password` or both `.Values.redisExternal.existingSecret` and `.Values.redisExternal.existingSecretPasswordKey`." }}
+    {{- end }}
+  {{- else }}
+    {{ fail "\nMissing Redis configuration.\nEnable Redis by setting `.Values.redis.enabled` to `true`, or configure `.Values.redisExternal`." }}
+  {{- end }}   
+{{- end }}
+
+{{/*
+  This template renders the port number for Redis.
+*/}}
+{{- define "invenio.redis.port" -}}
+    {{- print "6379" | quote -}}
+{{- end -}}
+
+{{/*
+  This template renders the protocol for Redis
+*/}}
+{{- define "invenio.redis.protocol" -}}
+  {{- print "redis" -}}
+{{- end -}}
+
+{{/*
+  Redis connection env section.
+*/}}
+{{- define "invenio.config.cache" -}}
+{{- if and (not .Values.redis.enabled) (not .Values.redisExternal) }}
+  {{ fail "\n\nMissing Redis configuration.\nEnable Redis by setting `.Values.redis.enabled` to `true`, or configure `.Values.redisExternal`." }}
+{{- end }}
+{{- $uri := "$(INVENIO_CONFIG_REDIS_PROTOCOL)://:$(INVENIO_CONFIG_REDIS_PASSWORD)@$(INVENIO_CONFIG_REDIS_HOST):$(INVENIO_CONFIG_REDIS_PORT)" -}}
+{{- $hostString := ":$(INVENIO_CONFIG_REDIS_PASSWORD)@$(INVENIO_CONFIG_REDIS_HOST)" -}}
+- name: INVENIO_CONFIG_REDIS_HOST
+  value: {{ include "invenio.redis.hostname" . }}
+- name: INVENIO_CONFIG_REDIS_PORT
+  value: {{ include "invenio.redis.port" . }}
+- name: INVENIO_CONFIG_REDIS_PROTOCOL
+  value: {{ include "invenio.redis.protocol" . }}
+- name: INVENIO_CONFIG_REDIS_PASSWORD
+  {{ include "invenio.redis.password" . | trim }}
+- name: INVENIO_CACHE_REDIS_HOST
+  value: {{ $hostString }}
+- name: INVENIO_CACHE_REDIS_URL
+  value: {{ printf "%s/0" $uri }}
+- name: INVENIO_IIIF_CACHE_REDIS_URL
+  value: {{ printf "%s/0" $uri }}
+- name: INVENIO_ACCOUNTS_SESSION_REDIS_URL
+  value: {{ printf "%s/1" $uri }}
+- name: INVENIO_CELERY_RESULT_BACKEND
+  value: {{ printf "%s/2" $uri }}
+- name: INVENIO_RATELIMIT_STORAGE_URI
+  value: {{ printf "%s/3" $uri }}
+- name: INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL
+  value: {{ printf "%s/4" $uri }}
+{{- end }}
+
+
 
 #######################     Ingress TLS secret name     #######################
 {{/*
@@ -470,14 +549,7 @@ Add sentry environmental variables
 Invenio basic configuration variables
 */}}
 {{- define "invenio.configBase" -}}
-INVENIO_ACCOUNTS_SESSION_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/1'
 INVENIO_TRUSTED_HOSTS: '["{{ include "invenio.hostname" $ }}"]'
-INVENIO_CACHE_REDIS_HOST: '{{ include "invenio.redis.hostname" . }}'
-INVENIO_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
-INVENIO_CELERY_RESULT_BACKEND: 'redis://{{ include "invenio.redis.hostname" . }}:6379/2'
-INVENIO_IIIF_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/0'
-INVENIO_RATELIMIT_STORAGE_URI: 'redis://{{ include "invenio.redis.hostname" . }}:6379/3'
-INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL: 'redis://{{ include "invenio.redis.hostname" . }}:6379/4'
 INVENIO_SITE_HOSTNAME: '{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_UI_URL: 'https://{{ include "invenio.hostname" $ }}'
 INVENIO_SITE_API_URL: 'https://{{ include "invenio.hostname" $ }}/api'
