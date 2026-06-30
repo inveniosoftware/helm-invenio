@@ -40,6 +40,10 @@ jobs:
           curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz kubeconform
           sudo mv kubeconform /usr/local/bin/
           helm plugin install https://github.com/losisin/helm-values-schema-json.git
+          helm plugin install https://github.com/jtyr/kubeconform-helm.git
+          HELM_DOCS_VERSION=1.14.2
+          curl -sSL "https://github.com/norwoodj/helm-docs/releases/download/v${HELM_DOCS_VERSION}/helm-docs_${HELM_DOCS_VERSION}_Linux_x86_64.tar.gz" | tar xz helm-docs
+          sudo mv helm-docs /usr/local/bin/
 
       - name: Verify schema is up-to-date
         working-directory: charts/invenio
@@ -47,6 +51,12 @@ jobs:
           helm schema -f values.yaml -o /tmp/values.schema.json --use-helm-docs
           diff values.schema.json /tmp/values.schema.json || \
             (echo "::error::Schema is out of date. Run: cd charts/invenio && helm schema --use-helm-docs" && exit 1)
+
+      - name: Verify README is up-to-date
+        run: |
+          helm-docs --chart-search-root charts
+          git diff --exit-code charts/invenio/README.md || \
+            (echo "::error::README is out of date. Run: helm-docs --chart-search-root charts" && exit 1)
 
       - name: Run unit tests
         run: helm unittest charts/invenio
