@@ -1,0 +1,27 @@
+{{- if .Values.httpRoute.enabled -}}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "invenio.fullname" . }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
+    {{- with .Values.httpRoute.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- with .Values.httpRoute.parentRefs }}
+  parentRefs:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  hostnames:
+    - {{ include "invenio.hostname" $ | quote }}
+  rules:
+    - backendRefs:
+        - name: {{ include "invenio.fullname" . }}-web
+          port: 80
+{{- end -}}

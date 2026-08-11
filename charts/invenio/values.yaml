@@ -68,6 +68,12 @@ ingress:
   ##
   tlsSecretNameOverride: ""
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+
 ## Openshift Route object
 ## @param route.annotations Annotations to be added to the Route
 route:
