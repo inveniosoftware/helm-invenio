@@ -1,0 +1,40 @@
+name: Verify rendered values
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - charts/invenio/values.yaml
+  push:
+    branches:
+      - master
+    paths:
+      - charts/invenio/values.yaml
+
+jobs:
+  verify-rendered-values:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install readme-generator
+        run: |
+          npm install github:bitnami/readme-generator-for-helm --no-audit --no-fund
+
+      - name: Run readme-generator
+        run: |
+          ./node_modules/.bin/readme-generator --values=charts/invenio/values.yaml --readme=README.md
+
+      - name: Check for README modifications
+        run: |
+          # Exit non-zero (fail) if README.md was changed by the generator
+          git --no-pager diff --exit-code -- README.md
