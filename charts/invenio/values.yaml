@@ -68,11 +68,24 @@ ingress:
   ##
   tlsSecretNameOverride: ""
 
+## Invenio HTTPRoute parameters
+## ref: https://gateway-api.sigs.k8s.io/reference/api-types/httproute/
+##
 httpRoute:
+  ## @param httpRoute.enabled Enables a HTTPRoute object for ingress traffic via Gateway API.
+  ##
   enabled: false
+  ## @param httpRoute.annotations Additional annotations for the HTTPRoute.
+  ##
   annotations: {}
+  ## @param httpRoute.labels Additional labels for the HTTPRoute.
+  ##
   labels: {}
+  ## @param httpRoute.parentRefs Configures which Gateway to use for the HTTPRoute.
+  ##
   parentRefs: []
+  ## @param httpRoute.parentRefs Configures rules for the HTTPRoute.
+  ##
   rules:
     - backendRefs:
         - name: '{{ include "invenio.fullname" $ }}-web'
