@@ -55,6 +55,19 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
 
+httpRoute:
+  enabled: true
+  annotations:
+    http-route-annotation: full-values
+  labels:
+    http-route-label: full-values
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: default
+      namespace: gateway
+      port: 443
+
 web:
   autoscaler:
     enabled: true

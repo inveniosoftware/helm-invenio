@@ -1,0 +1,94 @@
+suite: httpRoute
+templates:
+  - templates/httproute.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+tests:
+
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders the HTTPRoute when enabled
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - isKind:
+          of: HTTPRoute
+
+  - it: adds annotations when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.annotations:
+        http-route-annotation: test
+    asserts:
+      - equal:
+          path: metadata.annotations["http-route-annotation"]
+          value: "test"
+
+  - it: adds labels when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.labels:
+        http-route-label: test
+    asserts:
+      - equal:
+          path: metadata.labels["http-route-label"]
+          value: "test"
+
+  - it: sets the correct host
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - equal:
+          path: spec.hostnames[0]
+          value: test.example.com
+
+  - it: sets parentRefs when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: default
+          namespace: gateway
+          port: 443
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - group: gateway.networking.k8s.io
+              kind: Gateway
+              name: default
+              namespace: gateway
+              port: 443
+
+  - it: has a valid default rule
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: test-invenio-web
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 80
+
+  - it: allows for custom rules with templated strings
+    set:
+      httpRoute.enabled: true
+      httpRoute.rules:
+        - backendRefs:
+            - name: '{{ "foo" }}'
+              port: 123
+              kind: Service
+    asserts:
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: foo
+      - equal:
+          path: spec.rules[0].backendRefs[0].kind
+          value: Service
