@@ -84,7 +84,8 @@ httpRoute:
   ## @param httpRoute.parentRefs Configures which Gateway to use for the HTTPRoute.
   ##
   parentRefs: []
-  ## @param httpRoute.parentRefs Configures rules for the HTTPRoute.
+  ## @param httpRoute.rules Configures rules for the HTTPRoute.
+  ## @skip httpRoute.rules
   ##
   rules:
     - backendRefs:
