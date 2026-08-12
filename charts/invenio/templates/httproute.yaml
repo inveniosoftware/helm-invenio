@@ -20,8 +20,8 @@ spec:
   {{- end }}
   hostnames:
     - {{ include "invenio.hostname" $ | quote }}
+  {{- with .Values.httpRoute.rules }}
   rules:
-    - backendRefs:
-        - name: {{ include "invenio.fullname" . }}-web
-          port: 80
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
 {{- end -}}

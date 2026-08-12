@@ -73,6 +73,10 @@ httpRoute:
   annotations: {}
   labels: {}
   parentRefs: []
+  rules:
+    - backendRefs:
+        - name: '{{ include "invenio.fullname" $ }}-web'
+          port: 80
 
 ## Openshift Route object
 ## @param route.annotations Annotations to be added to the Route
