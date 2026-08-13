@@ -11,17 +11,17 @@ metadata:
   labels:
     {{- include "invenio.labels" . | nindent 4 }}
     {{- with .Values.httpRoute.labels }}
-    {{- toYaml . | nindent 4 }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- with .Values.httpRoute.parentRefs }}
   parentRefs:
+  {{- with .Values.httpRoute.parentRefs }}
     {{- . | toYaml | nindent 4 }}
   {{- end }}
   hostnames:
     - {{ include "invenio.hostname" $ | quote }}
-  {{- with .Values.httpRoute.rules }}
   rules:
+  {{- with .Values.httpRoute.rules }}
     {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 {{- end -}}
