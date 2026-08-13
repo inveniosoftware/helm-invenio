@@ -1,0 +1,103 @@
+suite: listenerSet
+templates:
+  - templates/listenerset.yaml
+  - templates/httproute.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  listenerSet.parentRef:
+    name: test
+tests:
+
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+    template: templates/listenerset.yaml
+
+  - it: renders a ListenerSet when enabled
+    set:
+      listenerSet.enabled: true
+    asserts:
+      - isKind:
+          of: ListenerSet
+    template: templates/listenerset.yaml
+
+  - it: adds annotations when specified
+    set:
+      listenerSet.enabled: true
+      listenerSet.annotations:
+        listenerset-annotation: test
+    asserts:
+      - equal:
+          path: metadata.annotations["listenerset-annotation"]
+          value: "test"
+    template: templates/listenerset.yaml
+
+  - it: adds labels when specified
+    set:
+      listenerSet.enabled: true
+      listenerSet.labels:
+        listenerset-label: test
+    asserts:
+      - equal:
+          path: metadata.labels["listenerset-label"]
+          value: "test"
+    template: templates/listenerset.yaml
+
+  - it: default https listener is valid
+    set:
+      listenerSet.enabled: true
+    asserts:
+      - equal:
+          path: spec.listeners[0].port
+          value: 443
+      - equal:
+          path: spec.listeners[0].hostname
+          value: test.example.com
+    template: templates/listenerset.yaml
+
+  - it: allows for custom listeners with templated strings
+    set:
+      listenerSet.enabled: true
+      listenerSet.https: false
+      listenerSet.listeners:
+        - name: http
+          hostname: '{{ include "invenio.hostname" $ }}'
+          port: 80
+          protocol: HTTP
+    asserts:
+      - equal:
+          path: spec.listeners[0].name
+          value: http
+      - equal:
+          path: spec.listeners[0].hostname
+          value: test.example.com
+    template: templates/listenerset.yaml
+
+  - it: is automatically includes listeners in parentRefs for HTTPRoute
+    set:
+      httpRoute.enabled: true
+      listenerSet.enabled: true
+    asserts:
+      - equal:
+          path: spec.parentRefs[0].group
+          value: gateway.networking.k8s.io
+        template: templates/httproute.yaml
+      - equal:
+          path: spec.parentRefs[0].kind
+          value: ListenerSet
+        template: templates/httproute.yaml
+      - equal:
+          path: spec.parentRefs[0].name
+          value: test-invenio
+        template: templates/httproute.yaml
+      - equal:
+          path: spec.parentRefs[0].port
+          value: 443
+        template: templates/httproute.yaml
+      - equal:
+          path: spec.listeners[0].port
+          value: 443
+        template: templates/listenerset.yaml
