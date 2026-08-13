@@ -18,6 +18,12 @@ spec:
   {{- with .Values.httpRoute.parentRefs }}
     {{- . | toYaml | nindent 4 }}
   {{- end }}
+  {{- if .Values.listenerSet.enabled }}
+    - group: gateway.networking.k8s.io
+      kind: ListenerSet
+      name: {{ include "invenio.fullname" . }}
+      port: 443
+  {{- end }}
   hostnames:
     - {{ include "invenio.hostname" $ | quote }}
   rules:

@@ -1,0 +1,34 @@
+{{- if .Values.listenerSet.enabled -}}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: {{ include "invenio.fullname" . }}
+  {{- with .Values.listenerSet.annotations }}
+  annotations:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "invenio.labels" . | nindent 4 }}
+    {{- with .Values.listenerSet.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  listeners:
+    {{- if .Values.listenerSet.https }}
+    - name: https
+      hostname: {{ include "invenio.hostname" $ | quote }}
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: {{ include "invenio.hostname" $ | quote }}
+        mode: Terminate
+    {{- end }}
+  {{- with .Values.listenerSet.listeners }}
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  parentRef: {{- required "missing .Values.listenerSet.parentRef" .Values.listenerSet.parentRef | toYaml | nindent 4 }}
+{{- end -}}

@@ -81,16 +81,43 @@ httpRoute:
   ## @param httpRoute.labels Additional labels for the HTTPRoute.
   ##
   labels: {}
-  ## @param httpRoute.parentRefs Configures which Gateway to use for the HTTPRoute.
+  ## @param httpRoute.parentRefs Additional parentRefs for the HTTPRoute.
+  ## If your Gateway has a listener matching `.invenio.hostname`, you should
+  ## probably add a reference to your Gateway here.
+  ##
+  ## Otherwise, you should probably add a listener via ListenerSet instead.
+  ## If you do, a reference to the ListenerSet automatically gets included,
+  ## so no need to set `.httpRoute.parentRefs` here.
   ##
   parentRefs: []
-  ## @param httpRoute.rules Configures rules for the HTTPRoute.
+  ## @param httpRoute.rules Templated rules for the HTTPRoute.
   ## @skip httpRoute.rules
   ##
   rules:
     - backendRefs:
         - name: '{{ include "invenio.fullname" $ }}-web'
           port: 80
+
+## Invenio ListenerSet parameters.
+## ref: https://gateway-api.sigs.k8s.io/guides/user-guides/listener-set/
+##
+listenerSet:
+  ## @param listenerSet.enabled Creates a Gateway API ListenerSet object.
+  ##
+  enabled: false
+  ## @param listenerSet.annotations Additional annotations for the ListenerSet.
+  ##
+  annotations: {}
+  ## @param listenerSet.https When enabled, a listener for HTTPS is
+  ## automatically configured in the ListenerSet. #
+  ##
+  https: true
+  ## @param listenerSet.labels Additional labels for the ListenerSet.
+  ##
+  labels: {}
+  ## @param listenerSet.labels Templated listeners for the ListenerSet.
+  ##
+  listeners: []
 
 ## Openshift Route object
 ## @param route.annotations Annotations to be added to the Route
