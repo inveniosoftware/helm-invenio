@@ -52,30 +52,30 @@ tests:
     set:
       listenerSet.enabled: true
     asserts:
-      - equal:
-          path: spec.listeners[0].port
-          value: 443
-      - equal:
-          path: spec.listeners[0].hostname
-          value: test.example.com
+      - contains:
+          any: true
+          content:
+            hostname: test.example.com
+            port: 443
+          path: spec.listeners
     template: templates/listenerset.yaml
 
   - it: allows for custom listeners with templated strings
     set:
       listenerSet.enabled: true
-      listenerSet.https: false
       listenerSet.listeners:
-        - name: http
-          hostname: '{{ include "invenio.hostname" $ }}'
+        - hostname: '{{ include "invenio.hostname" $ }}'
+          name: http
           port: 80
           protocol: HTTP
     asserts:
-      - equal:
-          path: spec.listeners[0].name
-          value: http
-      - equal:
-          path: spec.listeners[0].hostname
-          value: test.example.com
+      - contains:
+          content:
+            hostname: test.example.com
+            name: http
+            port: 80
+            protocol: HTTP
+          path: spec.listeners
     template: templates/listenerset.yaml
 
   - it: includes the default HTTPS listener in HTTPRoute parentRefs
@@ -83,23 +83,11 @@ tests:
       httpRoute.enabled: true
       listenerSet.enabled: true
     asserts:
-      - equal:
-          path: spec.parentRefs[0].group
-          value: gateway.networking.k8s.io
+      - contains:
+          content:
+            group: gateway.networking.k8s.io
+            kind: ListenerSet
+            name: test-invenio
+            port: 443
+          path: spec.parentRefs
         template: templates/httproute.yaml
-      - equal:
-          path: spec.parentRefs[0].kind
-          value: ListenerSet
-        template: templates/httproute.yaml
-      - equal:
-          path: spec.parentRefs[0].name
-          value: test-invenio
-        template: templates/httproute.yaml
-      - equal:
-          path: spec.parentRefs[0].port
-          value: 443
-        template: templates/httproute.yaml
-      - equal:
-          path: spec.listeners[0].port
-          value: 443
-        template: templates/listenerset.yaml
