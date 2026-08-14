@@ -76,7 +76,7 @@ tests:
           value: test.example.com
     template: templates/listenerset.yaml
 
-  - it: is automatically includes listeners in parentRefs for HTTPRoute
+  - it: includes the default https listener in parentRefs
     set:
       httpRoute.enabled: true
       listenerSet.enabled: true

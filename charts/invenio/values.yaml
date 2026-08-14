@@ -83,11 +83,8 @@ httpRoute:
   labels: {}
   ## @param httpRoute.parentRefs Additional parentRefs for the HTTPRoute.
   ## If your Gateway has a listener matching `.invenio.hostname`, you should
-  ## probably add a reference to your Gateway here.
-  ##
-  ## Otherwise, you should probably add a listener via ListenerSet instead.
-  ## If you do, a reference to the ListenerSet automatically gets included,
-  ## so no need to set `.httpRoute.parentRefs` here.
+  ## probably add a reference to your Gateway here. Otherwise, you should
+  ## probably add a listener via ListenerSet instead.
   ##
   parentRefs: []
   ## @param httpRoute.rules Templated rules for the HTTPRoute.
@@ -108,8 +105,8 @@ listenerSet:
   ## @param listenerSet.annotations Additional annotations for the ListenerSet.
   ##
   annotations: {}
-  ## @param listenerSet.https When enabled, a listener for HTTPS is
-  ## automatically configured in the ListenerSet. #
+  ## @param listenerSet.https When enabled, HTTPS config is added both as a
+  ## listener in the ListenerSet and as a parentRef in the HTTPRoute.
   ##
   https: true
   ## @param listenerSet.labels Additional labels for the ListenerSet.
