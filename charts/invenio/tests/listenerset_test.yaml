@@ -91,3 +91,21 @@ tests:
             sectionName: https
           path: spec.parentRefs
     template: templates/httproute.yaml
+
+  - it: supports a Gateway in another namespace
+    set:
+      listenerSet.enabled: true
+      listenerSet.parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: default
+        namespace: gateway
+    asserts:
+      - equal:
+          path: spec.parentRef
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: default
+            namespace: gateway
+    template: templates/listenerset.yaml
