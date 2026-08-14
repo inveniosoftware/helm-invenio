@@ -20,8 +20,10 @@ tests:
     set:
       listenerSet.enabled: true
     asserts:
-      - isKind:
-          of: ListenerSet
+      - containsDocument:
+          apiVersion: gateway.networking.k8s.io/v1
+          kind: ListenerSet
+          name: test-invenio
     template: templates/listenerset.yaml
 
   - it: adds annotations when specified
