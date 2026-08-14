@@ -24,7 +24,7 @@ spec:
         certificateRefs:
           - group: ""
             kind: Secret
-            name: {{ include "invenio.hostname" $ | quote }}
+            name: {{ printf "%s-tls" (include "invenio.fullname" .) }}
         mode: Terminate
     {{- end }}
   {{- with .Values.listenerSet.listeners }}
