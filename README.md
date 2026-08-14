@@ -220,6 +220,7 @@ helm template test charts/invenio \
 | `listenerSet.https`                       | When enabled, HTTPS config is added both as a                                                                                    | `true`                            |
 | `listenerSet.labels`                      | Additional labels for the ListenerSet.                                                                                           | `{}`                              |
 | `listenerSet.listeners`                   | Templated listeners for the ListenerSet.                                                                                         | `[]`                              |
+| `listenerSet.parentRef`                   | Sets the Gateway that the listeners are                                                                                          | `{}`                              |
 | `route.annotations`                       | Annotations to be added to the Route                                                                                             | `{}`                              |
 | `invenio.hostname`                        | Invenio hostname (templated) used in configuration varibales like TRUSTED_HOSTS, SITE_HOSTNAME or SITE_URL                       | `""`                              |
 | `invenio.secret_key`                      | DEPRECATED: this is automatically generated now, or set by custom secret using invenio.existingSecret                            | `""`                              |
