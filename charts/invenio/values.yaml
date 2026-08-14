@@ -114,9 +114,20 @@ listenerSet:
   labels: {}
   ## @param listenerSet.listeners Templated listeners for the ListenerSet.
   ##
+  ## # Example:
+  ##   - name: acme-http01
+  ##     hostname: '{{ include "invenio.hostname" $ }}'
+  ##     port: 80
+  ##     protocol: HTTP
+  ##
   listeners: []
-  ## @param listenerSet.parentRef Configures the parentRef for the ListenerSet,
-  ## typically a reference to a Gateway.
+  ## @param listenerSet.parentRef Sets the Gateway that the listeners are
+  ## attached to.
+  ##
+  ## # Example:
+  ## parentRef:
+  ##   name: default
+  ##   namespace: gateway
   ##
   parentRef: {}
 
