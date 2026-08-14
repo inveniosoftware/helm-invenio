@@ -90,4 +90,4 @@ tests:
             name: test-invenio
             sectionName: https
           path: spec.parentRefs
-        template: templates/httproute.yaml
+    template: templates/httproute.yaml
