@@ -85,7 +85,7 @@ httpRoute:
   ##
   ## If your Gateway has a listener matching `.invenio.hostname`, you should
   ## probably reference that here. Otherwise, you should probably create a
-  ## ListernerSet and reference that here.
+  ## ListenerSet and reference that here.
   ##
   ## Since `.listenerSet.https` is added automatically, there's no need to
   ## add that here.
