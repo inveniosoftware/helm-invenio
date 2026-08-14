@@ -88,6 +88,6 @@ tests:
             group: gateway.networking.k8s.io
             kind: ListenerSet
             name: test-invenio
-            port: 443
+            sectionName: https
           path: spec.parentRefs
         template: templates/httproute.yaml
