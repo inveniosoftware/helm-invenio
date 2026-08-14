@@ -112,7 +112,7 @@ listenerSet:
   ## @param listenerSet.labels Additional labels for the ListenerSet.
   ##
   labels: {}
-  ## @param listenerSet.labels Templated listeners for the ListenerSet.
+  ## @param listenerSet.listeners Templated listeners for the ListenerSet.
   ##
   listeners: []
 
