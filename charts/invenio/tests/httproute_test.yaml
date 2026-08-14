@@ -45,9 +45,9 @@ tests:
     set:
       httpRoute.enabled: true
     asserts:
-      - equal:
-          path: spec.hostnames[0]
-          value: test.example.com
+      - contains:
+          content: test.example.com
+          path: spec.hostnames
 
   - it: sets parentRefs when specified
     set:
@@ -68,29 +68,30 @@ tests:
               namespace: gateway
               port: 443
 
-  - it: has a valid default rule
+  - it: has a valid rule for the web component by default
     set:
       httpRoute.enabled: true
     asserts:
-      - equal:
-          path: spec.rules[0].backendRefs[0].name
-          value: test-invenio-web
-      - equal:
-          path: spec.rules[0].backendRefs[0].port
-          value: 80
+      - contains:
+          content:
+            backendRefs:
+              - name: test-invenio-web
+                port: 80
+          path: spec.rules
 
   - it: allows for custom rules with templated strings
     set:
       httpRoute.enabled: true
       httpRoute.rules:
         - backendRefs:
-            - name: '{{ "foo" }}'
+            - kind: Service
+              name: '{{ "foo" }}'
               port: 123
-              kind: Service
     asserts:
-      - equal:
-          path: spec.rules[0].backendRefs[0].name
-          value: foo
-      - equal:
-          path: spec.rules[0].backendRefs[0].kind
-          value: Service
+      - contains:
+          content:
+            backendRefs:
+              - kind: Service
+                name: foo
+                port: 123
+          path: spec.rules
