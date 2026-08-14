@@ -115,6 +115,10 @@ listenerSet:
   ## @param listenerSet.listeners Templated listeners for the ListenerSet.
   ##
   listeners: []
+  ## @param listenerSet.parentRef Configures the parentRef for the ListenerSet,
+  ## typically a reference to a Gateway.
+  ##
+  parentRef: {}
 
 ## Openshift Route object
 ## @param route.annotations Annotations to be added to the Route
