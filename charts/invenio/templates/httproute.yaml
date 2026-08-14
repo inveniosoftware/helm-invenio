@@ -19,7 +19,7 @@ spec:
     - group: gateway.networking.k8s.io
       kind: ListenerSet
       name: {{ include "invenio.fullname" . }}
-      port: 443
+      sectionName: https
   {{- end }}
   {{- with .Values.httpRoute.parentRefs }}
     {{- . | toYaml | nindent 4 }}
