@@ -217,7 +217,7 @@ helm template test charts/invenio \
 | `httpRoute.rules`                         | Templated rules for the HTTPRoute.                                                                                               | `undefined`                       |
 | `listenerSet.enabled`                     | Creates a Gateway API ListenerSet object.                                                                                        | `false`                           |
 | `listenerSet.annotations`                 | Additional annotations for the ListenerSet.                                                                                      | `{}`                              |
-| `listenerSet.https`                       | When enabled, a HTTPS listener is added to the ListenerSet and added in parentRefs in the HTTPRoute.                             | `true`                            |
+| `listenerSet.https`                       | When enabled, an HTTPS listener is added to the ListenerSet and added in parentRefs in the HTTPRoute.                            | `true`                            |
 | `listenerSet.labels`                      | Additional labels for the ListenerSet.                                                                                           | `{}`                              |
 | `listenerSet.listeners`                   | Templated listeners for the ListenerSet.                                                                                         | `[]`                              |
 | `listenerSet.parentRef`                   | Sets the Gateway that the listeners are attached to.                                                                             | `{}`                              |
