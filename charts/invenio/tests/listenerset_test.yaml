@@ -48,7 +48,7 @@ tests:
           value: "test"
     template: templates/listenerset.yaml
 
-  - it: default https listener is valid
+  - it: has a valid HTTPS listener by default
     set:
       listenerSet.enabled: true
     asserts:
@@ -78,7 +78,7 @@ tests:
           value: test.example.com
     template: templates/listenerset.yaml
 
-  - it: includes the default https listener in parentRefs
+  - it: includes the default HTTPS listener in HTTPRoute parentRefs
     set:
       httpRoute.enabled: true
       listenerSet.enabled: true
