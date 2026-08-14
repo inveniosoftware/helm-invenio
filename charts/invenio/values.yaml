@@ -68,6 +68,71 @@ ingress:
   ##
   tlsSecretNameOverride: ""
 
+## Invenio HTTPRoute parameters
+## ref: https://gateway-api.sigs.k8s.io/reference/api-types/httproute/
+##
+httpRoute:
+  ## @param httpRoute.enabled Enables a HTTPRoute object for ingress traffic via Gateway API.
+  ##
+  enabled: false
+  ## @param httpRoute.annotations Additional annotations for the HTTPRoute.
+  ##
+  annotations: {}
+  ## @param httpRoute.labels Additional labels for the HTTPRoute.
+  ##
+  labels: {}
+  ## @param httpRoute.parentRefs Adds parentRefs to the HTTPRoute.
+  ##
+  ## If your Gateway has a listener matching `.invenio.hostname`, you should
+  ## probably reference that here. Otherwise, you should probably create a
+  ## ListenerSet and reference that here.
+  ##
+  ## Since `.listenerSet.https` is added automatically, there's no need to
+  ## add that here.
+  ##
+  parentRefs: []
+  ## @param httpRoute.rules Templated rules for the HTTPRoute.
+  ## @skip httpRoute.rules
+  ##
+  rules:
+    - backendRefs:
+        - name: '{{ include "invenio.fullname" $ }}-web'
+          port: 80
+
+## Invenio ListenerSet parameters.
+## ref: https://gateway-api.sigs.k8s.io/guides/user-guides/listener-set/
+##
+listenerSet:
+  ## @param listenerSet.enabled Creates a Gateway API ListenerSet object.
+  ##
+  enabled: false
+  ## @param listenerSet.annotations Additional annotations for the ListenerSet.
+  ##
+  annotations: {}
+  ## @param listenerSet.https When enabled, an HTTPS listener is added to the ListenerSet and added in parentRefs in the HTTPRoute.
+  ##
+  https: true
+  ## @param listenerSet.labels Additional labels for the ListenerSet.
+  ##
+  labels: {}
+  ## @param listenerSet.listeners Templated listeners for the ListenerSet.
+  ##
+  ## # Example:
+  ##   - name: acme-http01
+  ##     hostname: '{{ include "invenio.hostname" $ }}'
+  ##     port: 80
+  ##     protocol: HTTP
+  ##
+  listeners: []
+  ## @param listenerSet.parentRef Sets the Gateway that the listeners are attached to.
+  ##
+  ## # Example:
+  ## parentRef:
+  ##   name: default
+  ##   namespace: gateway
+  ##
+  parentRef: {}
+
 ## Openshift Route object
 ## @param route.annotations Annotations to be added to the Route
 route:
