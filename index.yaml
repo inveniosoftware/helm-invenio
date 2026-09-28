@@ -3,6 +3,45 @@ entries:
   invenio:
   - apiVersion: v2
     appVersion: 12.0.10
+    created: "2026-09-28T08:22:53.799919376Z"
+    dependencies:
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 1.4.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.3.3
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 12.9.3
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.12.0
+    description: Turn-key research data management platform.
+    digest: c91e0b4f11ae7839ae0302e43f709382b0bea5f033b3f6acd6449ad5164089a8
+    home: https://inveniosoftware.org/
+    icon: https://inveniosoftware.org/static/img/logo-invenio-white.svg
+    keywords:
+    - digital-repository
+    - institutional-repository
+    - multimedia-library
+    - multimedia-repository
+    maintainers:
+    - email: info@inveniosoftware.org
+      name: CERN
+    name: invenio
+    sources:
+    - https://github.com/inveniosoftware/invenio-app-rdm
+    type: application
+    urls:
+    - https://github.com/inveniosoftware/helm-invenio/releases/download/invenio-0.15.0/invenio-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
+    appVersion: 12.0.10
     created: "2026-06-16T13:34:15.400237377Z"
     dependencies:
     - condition: opensearch.enabled
@@ -685,4 +724,4 @@ entries:
     urls:
     - https://github.com/inveniosoftware/helm-invenio/releases/download/invenio-0.3.0/invenio-0.3.0.tgz
     version: 0.3.0
-generated: "2026-06-16T13:34:15.400371179Z"
+generated: "2026-09-28T08:22:53.800070638Z"
