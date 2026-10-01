@@ -1,0 +1,111 @@
+suite: listenerSet
+templates:
+  - templates/listenerset.yaml
+  - templates/httproute.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+  listenerSet.parentRef:
+    name: test
+tests:
+
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+    template: templates/listenerset.yaml
+
+  - it: renders a ListenerSet when enabled
+    set:
+      listenerSet.enabled: true
+    asserts:
+      - containsDocument:
+          apiVersion: gateway.networking.k8s.io/v1
+          kind: ListenerSet
+          name: test-invenio
+    template: templates/listenerset.yaml
+
+  - it: adds annotations when specified
+    set:
+      listenerSet.enabled: true
+      listenerSet.annotations:
+        listenerset-annotation: test
+    asserts:
+      - equal:
+          path: metadata.annotations["listenerset-annotation"]
+          value: "test"
+    template: templates/listenerset.yaml
+
+  - it: adds labels when specified
+    set:
+      listenerSet.enabled: true
+      listenerSet.labels:
+        listenerset-label: test
+    asserts:
+      - equal:
+          path: metadata.labels["listenerset-label"]
+          value: "test"
+    template: templates/listenerset.yaml
+
+  - it: has a valid HTTPS listener by default
+    set:
+      listenerSet.enabled: true
+    asserts:
+      - contains:
+          any: true
+          content:
+            hostname: test.example.com
+            port: 443
+          path: spec.listeners
+    template: templates/listenerset.yaml
+
+  - it: allows for custom listeners with templated strings
+    set:
+      listenerSet.enabled: true
+      listenerSet.listeners:
+        - hostname: '{{ include "invenio.hostname" $ }}'
+          name: http
+          port: 80
+          protocol: HTTP
+    asserts:
+      - contains:
+          content:
+            hostname: test.example.com
+            name: http
+            port: 80
+            protocol: HTTP
+          path: spec.listeners
+    template: templates/listenerset.yaml
+
+  - it: includes the default HTTPS listener in HTTPRoute parentRefs
+    set:
+      httpRoute.enabled: true
+      listenerSet.enabled: true
+    asserts:
+      - contains:
+          content:
+            group: gateway.networking.k8s.io
+            kind: ListenerSet
+            name: test-invenio
+            sectionName: https
+          path: spec.parentRefs
+    template: templates/httproute.yaml
+
+  - it: supports a Gateway in another namespace
+    set:
+      listenerSet.enabled: true
+      listenerSet.parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: default
+        namespace: gateway
+    asserts:
+      - equal:
+          path: spec.parentRef
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: default
+            namespace: gateway
+    template: templates/listenerset.yaml

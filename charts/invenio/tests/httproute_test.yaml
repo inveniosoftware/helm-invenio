@@ -1,0 +1,97 @@
+suite: httpRoute
+templates:
+  - templates/httproute.yaml
+release:
+  name: test
+set:
+  invenio.hostname: "test.example.com"
+tests:
+
+  - it: is not rendered by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders the HTTPRoute when enabled
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - containsDocument:
+          apiVersion: gateway.networking.k8s.io/v1
+          kind: HTTPRoute
+          name: test-invenio
+
+  - it: adds annotations when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.annotations:
+        http-route-annotation: test
+    asserts:
+      - equal:
+          path: metadata.annotations["http-route-annotation"]
+          value: "test"
+
+  - it: adds labels when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.labels:
+        http-route-label: test
+    asserts:
+      - equal:
+          path: metadata.labels["http-route-label"]
+          value: "test"
+
+  - it: sets the correct host
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - contains:
+          content: test.example.com
+          path: spec.hostnames
+
+  - it: sets parentRefs when specified
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: default
+          namespace: gateway
+          port: 443
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - group: gateway.networking.k8s.io
+              kind: Gateway
+              name: default
+              namespace: gateway
+              port: 443
+
+  - it: has a valid rule for the web component by default
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - contains:
+          content:
+            backendRefs:
+              - name: test-invenio-web
+                port: 80
+          path: spec.rules
+
+  - it: allows for custom rules with templated strings
+    set:
+      httpRoute.enabled: true
+      httpRoute.rules:
+        - backendRefs:
+            - kind: Service
+              name: '{{ "foo" }}'
+              port: 123
+    asserts:
+      - contains:
+          content:
+            backendRefs:
+              - kind: Service
+                name: foo
+                port: 123
+          path: spec.rules
