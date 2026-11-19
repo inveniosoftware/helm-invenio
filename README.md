@@ -256,7 +256,7 @@ helm template test charts/invenio \
 
 | Name                                             | Description                                                                         | Value                              |
 | ------------------------------------------------ | ----------------------------------------------------------------------------------- | ---------------------------------- |
-| `nginx.image`                                    | TODO:                                                                               | `nginx:1.31.1`                     |
+| `nginx.image`                                    | TODO:                                                                               | `nginx:1.31.9`                     |
 | `nginx.max_conns`                                | TODO:                                                                               | `100`                              |
 | `nginx.assets.location`                          | TODO:                                                                               | `/opt/invenio/var/instance/static` |
 | `nginx.records.client_max_body_size`             | TODO:                                                                               | `100m`                             |
